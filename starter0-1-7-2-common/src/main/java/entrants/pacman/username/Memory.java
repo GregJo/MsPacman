@@ -1,27 +1,22 @@
 package entrants.pacman.username;
 
+import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import pacman.game.Game;
-import pacman.game.Constants.GHOST;
-import pacman.game.Constants.MOVE;
+import pacman.game.GameView;
 
 public class Memory 
 {
 	//MEMBER VARIABLES
 	private ArrayList<Integer> m_stillAvailablePills = new ArrayList<Integer>(); //memory of which pills are still edible
 	private ArrayList<Integer> m_stillAvailablePowerPills = new ArrayList<Integer>(); //memory of which powerpills are still edible
-	private ArrayList<Integer> m_seenPillMemory = new ArrayList<Integer>(); //memory of which pills were seen
-	private ArrayList<GHOST>   m_seenGhostsMemory = new ArrayList<GHOST>(); //memory of which ghosts were seen (last known position, updated on sight)
-	private ArrayList<Integer> m_ghostPositionList = new ArrayList<Integer>(); 
-	
 	
 	private boolean m_memoryInitialized;
 	private boolean m_levelChanged;
 	private int m_levelIndex;
+	public  String lastStrategyUsed;
 	
-	public Memory(){m_memoryInitialized = false;}
+	public Memory(){m_memoryInitialized = false; lastStrategyUsed = "";}
 	private void initializeMemory(Game game, int current)
 	{
 		if(m_levelIndex != game.getCurrentLevel())
@@ -31,8 +26,8 @@ public class Memory
 		m_memoryInitialized = true;
 		initStillAvailablePowerPills(game, current);
 		initStillAvailablePills(game, current);
-		initLastSeenGhosts(game, current);
 	}
+	
 	
 	public void updateMemory(Game game, int current)
 	{
@@ -41,7 +36,6 @@ public class Memory
 			initializeMemory(game, current);
 		updateStillAvailablePowerPills(game, current);
 		updateStillAvailablePills(game, current);
-		updateLastSeenGhosts(game, current);
 	}
 	
 	private void updateStillAvailablePowerPills(Game game, int current)
@@ -67,7 +61,6 @@ public class Memory
 				if(stillAvail == false)
 				{
 					pillsToRemove.add(pill);
-					
 				}
 			}
 			for(int pillToRemove : pillsToRemove)
@@ -75,14 +68,6 @@ public class Memory
 				m_stillAvailablePills.remove(new Integer(pillToRemove));
 			}
 			
-		}
-	}
-	
-	private void updateLastSeenGhosts(Game game, int current)
-	{
-		for (GHOST ghost : GHOST.values()) {
-			if (game.getGhostCurrentNodeIndex(ghost)>-1 && !m_seenGhostsMemory.contains(ghost))
-				m_seenGhostsMemory.add(ghost);
 		}
 	}
 	
@@ -95,16 +80,6 @@ public class Memory
 	public final ArrayList<Integer> getStillAvailablePills()
 	{
 		return m_stillAvailablePills;
-	}
-	//GETTER
-	public final ArrayList<Integer> getLastKnownGhostPositions(Game game)
-	{
-    	for(GHOST ghost : m_seenGhostsMemory)
-    	{
-			if (game.getGhostCurrentNodeIndex(ghost)>-1 && m_seenGhostsMemory.contains(ghost))
-				m_ghostPositionList.set(m_seenGhostsMemory.indexOf(ghost), game.getGhostCurrentNodeIndex(ghost));
-    	}
-		return m_ghostPositionList;
 	}
 	
 	//INITIALIZERS
@@ -124,15 +99,6 @@ public class Memory
     	for(int index : pillIndizes)
     	{
     		m_stillAvailablePills.add(index);
-    	}
-	}
-	private void initLastSeenGhosts(Game game, int current)
-	{
-		m_seenGhostsMemory = new ArrayList<GHOST>();
-		m_ghostPositionList = new ArrayList<Integer>();
-    	for(GHOST ghost : GHOST.values())
-    	{
-    		m_ghostPositionList.add(game.getGhostInitialNodeIndex());
     	}
 	}
 }

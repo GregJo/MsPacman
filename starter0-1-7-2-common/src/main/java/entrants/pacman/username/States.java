@@ -57,9 +57,8 @@ enum KIND_OF_LEVEL_TILE implements stateEnum{
 ////////////////////ENUMS DESCRIBING WHAT MS.PACMAN SEES ///////////////////////////////////
 enum NUMBER_SEEN_GHOSTS implements stateEnum{
 	   seeingNoGhost, seeingOneGhost, seeingTwoGhost, seeingThreeGhost, seeingFourGhost;
-	 public static int ghostCounter = 0;
 	 public String getCurrentStateString(Game game, int current, Memory memory){
-		 ghostCounter = 0;
+		 int ghostCounter = 0;
 		   for(GHOST ghost : GHOST.values())
 		   {
 	  			if(game.getGhostCurrentNodeIndex(ghost) != -1)
