@@ -38,7 +38,11 @@ public MyPacMan()
 					   //new EatNearestAvailablePillStrategy(),
 					   //new EatFurthestAwayPowerPill(),
 					  // new EatFurthestAwayPill(),
-					   new RunCircle()
+					   //new RunCircle()
+					   //new GetRidOfGhost()
+					   //new RandomPatrolInRadiusAroundCenter()
+					   //new RunTowardsNearestKnownGhost()
+					   //new RunFromNearestGhost()
 			   )
 		);
 	   

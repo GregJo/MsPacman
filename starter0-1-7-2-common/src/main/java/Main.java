@@ -30,7 +30,7 @@ public class Main {
         controllers.put(GHOST.PINKY, new Pinky());
         controllers.put(GHOST.SUE, new Sue());
        
-       executor.runGameTimed(pacMan, new MASController(controllers), true);
+      executor.runGameTimed(pacMan, new MASController(controllers), true);
       //executor.runExperiment(pacMan, new MASController(controllers), 1, "", 4000);
        
     }
