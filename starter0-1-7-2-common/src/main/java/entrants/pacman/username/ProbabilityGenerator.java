@@ -42,7 +42,7 @@ public class ProbabilityGenerator {
 		   for(ProbabilityByState prob_by_state : getProbabilityByStateList())
 		   {
 			   if(prob_by_state.m_stateString.equals(currentStateString)){
-				   return prob_by_state.m_probability;
+				   return prob_by_state.getProbability();
 			   }
 		   }
 		   return new PROBABILITY(0);

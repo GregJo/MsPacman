@@ -59,19 +59,15 @@ class StaticFunctions{
 	  static int[] getShortestPathToNearestObject(Game game, int current, int[] indicesOfObject)
 	  {
 		  int[] shortestPath = new int[0];
-	    	//System.out.println("");
+	    
 	    	for(int objectIndex : indicesOfObject)
 	    	{
-	    	//	System.out.println("index: "+objectIndex);
 	    		int[] path = game.getShortestPath(current, objectIndex);
-	    		//System.out.println("pathLength: "+path.length);
 	    		if(path.length < shortestPath.length || shortestPath.length == 0)
 	    		{
-	    			//System.out.println("path set as new shortest path");
 	    			shortestPath = path;
 	    		}
 	    	}
-	    	//System.out.println("Shortest path chosen: "+shortestPath.length);
 	    	return shortestPath;
 	  }
 	  
@@ -88,22 +84,32 @@ class StaticFunctions{
 	    	}
 	    	return longestPath;
 	  }
-	  
+	  static MOVE CornerRoutine(Game game, int current, ArrayList<MOVE> possibleMovesList)
+	  {
+		  return CornerRoutine(game, current, possibleMovesList, game.getPacmanLastMoveMade());
+	  }
 	  static MOVE CornerRoutine(Game game, int current, MOVE[] possibleMovesArray)
 	   {
 		  ArrayList<MOVE> possibleMovesList = new ArrayList<MOVE>();
 		  possibleMovesList.addAll(Arrays.asList(possibleMovesArray)); 
-		  return  CornerRoutine(game, current, possibleMovesList);
+		  return  CornerRoutine(game, current, possibleMovesList, game.getPacmanLastMoveMade());
 	   }
-	  static MOVE CornerRoutine(Game game, int current, ArrayList<MOVE> possibleMovesList)
+	  static MOVE CornerRoutine(Game game, int current, MOVE[] possibleMovesArray, MOVE lastMove)
+	   {
+		  ArrayList<MOVE> possibleMovesList = new ArrayList<MOVE>();
+		  possibleMovesList.addAll(Arrays.asList(possibleMovesArray)); 
+		  return  CornerRoutine(game, current, possibleMovesList, lastMove);
+	   }
+	 
+	  static MOVE CornerRoutine(Game game, int current, ArrayList<MOVE> possibleMovesList, MOVE lastMove)
 	   {
 		 if(game.isJunction(current))
 			  return null;
-	   if (!possibleMovesList.contains(game.getPacmanLastMoveMade())) 
+	   if (!possibleMovesList.contains(lastMove)) 
 	   {
 	    MOVE cornerMove = null;
 	    for (MOVE move : possibleMovesList) {
-	     if (move != game.getPacmanLastMoveMade().opposite()) {
+	     if (move != lastMove.opposite()) {
 	      cornerMove = move;
 	     }
 	    }
@@ -113,7 +119,6 @@ class StaticFunctions{
 	   }
 	  static boolean isMovePossibleAtNode(Game game, int nodeIndex, MOVE move)
 	  {
-		  boolean found = false;
 		  for( MOVE m : game.getPossibleMoves(nodeIndex))
 		  {
 			  if(m == move)
@@ -237,7 +242,6 @@ class EatNearestAvailablePillStrategy implements Strategy
 	*/
 	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
 	{
-		System.out.println("Pills left: "+memory.getStillAvailablePills().size());
 		return StaticFunctions.getMoveToNearestObject(game, current, memory.getStillAvailablePills());
 	}
 
@@ -256,8 +260,6 @@ class GetRidOfGhost implements Strategy
 		MOVE move = null;
 		
 		ArrayList<Integer> ghostPosList = memory.getLastKnownGhostPositions(game);
-		
-		System.out.println("ghostPosList: " + ghostPosList.toString());
 		
 		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
 		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
@@ -540,9 +542,11 @@ class RunCircle implements Strategy
 		 int moveNumber = rand.nextInt(game.getPossibleMoves(current).length);
 		 MOVE direction = game.getPossibleMoves(current)[moveNumber];
 		 int simulatedCurrent =  game.getNeighbour(current, direction);
+		 
 		 while(!game.isJunction(simulatedCurrent))
 		 {
-			MOVE cornerMove = StaticFunctions.CornerRoutine(game, simulatedCurrent, game.getPossibleMoves(simulatedCurrent));
+			 
+			MOVE cornerMove = StaticFunctions.CornerRoutine(game, simulatedCurrent, game.getPossibleMoves(simulatedCurrent), direction);
 			if(cornerMove != null)
 			{
 				simulatedCurrent = game.getNeighbour(simulatedCurrent, cornerMove);

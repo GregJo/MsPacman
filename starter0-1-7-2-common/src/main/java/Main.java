@@ -30,14 +30,14 @@ public class Main {
         controllers.put(GHOST.PINKY, new Pinky());
         controllers.put(GHOST.SUE, new Sue());
        
-      executor.runGameTimed(pacMan, new MASController(controllers), true);
-      //executor.runExperiment(pacMan, new MASController(controllers), 1, "", 4000);
+      //executor.runGameTimed(pacMan, new MASController(controllers), true);
+      executor.runExperiment(pacMan, new MASController(controllers), 1, "", 4000);
        
     }
     
     public static void main(String[] args) {
-    	int numberGamesPerPacMan = 1;
-    	int numberOfDifferentPacMans =1;
+    	int numberGamesPerPacMan = 100;
+    	int numberOfDifferentPacMans =100;
     	
     	MyPacMan[] pacMans = new MyPacMan[numberOfDifferentPacMans];
     	int[] all_fitness = new int[numberOfDifferentPacMans];
@@ -49,8 +49,9 @@ public class Main {
     		{
     			//System.out.println("Pacman #"+i+", game #"+j+" started");
     			notMain(new String[0], current_pacMan);
-    		//	System.out.println("fitness for this game: "+newFitness);
-    			//fitness += newFitness; 
+    			
+    			//System.out.println("fitness for this game: "+newFitness);
+    			fitness += current_pacMan.fitness; 
     			ArrayList<ProbabilityByState> probs = current_pacMan.getProbabilities();
     			current_pacMan = new MyPacMan();
     			current_pacMan.setProbabilities(probs);

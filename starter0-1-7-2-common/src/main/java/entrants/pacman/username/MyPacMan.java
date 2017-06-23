@@ -20,29 +20,24 @@ public class MyPacMan extends PacmanController {
    private Memory memory = new Memory();
    private ProbabilityGenerator probabilityGenerator;
    private ArrayList<Strategy> strategyList;
-   //private ArrayList<Integer> pillMemory = new ArrayList<Integer>();
-   //private ArrayList<MOVE> moveMemory = new ArrayList<MOVE>();
-   //private int[] ghostMemory = new int[4];
-   //private ArrayList<GHOST> edibleGhostsList = new ArrayList<GHOST>();
-   //private ArrayList<GHOST> visibleGhostsList = new ArrayList<GHOST>();
-
+   public int fitness = 0;
 
    @SuppressWarnings("unchecked")
 public MyPacMan()
    {
 	   strategyList = new ArrayList<>(
 			   Arrays.asList(
-//					   new WaitStrategy(),
-//					   new EatNearestPowerPillStrategy(),
-//					   new EatGhostStrategy(),
-					   //new EatNearestAvailablePillStrategy(),
-					   //new EatFurthestAwayPowerPill(),
-					  // new EatFurthestAwayPill(),
+					   new WaitStrategy(),
+					   new EatNearestPowerPillStrategy(),
+					   new EatGhostStrategy(),
+					   new EatNearestAvailablePillStrategy(),
+					   new EatFurthestAwayPowerPill(),
+					   new EatFurthestAwayPill(),
 					   //new RunCircle()
-					   //new GetRidOfGhost()
-					   //new RandomPatrolInRadiusAroundCenter()
-					   //new RunTowardsNearestKnownGhost()
-					   //new RunFromNearestGhost()
+					   new GetRidOfGhost(),
+					   new RandomPatrolInRadiusAroundCenter(),
+					   new RunTowardsNearestKnownGhost(),
+					   new RunFromNearestGhost()
 			   )
 		);
 	   
@@ -79,6 +74,7 @@ public MyPacMan()
     	
     	int rouletteStrategyNumber = probabilityGenerator.geStrategyNumberToUse(game, current, memory);
     	 MOVE move = strategyList.get(rouletteStrategyNumber).getStrategyMove(game, current, memory);
+    	 fitness = game.getScore();
     	return move;
     }
 }
