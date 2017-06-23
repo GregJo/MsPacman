@@ -1,8 +1,6 @@
 package entrants.pacman.username;
 import pacman.game.Game;
-import pacman.game.GameView;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -12,6 +10,7 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 
 class StaticFunctions{
+	static ArrayList<MOVE> moveArray = new ArrayList<MOVE>();
 	static int[] convertIntegerListToArray(ArrayList<Integer> list)
 	{
 		int[] listAsArray = new int[list.size()];
@@ -29,12 +28,6 @@ class StaticFunctions{
 		return getMoveToNearestObject(game, current, indizesAsArray);
 	  }
 	
-	static MOVE getMoveToFurthestObject(Game game, int current, ArrayList<Integer> indicesOfObjectList)
-	  {
-		int[] indizesAsArray = convertIntegerListToArray(indicesOfObjectList);
-		return getMoveToFurthestObject(game, current, indizesAsArray);
-	  }
-	
 	  static MOVE getMoveToNearestObject(Game game, int current, int[] indicesOfObject)
 	  {
 		  int[] shortestPath = getShortestPathToNearestObject(game, current, indicesOfObject);
@@ -45,111 +38,57 @@ class StaticFunctions{
 	         return null;
 	   }
 	  
-	  static MOVE getMoveToFurthestObject(Game game, int current, int[] indicesOfObject)
-	  {
-		  int[] longestPath = getPathToFurthestObject(game, current, indicesOfObject);
-	    	if(longestPath.length > 0)
-	    	{
-	    		return game.getNextMoveTowardsTarget(current,longestPath[0],DM.PATH);
-	    	}    	
-	         return null;
-	   }
-	  
 	  static int[] getShortestPathToNearestObject(Game game, int current, int[] indicesOfObject)
 	  {
 		  int[] shortestPath = new int[0];
+	    	//System.out.println("");
 	    	for(int objectIndex : indicesOfObject)
 	    	{
+	    	//	System.out.println("index: "+objectIndex);
 	    		int[] path = game.getShortestPath(current, objectIndex);
+	    		//System.out.println("pathLength: "+path.length);
 	    		if(path.length < shortestPath.length || shortestPath.length == 0)
 	    		{
+	    			//System.out.println("path set as new shortest path");
 	    			shortestPath = path;
 	    		}
 	    	}
+	    	//System.out.println("Shortest path chosen: "+shortestPath.length);
 	    	return shortestPath;
 	  }
 	  
-	  static int[] getPathToFurthestObject(Game game, int current, int[] indicesOfObject)
-	  {
-		  int[] longestPath = new int[0];
-	    	for(int objectIndex : indicesOfObject)
-	    	{
-	    		int[] path = game.getShortestPath(current, objectIndex);
-	    		if(path.length > longestPath.length || longestPath.length == 0)
-	    		{
-	    			longestPath = path;
-	    		}
-	    	}
-	    	return longestPath;
-	  }
-	  
-	  static MOVE CornerRoutine(Game game, int current, MOVE[] possibleMovesArray)
-	   {
-		  ArrayList<MOVE> possibleMovesList = new ArrayList<MOVE>();
-		  possibleMovesList.addAll(Arrays.asList(possibleMovesArray)); 
-		  return  CornerRoutine(game, current, possibleMovesList);
-	   }
 	  static MOVE CornerRoutine(Game game, int current, ArrayList<MOVE> possibleMovesList)
-	   {
-		 if(game.isJunction(current))
-			  return null;
-	   if (!possibleMovesList.contains(game.getPacmanLastMoveMade())) 
-	   {
-	    MOVE cornerMove = null;
-	    for (MOVE move : possibleMovesList) {
-	     if (move != game.getPacmanLastMoveMade().opposite()) {
-	      cornerMove = move;
-	     }
-	    }
-	    return cornerMove;
-	   }
-	   return null;
-	   }
-	  static boolean isMovePossibleAtNode(Game game, int nodeIndex, MOVE move)
 	  {
-		  boolean found = false;
-		  for( MOVE m : game.getPossibleMoves(nodeIndex))
-		  {
-			  if(m == move)
-				  return true;
-		  }
-		  return false;
+			if (!possibleMovesList.contains(game.getPacmanLastMoveMade())) 
+			{
+				MOVE cornerMove = null;
+				for (MOVE move : possibleMovesList) {
+					if (move != game.getPacmanLastMoveMade().opposite()) {
+						cornerMove = move;
+					}
+				}
+				return cornerMove;
+			}
+			return null;
 	  }
-	  static MOVE getMoveFromPacmanPointOfView(Game game, MOVE relativeMove)
-	  {
-		 MOVE lastMove =  game.getPacmanLastMoveMade();
-		 if(relativeMove == MOVE.UP)
-			 return lastMove;
-		 if(relativeMove == MOVE.DOWN)
-			 return lastMove.opposite();
-		 if(lastMove == MOVE.UP)
-			 return relativeMove;
-		 if(lastMove == MOVE.DOWN)
-			 return relativeMove.opposite();
-		 if(lastMove == MOVE.LEFT)
-		 {
-			 if(relativeMove == MOVE.LEFT)
-				 return MOVE.DOWN;
-			 if(relativeMove == MOVE.RIGHT)
-				 return MOVE.UP;
-		 }
-		 if(lastMove == MOVE.RIGHT)
-		 {
-			 if(relativeMove == MOVE.LEFT)
-				 return MOVE.UP;
-			 if(relativeMove == MOVE.RIGHT)
-				 return MOVE.DOWN;
-		 }			 
-		  return null;
-	  }
-	  
 }
 interface Strategy {
+	
 	default public MOVE getStrategyMove(Game game, int current, Memory memory)
 	{
 		MOVE move = _getStrategyMove(game, current, memory);
 		updateMemoryBeforeReturn(game, current, memory);
-		memory.lastStrategyUsed = getStrategyName();
+//		if(StaticFunctions.moveArray.size() > 2){
+//			MOVE lastMove = StaticFunctions.moveArray.get(StaticFunctions.moveArray.size()-1);
+//			MOVE secondLastMove = StaticFunctions.moveArray.get(StaticFunctions.moveArray.size()-2);
+//			MOVE thirdlLastMove = StaticFunctions.moveArray.get(StaticFunctions.moveArray.size()-3);
+//			if(lastMove == secondLastMove.opposite() && lastMove == thirdlLastMove)
+//			{
+//				System.out.println("");
+//			}
+//		}
+		StaticFunctions.moveArray.add(move);
+		//System.out.println("Move returned: "+move);
 		return move;
 		
 	};
@@ -230,6 +169,7 @@ class EatNearestAvailablePillStrategy implements Strategy
 	*/
 	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
 	{
+		System.out.println("Pills left: "+memory.getStillAvailablePills().size());
 		return StaticFunctions.getMoveToNearestObject(game, current, memory.getStillAvailablePills());
 	}
 
@@ -238,155 +178,171 @@ class EatNearestAvailablePillStrategy implements Strategy
 		return "EatNearestAvailablePill";
 	}
 }
-class EatFurthestAwayPowerPill implements Strategy
+
+class GetRidOfGhost implements Strategy
 {
-	public EatFurthestAwayPowerPill(){}
 
 	@Override
-	/*@brief Goes to furthest edible powerPill.
-	*/
+	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
+		// TODO Auto-generated method stub
+		MOVE move = null;
+		
+		ArrayList<Integer> ghostPosList = memory.getLastKnownGhostPositions(game);
+		
+		System.out.println("ghostPosList: " + ghostPosList.toString());
+		
+		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
+		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
+		
+		move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
+		if(move == null)
+		{
+			if(game.isJunction(current)){
+				Random rand = new Random();
+				possibleMovesList.remove(game.getPacmanLastMoveMade().opposite());
+				if (NUMBER_SEEN_GHOSTS.ghostCounter > 1)
+					possibleMovesList.remove(game.getPacmanLastMoveMade());
+				move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
+			}else 
+			{
+				if (NUMBER_SEEN_GHOSTS.ghostCounter != 0) {
+					MOVE moveTowardsGhost = StaticFunctions.getMoveToNearestObject(game, current, ghostPosList);
+					if (possibleMovesList.contains(moveTowardsGhost.opposite()))
+						move = moveTowardsGhost.opposite();
+				} else
+					move = game.getPacmanLastMoveMade();
+			}
+		}
+		return move;
+	}
+	
+	@Override
+	public String getStrategyName() {
+		// TODO Auto-generated method stub
+		return "GetRidOffGhost";
+	}
+	
+}
+
+class RunFromNearestGhost implements Strategy
+{
+	@Override
 	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
 	{
-		//check if pill still exists
-		if(pillPosLastTime != -1)
+		MOVE move = null;
+		
+		ArrayList<Integer> ghostPosList = memory.getLastKnownGhostPositions(game);
+		
+		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
+		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
+		
+		move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
+		
+		if(move == null)
 		{
-			boolean found = false;
-			for(int pill : memory.getStillAvailablePowerPills())
+			if (NUMBER_SEEN_GHOSTS.ghostCounter != 0) {
+				MOVE moveTowardsGhost = StaticFunctions.getMoveToNearestObject(game, current, ghostPosList);
+				if (possibleMovesList.contains(moveTowardsGhost.opposite()))
+					move = moveTowardsGhost.opposite();
+			} else if(game.isJunction(current)){
+				Random rand = new Random();
+				possibleMovesList.remove(game.getPacmanLastMoveMade().opposite());
+				move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
+			} else if(possibleMovesList.contains(game.getPacmanLastMoveMade()))
+				move = game.getPacmanLastMoveMade();
+		}
+		return move;
+	}
+
+	@Override
+	public String getStrategyName() {
+		// TODO Auto-generated method stub
+		return "RunFromNearestGhost";
+	}
+}
+
+class RunTowardsNearestKnownGhost implements Strategy
+{
+	@Override
+	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
+		// TODO Auto-generated method stub
+		MOVE move = null;
+		
+		ArrayList<Integer> ghostPosList = memory.getLastKnownGhostPositions(game);
+		
+		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
+		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
+		
+		move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
+		
+		if (move == null) {
+			if (NUMBER_SEEN_GHOSTS.ghostCounter != 0) 
 			{
-				
-				if(pill == pillPosLastTime)
-				{
-					found = true;
-					break;
+				move = StaticFunctions.getMoveToNearestObject(game, current, ghostPosList);
+			} else if(possibleMovesList.contains(game.getPacmanLastMoveMade()))
+				move = game.getPacmanLastMoveMade();
+		}
+		
+		return move;
+	}
+
+	@Override
+	public String getStrategyName() {
+		// TODO Auto-generated method stub
+		return "RunTowardsNearestKnownGhost";
+	}
+}
+
+class RandomPatrolInRadiusAroundCenter implements Strategy
+{
+	private int center = Integer.MIN_VALUE;
+	private final int RADIUS = 30;
+	private int radius = RADIUS;
+	@Override
+	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
+		// TODO Auto-generated method stub
+		if (center == Integer.MIN_VALUE) {
+			center = current;
+		}
+		if(center==current)
+		{
+			radius=RADIUS;
+		}
+		
+		MOVE move = null;
+		
+		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
+		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
+		
+		//if(game.getShortestPathDistance(current, center) < radius)
+		if(game.getEuclideanDistance(current, center) < radius)
+		{
+			move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
+			//System.out.println("Move: " + move.name());
+			if (move == null) {
+				if(game.isJunction(current)){
+					Random rand = new Random();
+					possibleMovesList.remove(game.getPacmanLastMoveMade().opposite());
+					move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
+					//System.out.println("Move: " + move.name());
+				} else if(possibleMovesList.contains(game.getPacmanLastMoveMade())){
+					move = game.getPacmanLastMoveMade();
+					//System.out.println("Move: " + move.name());
 				}
 			}
-			if(found == false)
-				pillPosLastTime = -1;
+		} else
+		{
+			radius = 0;
+			move = game.getNextMoveTowardsTarget(current, center, DM.PATH);
 		}
 		
-		//pacman didnt change strategies and already chose a pill to eat
-		if(memory.lastStrategyUsed.equals(getStrategyName()) && pillPosLastTime  != -1)
-		{
-			int[] index = new int[1];
-			index[0] = pillPosLastTime;
-			return StaticFunctions.getMoveToNearestObject(game, current, index);
-		}
-		int[] indizesAsArray = StaticFunctions.convertIntegerListToArray(memory.getStillAvailablePowerPills());
-		int[] longestPath = StaticFunctions.getPathToFurthestObject(game, current, indizesAsArray);
-		if(longestPath.length > 0)
-    	{
-			pillPosLastTime = longestPath[longestPath.length - 1];
-    		return game.getNextMoveTowardsTarget(current,longestPath[0],DM.PATH);
-    	}    	
-         return null;
+		return move;
 	}
 
 	@Override
 	public String getStrategyName() {
-		return "EatFurthestAwayPowerPill";
+		// TODO Auto-generated method stub
+		return "RandomPatrolInRadiusAroundCenter";
 	}
-	private static int pillPosLastTime = -1;
-}
-class EatFurthestAwayPill implements Strategy
-{
-	public EatFurthestAwayPill(){}
-
-	@Override
-	/*@brief Goes to furthest edible pill.
-	*/
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
-	{
-		//check if pill still exists
-		if(pillPosLastTime != -1)
-		{
-			boolean found = false;
-			for(int pill : memory.getStillAvailablePills())
-			{
-				
-				if(pill == pillPosLastTime)
-				{
-					found = true;
-					break;
-				}
-			}
-			if(found == false)
-				pillPosLastTime = -1;
-		}
-		
-		//pacman didnt change strategies and already chose a pill to eat
-		if(memory.lastStrategyUsed.equals(getStrategyName()) && pillPosLastTime  != -1)
-		{
-			int[] index = new int[1];
-			index[0] = pillPosLastTime;
-			return StaticFunctions.getMoveToNearestObject(game, current, index);
-		}
-		int[] indizesAsArray = StaticFunctions.convertIntegerListToArray(memory.getStillAvailablePills());
-		int[] longestPath = StaticFunctions.getPathToFurthestObject(game, current, indizesAsArray);
-		if(longestPath.length > 0)
-    	{
-			pillPosLastTime = longestPath[longestPath.length - 1];
-    		return game.getNextMoveTowardsTarget(current,longestPath[0],DM.PATH);
-    	}    	
-         return null;
-	}
-
-	@Override
-	public String getStrategyName() {
-		return "EatFurthestAwayPill";
-	}
-	private static int pillPosLastTime = -1;
-}
-class RunCircle implements Strategy
-{
-	public RunCircle(){}
-
-	@Override
-	/*@brief Goes to furthest edible pill.
-	*/
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
-	{
-
-		//pacman didnt change strategies and already chose to run a circle
-		if(memory.lastStrategyUsed.equals(getStrategyName()))
-		{
-			MOVE cornerMove = StaticFunctions.CornerRoutine(game, current, game.getPossibleMoves(current));
-			if(cornerMove != null)
-			 return cornerMove;
-			if(game.isJunction(current))
-				return StaticFunctions.getMoveFromPacmanPointOfView(game, moveLastTime);
-			return game.getPacmanLastMoveMade();
-		}
-			
-		//first select random direction
-		// then follow that direction until a wild junction appears
-		// At the junction decide if pacman wants to run in clockwise or counterclowise direction
-		 int moveNumber = rand.nextInt(game.getPossibleMoves(current).length);
-		 MOVE direction = game.getPossibleMoves(current)[moveNumber];
-		 int simulatedCurrent =  game.getNeighbour(current, direction);
-		 while(!game.isJunction(simulatedCurrent))
-		 {
-			MOVE cornerMove = StaticFunctions.CornerRoutine(game, simulatedCurrent, game.getPossibleMoves(simulatedCurrent));
-			if(cornerMove != null)
-			{
-				simulatedCurrent = game.getNeighbour(simulatedCurrent, cornerMove);
-				continue;
-			}
-			simulatedCurrent = game.getNeighbour(simulatedCurrent, direction);	
-		 }
-		 int clockWiseDirection = rand.nextInt(2);
-		 moveLastTime = (clockWiseDirection == 0) ? MOVE.LEFT : MOVE.RIGHT;
-		
-		 
-		 //check if planned move is even possible
-		 if(!StaticFunctions.isMovePossibleAtNode(game, simulatedCurrent, moveLastTime))
-			 moveLastTime = moveLastTime.opposite();
-		 return direction;
-	}
-
-	@Override
-	public String getStrategyName() {
-		return "RunCircle";
-	}
-	private static MOVE moveLastTime = null;
-	private Random rand  = new Random();
+	
 }
