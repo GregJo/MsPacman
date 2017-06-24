@@ -24,7 +24,7 @@ public class ProbabilityGenerator {
 	public final ArrayList<ProbabilityByState> getProbabilityByStateList(){
 		return m_probability_by_state_list;
 	}
-	 
+
 	private String getCurrentStateString(Game game, int current, Memory memory)
 	{
 		String stateString = "";

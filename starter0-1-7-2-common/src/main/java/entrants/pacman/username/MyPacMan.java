@@ -34,10 +34,10 @@ public MyPacMan()
 					   new EatFurthestAwayPowerPill(),
 					   new EatFurthestAwayPill(),
 					   //new RunCircle()
-					   new GetRidOfGhost(),
+					   //new GetRidOfGhost(),
 					   new RandomPatrolInRadiusAroundCenter(),
-					   new RunTowardsNearestKnownGhost(),
-					   new RunFromNearestGhost()
+					   new RunTowardsNearestKnownGhost()
+					   //new RunFromNearestGhost()
 			   )
 		);
 	   
