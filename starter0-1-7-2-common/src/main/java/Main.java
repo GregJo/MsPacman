@@ -39,9 +39,9 @@ public class Main {
     
     public static void main(String[] args) {
     	int numberGamesPerPacMan = 10;
-    	int numberOfDifferentPacMans = 10;
-    	double mutationRate = 0.15;
-    	double mutationStepSizeUpperLimit = 0.55;
+    	int numberOfDifferentPacMans = 20;
+    	double mutationRate = 0.05;
+    	double mutationStepSizeUpperLimit = 0.25;
     	final int runs = 10;
     	
     	ArrayList<MyPacMan> pacMans = new ArrayList<MyPacMan>();

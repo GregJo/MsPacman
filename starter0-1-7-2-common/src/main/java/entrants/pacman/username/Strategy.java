@@ -275,13 +275,52 @@ class GetRidOfGhost implements Strategy
 				move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
 			}else 
 			{
-				if (NUMBER_SEEN_GHOSTS.ghostCounter != 0) {
+				if (NUMBER_SEEN_GHOSTS.ghostCounter > 0) {
 					MOVE moveTowardsGhost = StaticFunctions.getMoveToNearestObject(game, current, ghostPosList);
-					if (possibleMovesList.contains(moveTowardsGhost.opposite()))
-						move = moveTowardsGhost.opposite();
+					if (moveTowardsGhost != null) {
+						if (possibleMovesList.contains(moveTowardsGhost.opposite()))
+							move = moveTowardsGhost.opposite();
+					}
+
 				} else
 					move = game.getPacmanLastMoveMade();
 			}
+		}
+		return move;
+	}
+	
+	@Override
+	public String getStrategyName() {
+		// TODO Auto-generated method stub
+		return "GetRidOffGhost";
+	}
+	
+}
+
+class GetRidOfGhostFinal implements Strategy
+{
+
+	@Override
+	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
+		// TODO Auto-generated method stub
+		MOVE move = null;
+		
+		ArrayList<Integer> ghostPosList = memory.getLastKnownGhostPositions(game);
+		
+		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
+		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
+		
+		move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
+		if(move == null)
+		{
+			if(game.isJunction(current)){
+				Random rand = new Random();
+				possibleMovesList.remove(game.getPacmanLastMoveMade().opposite());
+				if (NUMBER_SEEN_GHOSTS.ghostCounter > 1)
+					possibleMovesList.remove(game.getPacmanLastMoveMade());
+				move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
+			}else
+				move = game.getPacmanLastMoveMade();
 		}
 		return move;
 	}
@@ -312,13 +351,50 @@ class RunFromNearestGhost implements Strategy
 		{
 			if (NUMBER_SEEN_GHOSTS.ghostCounter != 0) {
 				MOVE moveTowardsGhost = StaticFunctions.getMoveToNearestObject(game, current, ghostPosList);
-				if (possibleMovesList.contains(moveTowardsGhost.opposite()))
-					move = moveTowardsGhost.opposite();
+				if (moveTowardsGhost != null) {
+					if (possibleMovesList.contains(moveTowardsGhost.opposite()))
+						move = moveTowardsGhost.opposite();
+				}
 			} else if(game.isJunction(current)){
 				Random rand = new Random();
 				possibleMovesList.remove(game.getPacmanLastMoveMade().opposite());
 				move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
 			} else if(possibleMovesList.contains(game.getPacmanLastMoveMade()))
+				move = game.getPacmanLastMoveMade();
+		}
+		return move;
+	}
+
+	@Override
+	public String getStrategyName() {
+		// TODO Auto-generated method stub
+		return "RunFromNearestGhost";
+	}
+}
+
+class RunFromNearestGhostFinal implements Strategy
+{
+	@Override
+	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
+	{
+		MOVE move = null;
+		
+		ArrayList<Integer> ghostPosList = memory.getLastKnownGhostPositions(game);
+		
+		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
+		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
+		
+		move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
+		
+		if(move == null)
+		{
+			if (NUMBER_SEEN_GHOSTS.ghostCounter != 0) {
+				MOVE moveTowardsGhost = StaticFunctions.getMoveToNearestObject(game, current, ghostPosList);
+				if (moveTowardsGhost != null) {
+					if (possibleMovesList.contains(moveTowardsGhost.opposite()))
+						move = moveTowardsGhost.opposite();
+				}
+			}
 				move = game.getPacmanLastMoveMade();
 		}
 		return move;
