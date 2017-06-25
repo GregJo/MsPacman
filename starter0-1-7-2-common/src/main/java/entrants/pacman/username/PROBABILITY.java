@@ -33,10 +33,19 @@ public class PROBABILITY {
 		for (double probability : probabilites) {
 			probabilitySum += probability;
 		}
-		for (double probability : probabilites) {
-			probability /= probabilitySum;
-			probability *= 100.0;
+		
+		//System.out.println("Probability sum before: " + probabilitySum);
+		
+		for (int i = 0;i<probabilites.length;i++) {
+			probabilites[i] /= probabilitySum;
+			//probabilites[i] *= 100.0;
 		}
+		
+		probabilitySum = 0;
+		for (double probability : probabilites) {
+			probabilitySum += probability;
+		}
+		//System.out.println("Probability sum after: " + probabilitySum);
 	}
 	public int getNumberOfProbabilities()
 	{

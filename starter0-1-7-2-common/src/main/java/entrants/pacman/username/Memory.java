@@ -91,6 +91,10 @@ public class Memory
 				}
 			}
 		}
+		if(game.wasPacManEaten())
+		{
+			initLastSeenGhosts(game, current);
+		}
 	}
 	
 	//GETTER

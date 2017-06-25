@@ -38,11 +38,11 @@ public class Main {
     }
     
     public static void main(String[] args) {
-    	int numberGamesPerPacMan = 10;
-    	int numberOfDifferentPacMans = 20;
-    	double mutationRate = 0.05;
-    	double mutationStepSizeUpperLimit = 0.25;
-    	final int runs = 10;
+    	int numberGamesPerPacMan = 15;
+    	int numberOfDifferentPacMans = 15;
+    	double mutationRate = 0.15;
+    	double mutationStepSizeUpperLimit = 0.35;
+    	final int runs = 5;
     	
     	ArrayList<MyPacMan> pacMans = new ArrayList<MyPacMan>();
     	
@@ -59,10 +59,14 @@ public class Main {
 			
 			pacMans = generateNextGeneration(nFittestPacMans, fitnessSum);
 			pacMans.addAll(0, nFittestPacMans);
-			for (MyPacMan pacMan : pacMans) {
-				pacMan = mutate(pacMan, mutationRate, mutationStepSizeUpperLimit);
+			for (int j = 0; j < pacMans.size(); j++) {
+				MyPacMan pacMan = new MyPacMan();
+				pacMan.setProbabilities(mutate(pacMans.get(j), mutationRate, mutationStepSizeUpperLimit).getProbabilities());
+				pacMans.set(j, pacMan);
 			}
 			
+	        //printStrategyProbabilities(nFittestPacMans);
+
     	}
         Executor executor = new Executor(true, true);
         EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
@@ -74,10 +78,21 @@ public class Main {
         
         MyPacMan pacMan = new MyPacMan();
         pacMan.setProbabilities(nFittestPacMans(pacMans.toArray(new MyPacMan[pacMans.size()]),1).get(0).getProbabilities());
+        //printStrategyProbabilities(pacMans);
         executor.runGameTimed(pacMan, new MASController(controllers), true);
-        System.out.flush();
       //executor.runExperiment(pacMan, new MASController(controllers), 1, "", 4000);
     }
+
+	private static void printStrategyProbabilities(ArrayList<MyPacMan> pacMans) {
+		for (int j = 0; j < pacMans.get(0).getProbabilities().size(); j++) {
+			System.out.println("State Name: " + pacMans.get(0).getProbabilities().get(j).m_stateString);
+			System.out.print("Best PacMan probabilities (No."+j+"):[");
+		    for (int k = 0; k < pacMans.get(0).getProbabilities().get(j).getProbability().getNumberOfProbabilities(); k++) {
+		        System.out.print(pacMans.get(0).getProbabilities().get(j).getProbability().getProbability(k)+", ");
+			}
+		    System.out.print("]\n\n");
+		}
+	}
 
 	private static ArrayList<MyPacMan> generateNextGeneration(ArrayList<MyPacMan> nFittestPacMans, int fitnessSum) {
 		Random rand = new Random();
