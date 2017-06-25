@@ -616,15 +616,15 @@ class RunCircle implements Strategy
 		// then follow that direction until a wild junction appears
 		// At the junction decide if pacman wants to run in clockwise or counterclowise direction
 		 int moveNumber = rand.nextInt(game.getPossibleMoves(current).length);
-		 MOVE direction = game.getPossibleMoves(current)[moveNumber];
+		 MOVE initialDirection = game.getPossibleMoves(current)[moveNumber];
+		 MOVE direction = initialDirection;
 		 int simulatedCurrent =  game.getNeighbour(current, direction);
-		 
 		 while(!game.isJunction(simulatedCurrent))
 		 {
-			 
 			MOVE cornerMove = StaticFunctions.CornerRoutine(game, simulatedCurrent, game.getPossibleMoves(simulatedCurrent), direction);
 			if(cornerMove != null)
 			{
+				direction = cornerMove;
 				simulatedCurrent = game.getNeighbour(simulatedCurrent, cornerMove);
 				continue;
 			}
@@ -637,7 +637,7 @@ class RunCircle implements Strategy
 		 //check if planned move is even possible
 		 if(!StaticFunctions.isMovePossibleAtNode(game, simulatedCurrent, moveLastTime))
 			 moveLastTime = moveLastTime.opposite();
-		 return direction;
+		 return initialDirection;
 	}
 
 	@Override
