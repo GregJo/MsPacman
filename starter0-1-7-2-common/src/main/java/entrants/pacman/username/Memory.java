@@ -83,7 +83,13 @@ public class Memory
 	{
 		for (GHOST ghost : GHOST.values()) {
 			if (game.getGhostCurrentNodeIndex(ghost)>-1 && !m_seenGhostsMemory.contains(ghost))
+			{
 				m_seenGhostsMemory.add(ghost);
+				if(game.wasGhostEaten(ghost))
+				{
+					m_ghostPositionList.set(m_seenGhostsMemory.indexOf(ghost), game.getGhostInitialNodeIndex());
+				}
+			}
 		}
 	}
 	
