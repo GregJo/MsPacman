@@ -22,7 +22,7 @@ public class Memory
 	private int m_levelIndex;
 	public  String lastStrategyUsed;
 	
-	public Memory(){m_memoryInitialized = false; lastStrategyUsed = "";}
+	public Memory(){m_memoryInitialized = false; lastStrategyUsed = "";m_levelIndex = 0;}
 	private void initializeMemory(Game game, int current)
 	{
 		if(m_levelIndex != game.getCurrentLevel())
