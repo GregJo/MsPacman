@@ -129,27 +129,9 @@ enum GHOST_DISTANCE_TO_POWERPILL implements stateEnum{
 		 
 		 //get shortest path to next powerpill for pacman and one of the visible Ghosts 
 		 ArrayList<Integer> powerPills =  memory.getStillAvailablePowerPills();
-		int[] shortestPathPacman = new int[0]; //will contain shortest path from pacman to nearest powerPill
-	    int[] shortestPathGhost = new int[0]; //will contain shortest path from ghost to nearest powerPill
-	    for(int powerPill : powerPills)
-	    {
-	    	//Check if current powerPill is nearer to pacman than previous powerpills
-	    	int[] pathPacman = game.getShortestPath(current, powerPill);
-	    	if(pathPacman.length < shortestPathPacman.length || shortestPathPacman.length == 0)
-	    	{
-	    		shortestPathPacman = pathPacman;
-	    	}
-	    	
-	    	//Check if current powerPill is nearer to visible ghost than previous powerpills
-	    	for(int ghostPos : positionGhosts)
-	    	{
-	    		int[] pathGhost = game.getShortestPath(ghostPos, powerPill);
-	    		if(pathGhost.length < shortestPathGhost.length || shortestPathGhost.length == 0)
-		    	{
-	    			shortestPathGhost = pathGhost;
-		    	}
-	    	}
-	    }
+		 
+	    int[]  shortestPathPacman = StaticFunctions.getShortestPathToNearestObject(game, current, StaticFunctions.convertIntegerListToArray(memory.getStillAvailablePowerPills()));
+	    int[]  shortestPathGhost = StaticFunctions.getShortestPathToNearestObject(game, current, StaticFunctions.convertIntegerListToArray(positionGhosts));
 	    
 	    //save path in case strategies can use them
 	    enumUsed = true;

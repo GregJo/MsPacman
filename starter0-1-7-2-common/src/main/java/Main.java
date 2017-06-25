@@ -71,8 +71,10 @@ public class Main {
         controllers.put(GHOST.BLINKY, new Blinky());
         controllers.put(GHOST.PINKY, new Pinky());
         controllers.put(GHOST.SUE, new Sue());
-       
-        executor.runGameTimed(nFittestPacMans(pacMans.toArray(new MyPacMan[pacMans.size()]),1).get(0), new MASController(controllers), true);
+        
+        MyPacMan pacMan = new MyPacMan();
+        pacMan.setProbabilities(nFittestPacMans(pacMans.toArray(new MyPacMan[pacMans.size()]),1).get(0).getProbabilities());
+        executor.runGameTimed(pacMan, new MASController(controllers), true);
         System.out.flush();
       //executor.runExperiment(pacMan, new MASController(controllers), 1, "", 4000);
     }
