@@ -1,8 +1,9 @@
 package entrants.pacman.username;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class PROBABILITY {
+public class PROBABILITY implements Serializable{
 	PROBABILITY(int numberStrategies) {
 		probabilites = new double[numberStrategies];
 		double[] temp = new double[numberStrategies];
