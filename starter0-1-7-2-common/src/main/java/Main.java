@@ -38,11 +38,11 @@ public class Main {
     }
     
     public static void main(String[] args) {
-    	int numberGamesPerPacMan = 15;
-    	int numberOfDifferentPacMans = 15;
-    	double mutationRate = 0.15;
-    	double mutationStepSizeUpperLimit = 0.35;
-    	final int runs = 5;
+    	int numberGamesPerPacMan = 10;
+    	int numberOfDifferentPacMans = 10;
+    	double mutationRate = 0.05;
+    	double mutationStepSizeUpperLimit = 0.05;
+    	final int runs = 20;
     	
     	ArrayList<MyPacMan> pacMans = new ArrayList<MyPacMan>();
     	
@@ -56,7 +56,7 @@ public class Main {
 			for (MyPacMan myPacMan : nFittestPacMans) {
 				fitnessSum += myPacMan.fitness;
 			}
-			
+			System.out.println("Durchschnittliche Fitness: "+fitnessSum/nFittestPacMans.size());
 			pacMans = generateNextGeneration(nFittestPacMans, fitnessSum);
 			pacMans.addAll(0, nFittestPacMans);
 			for (int j = 0; j < pacMans.size(); j++) {
