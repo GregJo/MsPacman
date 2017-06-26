@@ -12,7 +12,7 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 
 class StaticFunctions{
-	static ArrayList<MOVE> moveArray = new ArrayList<MOVE>();
+	//static ArrayList<MOVE> moveArray = new ArrayList<MOVE>();
 	static int[] convertIntegerListToArray(ArrayList<Integer> list)
 	{
 		int[] listAsArray = new int[list.size()];
@@ -540,7 +540,7 @@ class EatFurthestAwayPowerPill implements Strategy
 	public String getStrategyName() {
 		return "EatFurthestAwayPowerPill";
 	}
-	private static int pillPosLastTime = -1;
+	private int pillPosLastTime = -1;
 }
 class EatFurthestAwayPill implements Strategy
 {
@@ -589,7 +589,7 @@ class EatFurthestAwayPill implements Strategy
 	public String getStrategyName() {
 		return "EatFurthestAwayPill";
 	}
-	private static int pillPosLastTime = -1;
+	private int pillPosLastTime = -1;
 }
 class RunCircle implements Strategy
 {
@@ -644,6 +644,6 @@ class RunCircle implements Strategy
 	public String getStrategyName() {
 		return "RunCircle";
 	}
-	private static MOVE moveLastTime = null;
+	private MOVE moveLastTime = null;
 	private Random rand  = new Random();
 }

@@ -27,13 +27,13 @@ public MyPacMan()
    {
 	   strategyList = new ArrayList<>(
 			   Arrays.asList(
-					   new WaitStrategy(),
-					   new EatNearestPowerPillStrategy()
-					  /* new EatGhostStrategy(),
-					   new EatNearestAvailablePillStrategy(),
-					   new EatFurthestAwayPowerPill(),
-					   new EatFurthestAwayPill(),
-					   new RunCircle(),
+					   //new WaitStrategy(),
+					   //new EatNearestPowerPillStrategy()
+					  // new EatGhostStrategy(),
+					  // new EatNearestAvailablePillStrategy(),
+					  // new EatFurthestAwayPowerPill(),
+					   new EatFurthestAwayPill()
+					   /*new RunCircle(),
 					   new GetRidOfGhost(),
 					   new RandomPatrolInRadiusAroundCenter(),
 					   new RunTowardsNearestKnownGhost(),

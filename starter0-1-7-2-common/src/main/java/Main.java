@@ -42,11 +42,11 @@ public class Main {
     }
     
     public static void main(String[] args) {
-    	int numberGamesPerPacMan = 1;
-    	int numberOfDifferentPacMans = 2;
+    	int numberGamesPerPacMan = 10;
+    	int numberOfDifferentPacMans = 10;
     	double mutationRate = 0.05;
     	double mutationStepSizeUpperLimit = 0.05;
-    	final int runs = 10;
+    	final int runs = 100;
     	
     	double bestMutationRate = -1;
     	double bestFitnessGain = -1;
@@ -79,7 +79,9 @@ public class Main {
     			}
     			
     	        //printStrategyProbabilities(nFittestPacMans);
-
+    			System.out.println("run: "+ i);
+            	System.out.println("averageFitness: "+ averageFitnessPerGeneration.get(averageFitnessPerGeneration.size()-1));
+            	
         	}
         	double averageFitnessGain = 0;
         	for(int i=0; i < averageFitnessPerGeneration.size()-1; i++)
@@ -98,7 +100,8 @@ public class Main {
         		bestFitness = averageFitnessPerGeneration.get(averageFitnessPerGeneration.size()-1);
         		bestPacMans = pacMans;
         	}
-        	mutationRate += 0.01;
+        	break;
+        	//mutationRate += 0.01;
     	}
     	
     	System.out.println("Best mutationRate: "+ bestMutationRate);
