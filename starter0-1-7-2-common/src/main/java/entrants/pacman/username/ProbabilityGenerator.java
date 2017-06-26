@@ -26,6 +26,14 @@ public class ProbabilityGenerator {
 		}
 	}
 	
+	public void resetProbByStateCounters()
+	{
+		for(int i=0; i <  m_probability_by_state_list.size(); i++)
+		{
+			m_probability_by_state_list.get(i).counter = 0;
+		}
+	}
+	
 	public void setProbabilityByStateList(ArrayList<ProbabilityByState> probability_by_state_list){
 		m_probability_by_state_list = probability_by_state_list;
 	}

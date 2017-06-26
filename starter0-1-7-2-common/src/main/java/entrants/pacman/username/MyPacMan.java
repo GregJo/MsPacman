@@ -61,6 +61,7 @@ public MyPacMan()
    public void setProbabilities(ArrayList<ProbabilityByState> probability_by_state_list)
    {
 	   probabilityGenerator.setProbabilityByStateList(probability_by_state_list);
+	   probabilityGenerator.resetProbByStateCounters();
    }
    public ArrayList<ProbabilityByState> getProbabilities()
    {
