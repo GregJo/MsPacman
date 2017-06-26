@@ -155,6 +155,8 @@ enum POWER_PILL_ACTIVATED implements stateEnum{
 	 static int powerPillTime = 0;
 	 public String getCurrentStateString(Game game, int current, Memory memory)
 	 {
+		 if(game.wasPacManEaten())
+			 powerPillTime = 0;
 		 if(powerPillTime > 0)
 	    		powerPillTime--;
 	    	
