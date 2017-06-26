@@ -27,15 +27,15 @@ public MyPacMan()
    {
 	   strategyList = new ArrayList<>(
 			   Arrays.asList(
-					   //new WaitStrategy(),
+					   new WaitStrategy(),
 					   new EatNearestPowerPillStrategy(),
 					   new EatGhostStrategy(),
 					   new EatNearestAvailablePillStrategy(),
-					   //new EatFurthestAwayPowerPill(),
-					   //new EatFurthestAwayPill(),
-					   //new RunCircle(),
-					   new GetRidOfGhostFinal(),
-					   //new RandomPatrolInRadiusAroundCenter(),
+					   new EatFurthestAwayPowerPill(),
+					   new EatFurthestAwayPill(),
+					   new RunCircle(),
+					   new GetRidOfGhost(),
+					   new RandomPatrolInRadiusAroundCenter(),
 					   new RunTowardsNearestKnownGhost(),
 					   new RunFromNearestGhost()
 			   )
@@ -48,9 +48,9 @@ public MyPacMan()
 			   KIND_OF_LEVEL_TILE.class,
 			   NUMBER_SEEN_GHOSTS.class,
 			   NUMBER_SEEN_EDIBLE_GHOSTS.class,
-			   //GHOST_DISTANCE_TO_POWERPILL.class,
-			   POWER_PILL_ACTIVATED.class
-			   //LIVES_LEFT.class   
+			   GHOST_DISTANCE_TO_POWERPILL.class,
+			   POWER_PILL_ACTIVATED.class,
+			   LIVES_LEFT.class  
 	   );
    }
    

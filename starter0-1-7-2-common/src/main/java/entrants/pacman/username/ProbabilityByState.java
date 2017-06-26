@@ -1,8 +1,9 @@
 package entrants.pacman.username;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class ProbabilityByState	{
+public class ProbabilityByState	implements Serializable{
 	ProbabilityByState(String stateString, PROBABILITY prob) {
 		m_probability = prob;
 		m_stateString = stateString;
