@@ -14,7 +14,9 @@ import pacman.game.Game;
 
 interface stateEnum {
 	public String getCurrentStateString(Game game, int current, Memory memory);
+	public void resetStaticVars();
 }
+
 ////////////////////ENUMS DESCRIBING THE GLOBAL STATE ///////////////////////////////////
 enum POWERPILLS_LEFT implements stateEnum{
 	   noPowerPillLeft, powerPillsLeft;
@@ -31,6 +33,12 @@ enum POWERPILLS_LEFT implements stateEnum{
 			 }
 		   return returnValue;
 	   }
+
+	@Override
+	public void resetStaticVars() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 
@@ -53,6 +61,12 @@ enum KIND_OF_LEVEL_TILE implements stateEnum{
 			   return fourWayJunction.name();
 		   return deadEnd.name();
 		  }
+
+	@Override
+	public void resetStaticVars() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 ////////////////////ENUMS DESCRIBING WHAT MS.PACMAN SEES ///////////////////////////////////
 enum NUMBER_SEEN_GHOSTS implements stateEnum{
@@ -79,6 +93,11 @@ enum NUMBER_SEEN_GHOSTS implements stateEnum{
 			   return NUMBER_SEEN_GHOSTS.seeingFourGhost.name();
 		   return NUMBER_SEEN_GHOSTS.seeingNoGhost.name();
 	  }
+	@Override
+	public void resetStaticVars() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 enum NUMBER_SEEN_EDIBLE_GHOSTS implements stateEnum{
 	   seeingNoEdibleGhost, seeingOneEdibleGhost, seeingTwoEdibleGhosts, seeingThreeEdibleGhosts, seeingFourEdibleGhosts;
@@ -107,6 +126,12 @@ enum NUMBER_SEEN_EDIBLE_GHOSTS implements stateEnum{
 			 }
 			 return returnValue; 
 	  }
+
+	@Override
+	public void resetStaticVars() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 ////////////////////ENUMS DESCRIBING RELATIVE DISTANCES///////////////////////////////////
 enum GHOST_DISTANCE_TO_POWERPILL implements stateEnum{
@@ -147,6 +172,13 @@ enum GHOST_DISTANCE_TO_POWERPILL implements stateEnum{
 	    else
 	    	return pacmanNearerToPowerPill.name();
 	 }
+
+	@Override
+	public void resetStaticVars() {
+		 m_shortestPathPacmanToNextPowerPill = new int[0]; //since we compute the path we can just as well save it in case the strategies need it.
+		 m_shortestPathGhostToNextPowerPill = new int[0]; //since we compute the path we can just as well save it in case the strategies need it.
+		 enumUsed = false;
+	}
 }
 
 ////////////////////ENUMS DESCRIBING STATE OF MS.PACMAN ///////////////////////////////////
@@ -168,6 +200,11 @@ enum POWER_PILL_ACTIVATED implements stateEnum{
 	    return (powerPillTime > 0) ? POWER_PILL_ACTIVATED.powerPillActive.name() : POWER_PILL_ACTIVATED.powerPillNotActive.name();
 	    	  
 	 }
+	@Override
+	public void resetStaticVars() {
+		powerPillTime = 0;
+		
+	}
 }
 enum LIVES_LEFT implements stateEnum{
 	   oneLiveLeft, twoLivesLeft, threeLivesLeft;
@@ -189,5 +226,11 @@ enum LIVES_LEFT implements stateEnum{
 		 }
 		 return returnValue;
 	 }
+
+	@Override
+	public void resetStaticVars() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 

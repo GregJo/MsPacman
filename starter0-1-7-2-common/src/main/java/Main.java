@@ -42,10 +42,10 @@ public class Main {
     }
     
     public static void main(String[] args) {
-    	int numberGamesPerPacMan = 15;
-    	int numberOfDifferentPacMans = 15;
-    	double mutationRate = 0.00;
-    	double mutationStepSizeUpperLimit = 0.03;
+    	int numberGamesPerPacMan = 1;
+    	int numberOfDifferentPacMans = 2;
+    	double mutationRate = 0.05;
+    	double mutationStepSizeUpperLimit = 0.05;
     	final int runs = 10;
     	
     	double bestMutationRate = -1;
@@ -256,9 +256,8 @@ public class Main {
     		{
     			if(rand.nextDouble() <= mutationRate)
         		{
-        			double stepSize = rand.nextDouble();
-        			while(stepSize > mutationStepSizeUpperLimit)
-        				stepSize = rand.nextDouble();
+        			//double stepSize = rand.nextDouble()*mutationStepSizeUpperLimit;
+    				double stepSize = mutationStepSizeUpperLimit;
         			if(rand.nextDouble() <= 0.5)
         				stepSize = -stepSize;
         			double newProbability = prob.getProbability().getProbability(j)+stepSize;

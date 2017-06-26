@@ -17,6 +17,15 @@ public class ProbabilityGenerator {
 	private ArrayList<ProbabilityByState> m_probability_by_state_list = new ArrayList<ProbabilityByState>();
 	private Class<? extends Enum<? extends stateEnum>>[] m_listOfUsedEnums;
 	
+	public void resetStaticStateVars()
+	{
+		for( Class<? extends Enum<? extends stateEnum>> enumType : m_listOfUsedEnums)
+		{
+			Enum<? extends stateEnum> e = enumType.getEnumConstants()[0];
+			((stateEnum) e).resetStaticVars();
+		}
+	}
+	
 	public void setProbabilityByStateList(ArrayList<ProbabilityByState> probability_by_state_list){
 		m_probability_by_state_list = probability_by_state_list;
 	}
@@ -61,7 +70,6 @@ public class ProbabilityGenerator {
 		}
 
 		for (Enum<?> e : firstArgument.getEnumConstants()) {
-
 			// stop recursion and create objects if this is the last argument
 			if (listOfStateEnums.length == 1) {
 				String completeStateString = lastStateString + "_" + e.name();
