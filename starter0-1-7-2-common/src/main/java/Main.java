@@ -42,19 +42,46 @@ public class Main {
     }
     
     public static void main(String[] args) {
-    	int numberGamesPerPacMan = 100;
-    	int numberOfDifferentPacMans = 25;
+    	int numberGamesPerPacMan = 10;
+    	int numberOfDifferentPacMans = 1;
     	double mutationRate = 0.05;
     	double mutationStepSizeUpperLimit = 0.05;
-    	final int runs = 50;
+    	final int runs = 10;
     	
     	double bestMutationRate = -1;
     	double bestFitnessGain = -1;
     	double bestFitness = -1;
     	ArrayList<MyPacMan> bestPacMans = new ArrayList<>();
-    	while(mutationRate < 0.15)
+    	ArrayList<MyPacMan> pacMans = createNPacMans(numberOfDifferentPacMans);
+    	
+    	
+    	ArrayList<Integer> averageFitnessPerRun = new ArrayList<Integer>();
+    	for(int i=0; i < runs; i++)
     	{
-    		ArrayList<MyPacMan> pacMans = createNPacMans(numberOfDifferentPacMans);
+    		calculateFitness(numberGamesPerPacMan, pacMans);
+    		int fitnessSum = 0;
+			for (MyPacMan myPacMan : pacMans) {
+				fitnessSum += myPacMan.fitness;
+			}
+			averageFitnessPerRun.add(fitnessSum/pacMans.size());
+			for (int j = 0; j < pacMans.size(); j++) {
+				MyPacMan pacMan = new MyPacMan();
+				pacMan.setProbabilities(pacMans.get(j).getProbabilities());
+				pacMans.set(j, pacMan);
+			}
+    	}
+    	double variance = 0;
+    	for(int i=0; i < averageFitnessPerRun.size()-1; i++)
+    	{
+    		variance += Math.abs(averageFitnessPerRun.get(i) - averageFitnessPerRun.get(i+1));
+    	}
+    	variance /= runs-1;
+    	System.out.println("Variance: "+variance);
+    	
+    	
+    	
+    	while(false && mutationRate < 0.15)
+    	{
     		ArrayList<Integer> averageFitnessPerGeneration = new ArrayList<Integer>();
         	for (int i = 0; i < runs; i++) {
     			calculateFitness(numberGamesPerPacMan, pacMans);
@@ -107,20 +134,21 @@ public class Main {
     	System.out.println("Best mutationRate: "+ bestMutationRate);
     	System.out.println("Best averageFitnessGain: "+ bestFitnessGain);
     	System.out.println("Best Fitness: "+ bestFitness);
-    	String listSavePath = "C:/Users/Grigori/Desktop/pacmans.list";
+    	String listSavePath = "C:/Daten/pacmans.list";
     	savePacManList(bestPacMans, listSavePath);
-//        Executor executor = new Executor(true, true);
-//        EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
-//        
-//        controllers.put(GHOST.INKY, new Inky());
-//        controllers.put(GHOST.BLINKY, new Blinky());
-//        controllers.put(GHOST.PINKY, new Pinky());
-//        controllers.put(GHOST.SUE, new Sue());
-//        
-//        MyPacMan pacMan = new MyPacMan();
-//        pacMan.setProbabilities(nFittestPacMans(pacMans.toArray(new MyPacMan[pacMans.size()]),1).get(0).getProbabilities());
-//        //printStrategyProbabilities(pacMans);
-//        executor.runGameTimed(pacMan, new MASController(controllers), true);
+        Executor executor = new Executor(true, true);
+        EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
+        
+        controllers.put(GHOST.INKY, new Inky());
+        controllers.put(GHOST.BLINKY, new Blinky());
+        controllers.put(GHOST.PINKY, new Pinky());
+        controllers.put(GHOST.SUE, new Sue());
+        
+        MyPacMan pacMan = new MyPacMan();
+        ArrayList<MyPacMan> fittest = nFittestPacMans(pacMans.toArray(new MyPacMan[pacMans.size()]),1);
+        pacMan.setProbabilities(fittest.get(0).getProbabilities());
+        //printStrategyProbabilities(pacMans);
+        executor.runGameTimed(pacMan, new MASController(controllers), true);
       //executor.runExperiment(pacMan, new MASController(controllers), 1, "", 4000);
     }
 
@@ -215,7 +243,17 @@ public class Main {
 		ArrayList<ProbabilityByState> finalProbs = nFittestPacMans.get(j).getProbabilities();
 		for (int k = 0; k < probs1.size(); k++) {
 			if (probs1.get(k).counter != 0 && probs2.get(k).counter != 0) {
-				if(rand.nextDouble() <= 0.5)
+				int stateCounterSum_first = nFittestPacMans.get(i).getStateCounterSum();
+				int stateCounterSum_second = nFittestPacMans.get(j).getStateCounterSum();
+				
+				double influenceOfThisState_first = probs1.get(k).counter/stateCounterSum_first;
+				double influenceOfThisState_second = probs2.get(k).counter/stateCounterSum_second;
+				
+				double fitnessState_first = influenceOfThisState_first * nFittestPacMans.get(i).fitness;
+				double fitnessState_second = influenceOfThisState_second * nFittestPacMans.get(j).fitness;
+				
+				
+				if(fitnessState_first > fitnessState_second)
 					finalProbs.set(k, probs1.get(k));
 				else
 					finalProbs.set(k, probs2.get(k));
@@ -260,7 +298,7 @@ public class Main {
     			if(rand.nextDouble() <= mutationRate)
         		{
         			//double stepSize = rand.nextDouble()*mutationStepSizeUpperLimit;
-    				double stepSize = mutationStepSizeUpperLimit*rand.nextDouble();
+    				double stepSize = mutationStepSizeUpperLimit;
         			if(rand.nextDouble() <= 0.5)
         				stepSize = -stepSize;
         			double newProbability = prob.getProbability().getProbability(j)+stepSize;

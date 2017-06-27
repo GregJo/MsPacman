@@ -29,9 +29,9 @@ public MyPacMan()
 			   Arrays.asList(
 					   new WaitStrategy(),
 					   new EatNearestPowerPillStrategy(),
-					  new EatGhostStrategy(),
-					  new EatNearestAvailablePillStrategy(),
-					  new EatFurthestAwayPowerPill(),
+					   new EatGhostStrategy(),
+					   new EatNearestAvailablePillStrategy(),
+					   new EatFurthestAwayPowerPill(),
 					   new EatFurthestAwayPill(),
 					   new RunCircle(),
 					   new GetRidOfGhost(),
@@ -49,8 +49,8 @@ public MyPacMan()
 			   NUMBER_SEEN_GHOSTS.class,
 			   NUMBER_SEEN_EDIBLE_GHOSTS.class,
 			   GHOST_DISTANCE_TO_POWERPILL.class,
-			   POWER_PILL_ACTIVATED.class
-			  // LIVES_LEFT.class  
+			   POWER_PILL_ACTIVATED.class,
+			   LIVES_LEFT.class  
 	   );
 	   probabilityGenerator.resetStaticStateVars();
    }
@@ -67,6 +67,10 @@ public MyPacMan()
    {
 	   return probabilityGenerator.getProbabilityByStateList();
    }
+   public int getStateCounterSum()
+	{
+		return probabilityGenerator.getStateCounterSum();
+	}
  
    
     public MOVE getMove(Game game, long timeDue) {

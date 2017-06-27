@@ -16,6 +16,7 @@ public class ProbabilityGenerator {
 	private int m_numberOfStrategies = 0;
 	private ArrayList<ProbabilityByState> m_probability_by_state_list = new ArrayList<ProbabilityByState>();
 	private Class<? extends Enum<? extends stateEnum>>[] m_listOfUsedEnums;
+	private int stateCounterSum = -1;
 	
 	public void resetStaticStateVars()
 	{
@@ -32,6 +33,17 @@ public class ProbabilityGenerator {
 		{
 			m_probability_by_state_list.get(i).counter = 0;
 		}
+	}
+	
+	public int getStateCounterSum()
+	{
+		stateCounterSum = 0;
+		for(ProbabilityByState p : m_probability_by_state_list)
+		{
+			stateCounterSum += p.counter;
+		}
+		return stateCounterSum;
+		
 	}
 	
 	public void setProbabilityByStateList(ArrayList<ProbabilityByState> probability_by_state_list){
