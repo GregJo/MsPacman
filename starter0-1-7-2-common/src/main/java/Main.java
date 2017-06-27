@@ -42,11 +42,11 @@ public class Main {
     }
     
     public static void main(String[] args) {
-    	int numberGamesPerPacMan = 10;
-    	int numberOfDifferentPacMans = 10;
+    	int numberGamesPerPacMan = 100;
+    	int numberOfDifferentPacMans = 25;
     	double mutationRate = 0.05;
     	double mutationStepSizeUpperLimit = 0.05;
-    	final int runs = 100;
+    	final int runs = 50;
     	
     	double bestMutationRate = -1;
     	double bestFitnessGain = -1;
@@ -107,7 +107,7 @@ public class Main {
     	System.out.println("Best mutationRate: "+ bestMutationRate);
     	System.out.println("Best averageFitnessGain: "+ bestFitnessGain);
     	System.out.println("Best Fitness: "+ bestFitness);
-    	String listSavePath = "C:/Daten/pacmans.list";
+    	String listSavePath = "C:/Users/Grigori/Desktop/pacmans.list";
     	savePacManList(bestPacMans, listSavePath);
 //        Executor executor = new Executor(true, true);
 //        EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
@@ -260,7 +260,7 @@ public class Main {
     			if(rand.nextDouble() <= mutationRate)
         		{
         			//double stepSize = rand.nextDouble()*mutationStepSizeUpperLimit;
-    				double stepSize = mutationStepSizeUpperLimit;
+    				double stepSize = mutationStepSizeUpperLimit*rand.nextDouble();
         			if(rand.nextDouble() <= 0.5)
         				stepSize = -stepSize;
         			double newProbability = prob.getProbability().getProbability(j)+stepSize;
