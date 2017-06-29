@@ -20,7 +20,9 @@ public class MyPacMan extends PacmanController {
    private Memory memory = new Memory();
    private ProbabilityGenerator probabilityGenerator;
    private ArrayList<Strategy> strategyList;
-   public int fitness = 0;
+   public double fitness = 0;
+   public double ticks = 0;
+   public double score = 0;
 
    @SuppressWarnings("unchecked")
 public MyPacMan()
@@ -49,8 +51,8 @@ public MyPacMan()
 			   NUMBER_SEEN_GHOSTS.class,
 			   NUMBER_SEEN_EDIBLE_GHOSTS.class,
 			   GHOST_DISTANCE_TO_POWERPILL.class,
-			   POWER_PILL_ACTIVATED.class
-			   //LIVES_LEFT.class  
+			   POWER_PILL_ACTIVATED.class,
+			   LIVES_LEFT.class  
 	   );
 	   probabilityGenerator.resetStaticStateVars();
    }
@@ -91,7 +93,10 @@ public MyPacMan()
     	
     	int rouletteStrategyNumber = probabilityGenerator.geStrategyNumberToUse(game, current, memory);
     	 MOVE move = strategyList.get(rouletteStrategyNumber).getStrategyMove(game, current, memory);
-    	 fitness = game.getScore();
+    	 ticks = (game.getTotalTime() == 0) ? 1 :  game.getTotalTime();
+    	 score = game.getScore();
+    	 fitness = score/ticks;
+    	
     	return move;
     }
 }

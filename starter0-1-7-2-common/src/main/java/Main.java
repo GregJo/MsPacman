@@ -40,8 +40,8 @@ public class Main {
     	final int runs = 20;
     	String listSavePath = "C:/Daten/pacman/";
     	
-    	int averageFitnessLastGeneration = 0;
-    	int lastGenerationFitnessSum = 0;
+    	double averageFitnessLastGeneration = 0;
+    	double lastGenerationFitnessSum = 0;
     	ArrayList<MyPacMan> currentGeneration;
     	ArrayList<MyPacMan> lastGeneration = new ArrayList<>();
     	
@@ -51,8 +51,8 @@ public class Main {
        		GeneticAlgorithm.calculateFitness(numberGamesPerPacMan, currentGeneration);
        		currentGeneration = GeneticAlgorithm.nFittestPacMans(currentGeneration.toArray(new MyPacMan[currentGeneration.size()]), numberOfDifferentPacMans/2);
     			
-    		int fitnessSum = GeneticAlgorithm.calculateFitnessSumOfGeneration(listSavePath, i, currentGeneration);
-    		int averageFitnessOfGeneration = fitnessSum/currentGeneration.size();
+       		double fitnessSum = GeneticAlgorithm.calculateFitnessSumOfGeneration(listSavePath, i, currentGeneration);
+       		double averageFitnessOfGeneration = fitnessSum/currentGeneration.size();
     		
     		//if last generation fitness was better, drop this generation
     		if(averageFitnessOfGeneration < averageFitnessLastGeneration && lastGeneration.size() > 0)
@@ -75,17 +75,6 @@ public class Main {
     		averageFitnessLastGeneration = averageFitnessOfGeneration;
     		lastGenerationFitnessSum = fitnessSum;
     		
-    	
-    		
-    	/*	{	//for range 1000 - 2000
-    			int fitnessGoal = 2000;
-    			int minFitness = 1000;
-    			double mutationStepSizeMax = 0.05;
-    			double mutationStepSizeMin = 0.01;
-    			if(averageFitnessOfGeneration > minFitness)
-    				mutationStepSizeUpperLimit = GeneticAlgorithm.adaptMutationStepSizeLinear(fitnessGoal, mutationStepSizeMax, mutationStepSizeMin, averageFitnessOfGeneration);
-    		}*/
-    		
     		System.out.println("Average Fitness:" + averageFitnessOfGeneration);
     		System.out.println("MuationRate:" + mutationRate);
     		System.out.println("New mutationStepUpperLimit:" + mutationStepSizeUpperLimit);
@@ -95,14 +84,9 @@ public class Main {
     		//	break;
 
     		currentGeneration = GeneticAlgorithm.generateNextGeneration(currentGeneration, fitnessSum);
-    			
     		currentGeneration.addAll(0, lastGeneration); //at this point the last generation is the one we had just now
-    		for (int j = 0; j < currentGeneration.size(); j++) 
-    		{
-    			MyPacMan pacMan = new MyPacMan();
-    			pacMan.setProbabilities(GeneticAlgorithm.mutate(currentGeneration.get(j), mutationRate, mutationStepSizeUpperLimit).getProbabilities());
-    			currentGeneration.set(j, pacMan);
-    		}
+    		currentGeneration = GeneticAlgorithm.mutate(currentGeneration, mutationRate, mutationStepSizeUpperLimit);
+    		currentGeneration = GeneticAlgorithm.resetPacMans(currentGeneration);
        	}
         
        	
@@ -114,42 +98,7 @@ public class Main {
         GeneticAlgorithm.notMain(false, pacMan);
    
     }
-
-	
-
-	private static void printPacManWithWaitAndEatNearestPowerPill(ArrayList<MyPacMan> nFittestPacMans) {
-		int c = 0;
-		for(MyPacMan p : nFittestPacMans)
-		{
-			c++;
-			System.out.println("PacMan #"+c+": ");
-			System.out.println("\tFitness: "+p.fitness);
-			ArrayList<ProbabilityByState> probByStates = p.getProbabilities();
-			for(ProbabilityByState probByState : probByStates)
-			{
-					System.out.println("State: "+probByState.m_stateString);
-					System.out.println("\tWait "+probByState.getProbability().getProbability(0));
-					System.out.println("\tEatNearestPowerPill "+probByState.getProbability().getProbability(1));
-			}
-		}
-	}
-
-	
-
-	private static void printStrategyProbabilities(ArrayList<MyPacMan> pacMans) {
-		for (int j = 0; j < pacMans.get(0).getProbabilities().size(); j++) {
-			System.out.println("State Name: " + pacMans.get(0).getProbabilities().get(j).m_stateString);
-			System.out.print("Best PacMan probabilities (No."+j+"):[");
-		    for (int k = 0; k < pacMans.get(0).getProbabilities().get(j).getProbability().getNumberOfProbabilities(); k++) {
-		        System.out.print(pacMans.get(0).getProbabilities().get(j).getProbability().getProbability(k)+", ");
-			}
-		    System.out.print("]\n\n");
-		}
-	}
-
-	
-	
-   
+    
     public static ArrayList<MyPacMan> nextGenerationWithStrategiesCrossover(ArrayList<MyPacMan> nFittestPacMans, double crossoverProbability)
     {
 		Random rand = new Random();

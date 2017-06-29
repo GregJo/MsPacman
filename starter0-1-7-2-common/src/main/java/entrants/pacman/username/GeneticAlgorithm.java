@@ -58,7 +58,7 @@ public class GeneticAlgorithm {
 	{
     	for(int i = 0; i < pacMans.size(); i++)
     	{
-    		int fitness = 0;
+    		double fitness = 0;
     		MyPacMan current_pacMan = pacMans.get(i);
     		for(int j=0; j < numberGamesPerPacMan; j++)
     		{
@@ -67,11 +67,15 @@ public class GeneticAlgorithm {
     			
     			//System.out.println("fitness for this game: "+newFitness);
     			fitness += current_pacMan.fitness; 
+    			
+    			if(j == numberGamesPerPacMan -1 )
+    				break;
+    			
     			ArrayList<ProbabilityByState> probs = current_pacMan.getProbabilities();
     			current_pacMan = new MyPacMan();
     			current_pacMan.setProbabilities(probs);
     		}
-    		fitness /= numberGamesPerPacMan;
+    		fitness /= (double)numberGamesPerPacMan;
     		//System.out.println("Pacman #"+i+" finished. Fitness: "+fitness);
     		//all_fitness[i] = fitness;
     		current_pacMan.fitness = fitness;
@@ -80,8 +84,8 @@ public class GeneticAlgorithm {
    
 
 	
-	public static int calculateFitnessSumOfGeneration(String listSavePath, int run, ArrayList<MyPacMan> generation) {
-		int fitnessSum = 0;int counter = 0;
+	public static double calculateFitnessSumOfGeneration(String listSavePath, int run, ArrayList<MyPacMan> generation) {
+		double fitnessSum = 0;int counter = 0;
 		for (MyPacMan myPacMan : generation) 
 		{
 			fitnessSum += myPacMan.fitness;
@@ -141,7 +145,7 @@ public class GeneticAlgorithm {
 	    	Random rand = new Random();
 	    	for (int i = 0; i < probs.size(); i++) {
 	    		ProbabilityByState prob = probs.get(i);
-	    		for(int j=0; j < prob.getProbability().getNumberOfProbabilities(); j++)
+	    		for(int j=0; j < prob.getProbabilityObject(false).getNumberOfProbabilities(); j++)
 	    		{
 	    			if(rand.nextDouble() <= mutationRate)
 	        		{
@@ -149,15 +153,11 @@ public class GeneticAlgorithm {
 	    				//double stepSize = mutationStepSizeUpperLimit;
 	        			if(rand.nextDouble() <= 0.5)
 	        				stepSize = -stepSize;
-	        			double newProbability = prob.getProbability().getProbability(j)+stepSize;
-	        			prob.getProbability().setProbability(j, newProbability);
-	        			
-//	        			System.out.println("\n Pacman Mutated!");
-//	        			System.out.println("Mutated state: "+prob.m_stateString);
-//	        			System.out.println("Strategy #"+j +" changed by "+stepSize);
+	        			double newProbability = prob.getProbabilityObject(false).getProbability(j)+stepSize;
+	        			prob.getProbabilityObject(false).setProbability(j, newProbability);
 	        		}
 	    		}
-	    		prob.getProbability().normalizeProbability();
+	    		prob.getProbabilityObject(false).normalizeProbability();
 			}
 	    	pacman.setProbabilities(probs);
 	    	return pacman;
@@ -302,22 +302,18 @@ public class GeneticAlgorithm {
 		 return pacMan;
 	}
 	
-	public static ArrayList<MyPacMan> generateNextGeneration(ArrayList<MyPacMan> nFittestPacMans, int fitnessSum) {
+	public static ArrayList<MyPacMan> generateNextGeneration(ArrayList<MyPacMan> nFittestPacMans, double fitnessSum) {
 		Random rand = new Random();
 		ArrayList<MyPacMan> newGeneration = new ArrayList<MyPacMan>();
 		// PacMan roulette
 		for (int i = 0; i < nFittestPacMans.size(); i++) {
 			for (int j = 0; j < nFittestPacMans.size(); j++) {
-			 	if(rand.nextDouble() <= (double)nFittestPacMans.get(i).fitness/(double)fitnessSum)
+			 	if(rand.nextDouble() <= (double)nFittestPacMans.get(i).fitness/fitnessSum)
 			 	{
 			 		MyPacMan current_pacMan = childPacMan(nFittestPacMans, rand, i, j);
 			 	newGeneration.add(current_pacMan);
-			 	if(newGeneration.size() == 50)
-			 		break;
 			 	}
 			}
-			if(newGeneration.size() == 50)
-			 		break;
 		}
 		return newGeneration;
 	}
