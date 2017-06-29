@@ -19,26 +19,25 @@ import java.util.Random;
 public class MyPacMan extends PacmanController {
    private Memory memory = new Memory();
    private ProbabilityGenerator probabilityGenerator;
-   private ArrayList<PacManStrategy> strategyList;
+   private ArrayList<Strategy> strategyList;
    public double fitness = 0;
    public double ticks = 0;
    public double score = 0;
-   public int numEatenGhosts = 0;
 
    @SuppressWarnings("unchecked")
 public MyPacMan()
    {
 	   strategyList = new ArrayList<>(
 			   Arrays.asList(
-					   //new WaitStrategy(),
+					   new WaitStrategy(),
 					   new EatNearestPowerPillStrategy(),
 					   new EatGhostStrategy(),
 					   new EatNearestAvailablePillStrategy(),
-					   //new EatFurthestAwayPowerPill(),
-					   //new EatFurthestAwayPill(),
-					   //new RunCircle(),
+					   new EatFurthestAwayPowerPill(),
+					   new EatFurthestAwayPill(),
+					   new RunCircle(),
 					   new GetRidOfGhost(),
-					   //new RandomPatrolInRadiusAroundCenter(),
+					   new RandomPatrolInRadiusAroundCenter(),
 					   new RunTowardsNearestKnownGhost(),
 					   new RunFromNearestGhost()
 			   )
@@ -47,12 +46,13 @@ public MyPacMan()
 	   int numberStrategies = strategyList.size();
 	   probabilityGenerator = new ProbabilityGenerator(numberStrategies);
 	   probabilityGenerator.createNProbabilitiesPerPossibleState(strategyList,
-			   POWERPILLS_LEFT.class,
-			   KIND_OF_LEVEL_TILE.class,
-			   NUMBER_SEEN_GHOSTS.class,
-			   NUMBER_SEEN_EDIBLE_GHOSTS.class,
-			   GHOST_DISTANCE_TO_POWERPILL.class,
-			   POWER_PILL_ACTIVATED.class
+			   POWERPILLS_LEFT.class
+			   //KIND_OF_LEVEL_TILE.class,
+			   //NUMBER_SEEN_GHOSTS.class
+			   //NUMBER_SEEN_EDIBLE_GHOSTS.class,
+			   //GHOST_DISTANCE_TO_POWERPILL.class,
+			   //POWER_PILL_ACTIVATED.class
+			  // LIVES_LEFT.class  
 	   );
 	   probabilityGenerator.resetStaticStateVars();
    }
@@ -96,9 +96,7 @@ public MyPacMan()
     	 ticks = (game.getTotalTime() == 0) ? 1 :  game.getTotalTime();
     	 score = game.getScore();
     	 fitness = score/ticks;
-    	 numEatenGhosts=game.getNumGhostsEaten();
-    	 fitness+=numEatenGhosts;
-    	 
+    	
     	return move;
     }
 }
