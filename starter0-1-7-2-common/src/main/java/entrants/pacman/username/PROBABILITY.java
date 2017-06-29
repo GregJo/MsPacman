@@ -1,17 +1,20 @@
 package entrants.pacman.username;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class PROBABILITY implements Serializable{
-	PROBABILITY(int numberStrategies) {
+	PROBABILITY(ArrayList<Strategy> strategyList) {
+		int numberStrategies = strategyList.size();
 		probabilites = new double[numberStrategies];
 		double[] temp = new double[numberStrategies];
 
 		// Generate n random probabilities
 		double sum = 0;
 		for (int i = 0; i < numberStrategies; i++) {
-			temp[i] = new Random().nextDouble();
+			double initProbability = strategyList.get(i).getStrategyInitialProbability();
+			temp[i] = (initProbability == initialProbability.RANDOM) ? new Random().nextDouble() : initProbability;
 			sum += temp[i];
 		}
 

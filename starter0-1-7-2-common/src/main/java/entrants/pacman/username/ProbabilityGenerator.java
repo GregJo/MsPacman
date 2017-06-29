@@ -74,10 +74,10 @@ public class ProbabilityGenerator {
 				   return prob_by_state.getProbability();
 			   }
 		   }
-		   return new PROBABILITY(0);
+		   return null;
 	   }
 	
-	private void _createNProbabilitiesPerPossibleState(String lastStateString, int n,
+	private void _createNProbabilitiesPerPossibleState(String lastStateString, ArrayList<Strategy> strategyList,
 			Class<? extends Enum<?>>... listOfStateEnums) {
 		Class<? extends Enum<?>> firstArgument;
 		Class<? extends Enum<?>>[] restArguments = listOfStateEnums;
@@ -93,7 +93,7 @@ public class ProbabilityGenerator {
 			// stop recursion and create objects if this is the last argument
 			if (listOfStateEnums.length == 1) {
 				String completeStateString = lastStateString + "_" + e.name();
-				PROBABILITY prob = new PROBABILITY(n);
+				PROBABILITY prob = new PROBABILITY(strategyList);
 				ProbabilityByState prob_by_dep = new ProbabilityByState(completeStateString, prob);
 				m_probability_by_state_list.add(prob_by_dep);
 			}
@@ -102,14 +102,14 @@ public class ProbabilityGenerator {
 			// rest of arguments and new stateString
 			if (listOfStateEnums.length > 1) {
 				String newStateString = lastStateString + "_" + e.name();
-				_createNProbabilitiesPerPossibleState(newStateString, n, restArguments);
+				_createNProbabilitiesPerPossibleState(newStateString, strategyList, restArguments);
 			}
 		}
 	}
 
-	public void createNProbabilitiesPerPossibleState(int n, Class<? extends Enum<? extends stateEnum>>... listOfStateEnums) {
+	public void createNProbabilitiesPerPossibleState(ArrayList<Strategy> strategyList, Class<? extends Enum<? extends stateEnum>>... listOfStateEnums) {
 		m_listOfUsedEnums = listOfStateEnums;
-		_createNProbabilitiesPerPossibleState("", n, listOfStateEnums);
+		_createNProbabilitiesPerPossibleState("", strategyList, listOfStateEnums);
 	}
 	
 	public int geStrategyNumberToUse(Game game, int current, Memory memory){

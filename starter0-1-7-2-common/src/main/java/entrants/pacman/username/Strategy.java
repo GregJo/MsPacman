@@ -11,6 +11,10 @@ import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 
+class initialProbability {
+    public static double RANDOM = -1;
+}
+
 class StaticFunctions{
 	//static ArrayList<MOVE> moveArray = new ArrayList<MOVE>();
 	static int[] convertIntegerListToArray(ArrayList<Integer> list)
@@ -169,6 +173,8 @@ interface Strategy {
 	{
 		
 	}
+	
+	default public double getStrategyInitialProbability(){return initialProbability.RANDOM;};
 	public MOVE _getStrategyMove(Game game, int current, Memory memory);
 	public String getStrategyName();
 	
@@ -187,6 +193,12 @@ class WaitStrategy implements Strategy
 	@Override
 	public String getStrategyName() {
 		return "Wait";
+	}
+
+	@Override
+	public double getStrategyInitialProbability() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
 class EatNearestPowerPillStrategy implements Strategy
@@ -232,6 +244,12 @@ class EatGhostStrategy implements Strategy
 	public String getStrategyName() {
 		return "EatGhost";
 	}
+
+	@Override
+	public double getStrategyInitialProbability() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
 class EatNearestAvailablePillStrategy implements Strategy
 {
@@ -249,6 +267,7 @@ class EatNearestAvailablePillStrategy implements Strategy
 	public String getStrategyName() {
 		return "EatNearestAvailablePill";
 	}
+
 }
 
 class GetRidOfGhost implements Strategy
@@ -285,42 +304,6 @@ class GetRidOfGhost implements Strategy
 				} else
 					move = game.getPacmanLastMoveMade();
 			}
-		}
-		return move;
-	}
-	
-	@Override
-	public String getStrategyName() {
-		// TODO Auto-generated method stub
-		return "GetRidOffGhost";
-	}
-	
-}
-
-class GetRidOfGhostFinal implements Strategy
-{
-
-	@Override
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
-		// TODO Auto-generated method stub
-		MOVE move = null;
-		
-		ArrayList<Integer> ghostPosList = memory.getLastKnownGhostPositions(game);
-		
-		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
-		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
-		
-		move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
-		if(move == null)
-		{
-			if(game.isJunction(current)){
-				Random rand = new Random();
-				possibleMovesList.remove(game.getPacmanLastMoveMade().opposite());
-				if (NUMBER_SEEN_GHOSTS.ghostCounter > 1)
-					possibleMovesList.remove(game.getPacmanLastMoveMade());
-				move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
-			}else
-				move = game.getPacmanLastMoveMade();
 		}
 		return move;
 	}
@@ -372,41 +355,6 @@ class RunFromNearestGhost implements Strategy
 	}
 }
 
-class RunFromNearestGhostFinal implements Strategy
-{
-	@Override
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
-	{
-		MOVE move = null;
-		
-		ArrayList<Integer> ghostPosList = memory.getLastKnownGhostPositions(game);
-		
-		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
-		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
-		
-		move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
-		
-		if(move == null)
-		{
-			if (NUMBER_SEEN_GHOSTS.ghostCounter != 0) {
-				MOVE moveTowardsGhost = StaticFunctions.getMoveToNearestObject(game, current, ghostPosList);
-				if (moveTowardsGhost != null) {
-					if (possibleMovesList.contains(moveTowardsGhost.opposite()))
-						move = moveTowardsGhost.opposite();
-				}
-			}
-				move = game.getPacmanLastMoveMade();
-		}
-		return move;
-	}
-
-	@Override
-	public String getStrategyName() {
-		// TODO Auto-generated method stub
-		return "RunFromNearestGhost";
-	}
-}
-
 class RunTowardsNearestKnownGhost implements Strategy
 {
 	@Override
@@ -436,6 +384,12 @@ class RunTowardsNearestKnownGhost implements Strategy
 	public String getStrategyName() {
 		// TODO Auto-generated method stub
 		return "RunTowardsNearestKnownGhost";
+	}
+
+	@Override
+	public double getStrategyInitialProbability() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
 
@@ -490,6 +444,12 @@ class RandomPatrolInRadiusAroundCenter implements Strategy
 		// TODO Auto-generated method stub
 		return "RandomPatrolInRadiusAroundCenter";
 	}
+
+	@Override
+	public double getStrategyInitialProbability() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 }
 
@@ -541,6 +501,11 @@ class EatFurthestAwayPowerPill implements Strategy
 		return "EatFurthestAwayPowerPill";
 	}
 	private int pillPosLastTime = -1;
+	@Override
+	public double getStrategyInitialProbability() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
 class EatFurthestAwayPill implements Strategy
 {
@@ -590,6 +555,11 @@ class EatFurthestAwayPill implements Strategy
 		return "EatFurthestAwayPill";
 	}
 	private int pillPosLastTime = -1;
+	@Override
+	public double getStrategyInitialProbability() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
 class RunCircle implements Strategy
 {
@@ -646,4 +616,9 @@ class RunCircle implements Strategy
 	}
 	private MOVE moveLastTime = null;
 	private Random rand  = new Random();
+	@Override
+	public double getStrategyInitialProbability() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

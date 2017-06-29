@@ -3,6 +3,7 @@ import examples.StarterGhostComm.Blinky;
 import examples.StarterGhostComm.Inky;
 import examples.StarterGhostComm.Pinky;
 import examples.StarterGhostComm.Sue;
+import entrants.pacman.username.GeneticAlgorithm;
 //import examples.StarterPacManOneJunction.MyPacMan;
 import entrants.pacman.username.MyPacMan;
 import entrants.pacman.username.ProbabilityGenerator;
@@ -21,162 +22,119 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Random;
-
+import java.util.Collections;
 /**
  * Created by pwillic on 06/05/2016.
  */
 public class Main {
 
-    public static void notMain(String[] args, MyPacMan pacMan) {
-        Executor executor = new Executor(true, true);
-        EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
-        
-        controllers.put(GHOST.INKY, new Inky());
-        controllers.put(GHOST.BLINKY, new Blinky());
-        controllers.put(GHOST.PINKY, new Pinky());
-        controllers.put(GHOST.SUE, new Sue());
-       
-      //executor.runGameTimed(pacMan, new MASController(controllers), true);
-      executor.runExperiment(pacMan, new MASController(controllers), 1, "", 4000);
-       
-    }
     
-    public static void main(String[] args) {
-    	int numberGamesPerPacMan = 10;
-    	int numberOfDifferentPacMans = 1;
-    	double mutationRate = 0.05;
+    
+    public static void main(String[] args) 
+    {
+    	
+    	int numberGamesPerPacMan = 1;
+    	int numberOfDifferentPacMans = 10;
+    	double mutationRate = 0.001;
     	double mutationStepSizeUpperLimit = 0.05;
-    	final int runs = 10;
+    	final int runs = 20;
+    	String listSavePath = "C:/Daten/pacman/";
     	
-    	double bestMutationRate = -1;
-    	double bestFitnessGain = -1;
-    	double bestFitness = -1;
-    	ArrayList<MyPacMan> bestPacMans = new ArrayList<>();
-    	ArrayList<MyPacMan> pacMans = createNPacMans(numberOfDifferentPacMans);
+    	int averageFitnessLastGeneration = 0;
+    	int lastGenerationFitnessSum = 0;
+    	ArrayList<MyPacMan> currentGeneration;
+    	ArrayList<MyPacMan> lastGeneration = new ArrayList<>();
     	
-    	
-    	ArrayList<Integer> averageFitnessPerRun = new ArrayList<Integer>();
-    	for(int i=0; i < runs; i++)
-    	{
-    		calculateFitness(numberGamesPerPacMan, pacMans);
-    		int fitnessSum = 0;
-			for (MyPacMan myPacMan : pacMans) {
-				fitnessSum += myPacMan.fitness;
-			}
-			averageFitnessPerRun.add(fitnessSum/pacMans.size());
-			for (int j = 0; j < pacMans.size(); j++) {
-				MyPacMan pacMan = new MyPacMan();
-				pacMan.setProbabilities(pacMans.get(j).getProbabilities());
-				pacMans.set(j, pacMan);
-			}
-    	}
-    	double variance = 0;
-    	for(int i=0; i < averageFitnessPerRun.size()-1; i++)
-    	{
-    		variance += Math.abs(averageFitnessPerRun.get(i) - averageFitnessPerRun.get(i+1));
-    	}
-    	variance /= runs-1;
-    	System.out.println("Variance: "+variance);
-    	
-    	
-    	
-    	while(false && mutationRate < 0.15)
-    	{
-    		ArrayList<Integer> averageFitnessPerGeneration = new ArrayList<Integer>();
-        	for (int i = 0; i < runs; i++) {
-    			calculateFitness(numberGamesPerPacMan, pacMans);
-    			ArrayList<MyPacMan> nFittestPacMans = nFittestPacMans(pacMans.toArray(new MyPacMan[pacMans.size()]), numberOfDifferentPacMans/2);
+    	currentGeneration = GeneticAlgorithm.loadPacManList("C:/Daten/pacman/fitness_2720_run_2counter_0");//GeneticAlgorithm.createNewGeneration(numberOfDifferentPacMans);	
+       	for (int i = 0; true || i < runs ; i++) 
+       	{
+       		GeneticAlgorithm.calculateFitness(numberGamesPerPacMan, currentGeneration);
+       		currentGeneration = GeneticAlgorithm.nFittestPacMans(currentGeneration.toArray(new MyPacMan[currentGeneration.size()]), numberOfDifferentPacMans/2);
     			
-    			int fitnessSum = 0;
-    			for (MyPacMan myPacMan : nFittestPacMans) {
-    				fitnessSum += myPacMan.fitness;
+    		int fitnessSum = GeneticAlgorithm.calculateFitnessSumOfGeneration(listSavePath, i, currentGeneration);
+    		int averageFitnessOfGeneration = fitnessSum/currentGeneration.size();
+    		
+    		//if last generation fitness was better, drop this generation
+    		if(averageFitnessOfGeneration < averageFitnessLastGeneration && lastGeneration.size() > 0)
+    		{
+    			ArrayList<MyPacMan> overAveragePacMans = new ArrayList<>();
+    			for(MyPacMan p : currentGeneration)
+    			{
+    				if(p.fitness >= averageFitnessLastGeneration)
+    					overAveragePacMans.add(p);
     			}
-    			averageFitnessPerGeneration.add(fitnessSum/nFittestPacMans.size());
+    			lastGeneration.addAll(0, overAveragePacMans);
+    			currentGeneration = GeneticAlgorithm.resetPacMans(lastGeneration);
+    			currentGeneration.addAll(GeneticAlgorithm.generateNextGeneration(currentGeneration, lastGenerationFitnessSum));
+    			currentGeneration = GeneticAlgorithm.mutate(currentGeneration, mutationRate, mutationStepSizeUpperLimit);
     			
-    			//stop generating new generation on last run
-    			if(i == runs-1)
-    				break;
+    			System.out.println("Generation dropped");
+    			continue;
+    		}
+    		lastGeneration = currentGeneration;
+    		averageFitnessLastGeneration = averageFitnessOfGeneration;
+    		lastGenerationFitnessSum = fitnessSum;
+    		
+    	
+    		
+    	/*	{	//for range 1000 - 2000
+    			int fitnessGoal = 2000;
+    			int minFitness = 1000;
+    			double mutationStepSizeMax = 0.05;
+    			double mutationStepSizeMin = 0.01;
+    			if(averageFitnessOfGeneration > minFitness)
+    				mutationStepSizeUpperLimit = GeneticAlgorithm.adaptMutationStepSizeLinear(fitnessGoal, mutationStepSizeMax, mutationStepSizeMin, averageFitnessOfGeneration);
+    		}*/
+    		
+    		System.out.println("Average Fitness:" + averageFitnessOfGeneration);
+    		System.out.println("MuationRate:" + mutationRate);
+    		System.out.println("New mutationStepUpperLimit:" + mutationStepSizeUpperLimit);
     			
-    			pacMans = generateNextGeneration(nFittestPacMans, fitnessSum);
-    			pacMans.addAll(0, nFittestPacMans);
-    			for (int j = 0; j < pacMans.size(); j++) {
-    				MyPacMan pacMan = new MyPacMan();
-    				pacMan.setProbabilities(mutate(pacMans.get(j), mutationRate, mutationStepSizeUpperLimit).getProbabilities());
-    				pacMans.set(j, pacMan);
-    			}
-    			
-    	        //printStrategyProbabilities(nFittestPacMans);
-    			System.out.println("run: "+ i);
-            	System.out.println("averageFitness: "+ averageFitnessPerGeneration.get(averageFitnessPerGeneration.size()-1));
-            	
-        	}
-        	double averageFitnessGain = 0;
-        	for(int i=0; i < averageFitnessPerGeneration.size()-1; i++)
-        	{
-        		averageFitnessGain += (averageFitnessPerGeneration.get(i+1).intValue() - averageFitnessPerGeneration.get(i).intValue()); 
-        	}
+    		//stop generating new generation on last run
+    		//if(i == runs-1)
+    		//	break;
 
-        	
-        	System.out.println("mutationRate: "+ mutationRate);
-        	System.out.println("averageFitnessGain: "+ averageFitnessGain);
-        	System.out.println("averageFitness: "+ averageFitnessPerGeneration.get(averageFitnessPerGeneration.size()-1));
-        	if(averageFitnessGain > bestFitnessGain)
-        	{
-        		bestFitnessGain = averageFitnessGain;
-        		bestMutationRate = mutationRate;
-        		bestFitness = averageFitnessPerGeneration.get(averageFitnessPerGeneration.size()-1);
-        		bestPacMans = pacMans;
-        	}
-        	break;
-        	//mutationRate += 0.01;
-    	}
-    	
-    	System.out.println("Best mutationRate: "+ bestMutationRate);
-    	System.out.println("Best averageFitnessGain: "+ bestFitnessGain);
-    	System.out.println("Best Fitness: "+ bestFitness);
-    	String listSavePath = "C:/Daten/pacmans.list";
-    	savePacManList(bestPacMans, listSavePath);
-        Executor executor = new Executor(true, true);
-        EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
+    		currentGeneration = GeneticAlgorithm.generateNextGeneration(currentGeneration, fitnessSum);
+    			
+    		currentGeneration.addAll(0, lastGeneration); //at this point the last generation is the one we had just now
+    		for (int j = 0; j < currentGeneration.size(); j++) 
+    		{
+    			MyPacMan pacMan = new MyPacMan();
+    			pacMan.setProbabilities(GeneticAlgorithm.mutate(currentGeneration.get(j), mutationRate, mutationStepSizeUpperLimit).getProbabilities());
+    			currentGeneration.set(j, pacMan);
+    		}
+       	}
         
-        controllers.put(GHOST.INKY, new Inky());
-        controllers.put(GHOST.BLINKY, new Blinky());
-        controllers.put(GHOST.PINKY, new Pinky());
-        controllers.put(GHOST.SUE, new Sue());
-        
+       	
         MyPacMan pacMan = new MyPacMan();
-        ArrayList<MyPacMan> fittest = nFittestPacMans(pacMans.toArray(new MyPacMan[pacMans.size()]),1);
+        ArrayList<MyPacMan> fittest = GeneticAlgorithm.nFittestPacMans(currentGeneration.toArray(new MyPacMan[currentGeneration.size()]),1);
         pacMan.setProbabilities(fittest.get(0).getProbabilities());
-        //printStrategyProbabilities(pacMans);
-        executor.runGameTimed(pacMan, new MASController(controllers), true);
-      //executor.runExperiment(pacMan, new MASController(controllers), 1, "", 4000);
+        
+       // pacMan = GeneticAlgorithm.loadPacMan("C:/Daten/pacman/fitness_1180_run_5counter_0");
+        GeneticAlgorithm.notMain(false, pacMan);
+   
     }
 
-	private static void savePacManList(ArrayList<MyPacMan> bestPacMans, String listSavePath) {
-		ArrayList<ArrayList<ProbabilityByState>> probabilitiesOfAllPacMans = new ArrayList<>();
-		for(MyPacMan currentPacMan : bestPacMans)
+	
+
+	private static void printPacManWithWaitAndEatNearestPowerPill(ArrayList<MyPacMan> nFittestPacMans) {
+		int c = 0;
+		for(MyPacMan p : nFittestPacMans)
 		{
-			probabilitiesOfAllPacMans.add(currentPacMan.getProbabilities());
-		}
-		FileOutputStream fout = null;
-    	ObjectOutputStream oos = null;
-		try {
-			fout = new FileOutputStream(listSavePath);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-		try {
-			oos = new ObjectOutputStream(fout);
-			oos.writeObject(probabilitiesOfAllPacMans);
-			fout.close();
-	    	oos.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			c++;
+			System.out.println("PacMan #"+c+": ");
+			System.out.println("\tFitness: "+p.fitness);
+			ArrayList<ProbabilityByState> probByStates = p.getProbabilities();
+			for(ProbabilityByState probByState : probByStates)
+			{
+					System.out.println("State: "+probByState.m_stateString);
+					System.out.println("\tWait "+probByState.getProbability().getProbability(0));
+					System.out.println("\tEatNearestPowerPill "+probByState.getProbability().getProbability(1));
+			}
 		}
 	}
+
+	
 
 	private static void printStrategyProbabilities(ArrayList<MyPacMan> pacMans) {
 		for (int j = 0; j < pacMans.get(0).getProbabilities().size(); j++) {
@@ -189,126 +147,8 @@ public class Main {
 		}
 	}
 
-	private static ArrayList<MyPacMan> generateNextGeneration(ArrayList<MyPacMan> nFittestPacMans, int fitnessSum) {
-		Random rand = new Random();
-		ArrayList<MyPacMan> newGeneration = new ArrayList<MyPacMan>();
-		// PacMan roulette
-		for (int i = 0; i < nFittestPacMans.size(); i++) {
-			for (int j = 0; j < nFittestPacMans.size(); j++) {
-			 	if(rand.nextDouble() <= (double)nFittestPacMans.get(i).fitness/(double)fitnessSum)
-			 	{
-			 		MyPacMan current_pacMan = childPacMan(nFittestPacMans, rand, i, j);
-			 	newGeneration.add(current_pacMan);
-			 	if(newGeneration.size() == 50)
-			 		break;
-			 	}
-			}
-			if(newGeneration.size() == 50)
-			 		break;
-		}
-		return newGeneration;
-	}
-
-	private static void calculateFitness(int numberGamesPerPacMan, ArrayList<MyPacMan> pacMans) {
-    	for(int i = 0; i < pacMans.size(); i++){
-    		int fitness = 0;
-    		MyPacMan current_pacMan = pacMans.get(i);
-    		for(int j=0; j < numberGamesPerPacMan; j++)
-    		{
-    			//System.out.println("Pacman #"+i+", game #"+j+" started");
-    			notMain(new String[0], current_pacMan);
-    			
-    			//System.out.println("fitness for this game: "+newFitness);
-    			fitness += current_pacMan.fitness; 
-    			ArrayList<ProbabilityByState> probs = current_pacMan.getProbabilities();
-    			current_pacMan = new MyPacMan();
-    			current_pacMan.setProbabilities(probs);
-    		}
-    		fitness /= numberGamesPerPacMan;
-    		//System.out.println("Pacman #"+i+" finished. Fitness: "+fitness);
-    		//all_fitness[i] = fitness;
-    		current_pacMan.fitness = fitness;
-    	}
-	}
-	private static ArrayList<MyPacMan> createNPacMans(int n)
-	{
-		ArrayList<MyPacMan> pacMans = new ArrayList<>();
-		for(int i=0; i < n; i++)
-			pacMans.add(new MyPacMan());
-		return pacMans;
-	}
-	private static MyPacMan childPacMan(ArrayList<MyPacMan> nFittestPacMans, Random rand, int i, int j) {
-		ArrayList<ProbabilityByState> probs1 = nFittestPacMans.get(i).getProbabilities();
-		ArrayList<ProbabilityByState> probs2 = nFittestPacMans.get(j).getProbabilities();
-		ArrayList<ProbabilityByState> finalProbs = nFittestPacMans.get(j).getProbabilities();
-		for (int k = 0; k < probs1.size(); k++) {
-			if (probs1.get(k).counter != 0 && probs2.get(k).counter != 0) {
-				int stateCounterSum_first = nFittestPacMans.get(i).getStateCounterSum();
-				int stateCounterSum_second = nFittestPacMans.get(j).getStateCounterSum();
-				
-				double influenceOfThisState_first = probs1.get(k).counter/stateCounterSum_first;
-				double influenceOfThisState_second = probs2.get(k).counter/stateCounterSum_second;
-				
-				double fitnessState_first = influenceOfThisState_first * nFittestPacMans.get(i).fitness;
-				double fitnessState_second = influenceOfThisState_second * nFittestPacMans.get(j).fitness;
-				
-				
-				if(fitnessState_first > fitnessState_second)
-					finalProbs.set(k, probs1.get(k));
-				else
-					finalProbs.set(k, probs2.get(k));
-			 		
-			}
-			if (probs1.get(k).counter == 0 && probs2.get(k).counter != 0) {
-				finalProbs.set(k, probs2.get(k));
-			}
-			if (probs1.get(k).counter != 0  && probs2.get(k).counter == 0) {
-				finalProbs.set(k, probs1.get(k));
-			}
-		}
-	MyPacMan current_pacMan = new MyPacMan();
-	current_pacMan.setProbabilities(finalProbs);
-		return current_pacMan;
-	}
-    
-    public static ArrayList<MyPacMan> nFittestPacMans(MyPacMan[] pacMans, int n)
-    {
-    	Arrays.sort(pacMans, new Comparator<MyPacMan>(){
-			@Override
-			public int compare(MyPacMan a, MyPacMan b) {
-    	    	if(a.fitness < b.fitness)
-    	    		return -1;
-    	    	if(a.fitness > b.fitness)
-    	    		return 1;
-    	    	return 0;
-			}
-    	});
-    	ArrayList<MyPacMan> list =  new ArrayList<>(Arrays.asList(Arrays.copyOfRange(pacMans, pacMans.length-n, pacMans.length)));
-    	return list;
-    }
-    
-    public static MyPacMan mutate(MyPacMan pacman, double mutationRate, double mutationStepSizeUpperLimit)
-    {
-    	ArrayList<ProbabilityByState> probs = pacman.getProbabilities();
-    	Random rand = new Random();
-    	for (int i = 0; i < probs.size(); i++) {
-    		ProbabilityByState prob = probs.get(i);
-    		for(int j=0; j < prob.getProbability().getNumberOfProbabilities(); j++)
-    		{
-    			if(rand.nextDouble() <= mutationRate)
-        		{
-        			//double stepSize = rand.nextDouble()*mutationStepSizeUpperLimit;
-    				double stepSize = mutationStepSizeUpperLimit;
-        			if(rand.nextDouble() <= 0.5)
-        				stepSize = -stepSize;
-        			double newProbability = prob.getProbability().getProbability(j)+stepSize;
-        			prob.getProbability().setProbability(j, newProbability);
-        		}
-    		}
-    		prob.getProbability().normalizeProbability();
-		}
-    	pacman.setProbabilities(probs);
-    	return pacman;
-    }
+	
+	
+   
 }
 
