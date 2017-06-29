@@ -77,7 +77,7 @@ public class ProbabilityGenerator {
 		   return null;
 	   }
 	
-	private void _createNProbabilitiesPerPossibleState(String lastStateString, ArrayList<Strategy> strategyList,
+	private void _createNProbabilitiesPerPossibleState(String lastStateString, ArrayList<PacManStrategy> strategyList,
 			Class<? extends Enum<?>>... listOfStateEnums) {
 		Class<? extends Enum<?>> firstArgument;
 		Class<? extends Enum<?>>[] restArguments = listOfStateEnums;
@@ -107,7 +107,7 @@ public class ProbabilityGenerator {
 		}
 	}
 
-	public void createNProbabilitiesPerPossibleState(ArrayList<Strategy> strategyList, Class<? extends Enum<? extends stateEnum>>... listOfStateEnums) {
+	public void createNProbabilitiesPerPossibleState(ArrayList<PacManStrategy> strategyList, Class<? extends Enum<? extends stateEnum>>... listOfStateEnums) {
 		m_listOfUsedEnums = listOfStateEnums;
 		_createNProbabilitiesPerPossibleState("", strategyList, listOfStateEnums);
 	}

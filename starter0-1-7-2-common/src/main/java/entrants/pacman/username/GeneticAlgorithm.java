@@ -63,7 +63,7 @@ public class GeneticAlgorithm {
     		for(int j=0; j < numberGamesPerPacMan; j++)
     		{
     			//System.out.println("Pacman #"+i+", game #"+j+" started");
-    			GeneticAlgorithm.notMain(false, current_pacMan);
+    			GeneticAlgorithm.notMain(true, current_pacMan);
     			
     			//System.out.println("fitness for this game: "+newFitness);
     			fitness += current_pacMan.fitness; 
@@ -302,12 +302,15 @@ public class GeneticAlgorithm {
 		 return pacMan;
 	}
 	
-	public static ArrayList<MyPacMan> generateNextGeneration(ArrayList<MyPacMan> nFittestPacMans, double fitnessSum) {
+	public static ArrayList<MyPacMan> generateNextGeneration(ArrayList<MyPacMan> nFittestPacMans, double fitnessSum, int childrenLimit) {
 		Random rand = new Random();
 		ArrayList<MyPacMan> newGeneration = new ArrayList<MyPacMan>();
 		// PacMan roulette
 		for (int i = 0; i < nFittestPacMans.size(); i++) {
 			for (int j = 0; j < nFittestPacMans.size(); j++) {
+				if (newGeneration.size() >= childrenLimit) {
+					
+				}
 			 	if(rand.nextDouble() <= (double)nFittestPacMans.get(i).fitness/fitnessSum)
 			 	{
 			 		MyPacMan current_pacMan = childPacMan(nFittestPacMans, rand, i, j);

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class PROBABILITY implements Serializable{
-	PROBABILITY(ArrayList<Strategy> strategyList) {
+	PROBABILITY(ArrayList<PacManStrategy> strategyList) {
 		int numberStrategies = strategyList.size();
 		probabilites = new double[numberStrategies];
 		double[] temp = new double[numberStrategies];

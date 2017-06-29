@@ -159,7 +159,7 @@ class StaticFunctions{
 	  }
 	  
 }
-interface Strategy {
+interface PacManStrategy {
 	
 	default public MOVE getStrategyMove(Game game, int current, Memory memory)
 	{
@@ -180,7 +180,7 @@ interface Strategy {
 	
 }
 
-class WaitStrategy implements Strategy
+class WaitStrategy implements PacManStrategy
 {
 	public WaitStrategy(){}
 
@@ -201,7 +201,7 @@ class WaitStrategy implements Strategy
 		return 0;
 	}
 }
-class EatNearestPowerPillStrategy implements Strategy
+class EatNearestPowerPillStrategy implements PacManStrategy
 {
 	public EatNearestPowerPillStrategy(){}
 
@@ -221,7 +221,7 @@ class EatNearestPowerPillStrategy implements Strategy
 		return "EatNearestPowerPill";
 	}
 }
-class EatGhostStrategy implements Strategy
+class EatGhostStrategy implements PacManStrategy
 {
 	public EatGhostStrategy(){}
 
@@ -251,7 +251,7 @@ class EatGhostStrategy implements Strategy
 		return 0;
 	}
 }
-class EatNearestAvailablePillStrategy implements Strategy
+class EatNearestAvailablePillStrategy implements PacManStrategy
 {
 	public EatNearestAvailablePillStrategy(){}
 
@@ -270,7 +270,7 @@ class EatNearestAvailablePillStrategy implements Strategy
 
 }
 
-class GetRidOfGhost implements Strategy
+class GetRidOfGhost implements PacManStrategy
 {
 
 	@Override
@@ -316,7 +316,7 @@ class GetRidOfGhost implements Strategy
 	
 }
 
-class RunFromNearestGhost implements Strategy
+class RunFromNearestGhost implements PacManStrategy
 {
 	@Override
 	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
@@ -355,7 +355,7 @@ class RunFromNearestGhost implements Strategy
 	}
 }
 
-class RunTowardsNearestKnownGhost implements Strategy
+class RunTowardsNearestKnownGhost implements PacManStrategy
 {
 	@Override
 	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
@@ -393,7 +393,7 @@ class RunTowardsNearestKnownGhost implements Strategy
 	}
 }
 
-class RandomPatrolInRadiusAroundCenter implements Strategy
+class RandomPatrolInRadiusAroundCenter implements PacManStrategy
 {
 	private int center = Integer.MIN_VALUE;
 	private final int RADIUS = 30;
@@ -453,7 +453,7 @@ class RandomPatrolInRadiusAroundCenter implements Strategy
 	
 }
 
-class EatFurthestAwayPowerPill implements Strategy
+class EatFurthestAwayPowerPill implements PacManStrategy
 {
 	public EatFurthestAwayPowerPill(){}
 
@@ -507,7 +507,7 @@ class EatFurthestAwayPowerPill implements Strategy
 		return 0;
 	}
 }
-class EatFurthestAwayPill implements Strategy
+class EatFurthestAwayPill implements PacManStrategy
 {
 	public EatFurthestAwayPill(){}
 
@@ -561,7 +561,7 @@ class EatFurthestAwayPill implements Strategy
 		return 0;
 	}
 }
-class RunCircle implements Strategy
+class RunCircle implements PacManStrategy
 {
 	public RunCircle(){}
 
