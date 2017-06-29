@@ -67,6 +67,17 @@ public MyPacMan()
    {
 	   return probabilityGenerator.getProbabilityByStateList();
    }
+   
+   public void setProbabilityForStrategy(int numberOfStrategy, int numberOfprobability, double newProbability)
+   {
+	   probabilityGenerator.getProbabilityByStateList().get(numberOfStrategy).getProbabilityObject(false).setProbability(numberOfprobability, newProbability);
+   }
+   
+   public double getProbabilityForStrategy(int numberOfStrategy, int numberOfprobability)
+   {
+	   return probabilityGenerator.getProbabilityByStateList().get(numberOfStrategy).getProbabilityObject(false).getProbability(numberOfprobability);
+   }
+   
    public int getStateCounterSum()
 	{
 		return probabilityGenerator.getStateCounterSum();

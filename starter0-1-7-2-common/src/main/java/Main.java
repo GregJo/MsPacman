@@ -150,5 +150,74 @@ public class Main {
 	
 	
    
+    public static ArrayList<MyPacMan> nextGenerationWithStrategiesCrossover(ArrayList<MyPacMan> nFittestPacMans, double crossoverProbability)
+    {
+		Random rand = new Random();
+		
+		for (int i = 0; i < nFittestPacMans.size(); i++) {
+			int randomIdx = rand.nextInt(nFittestPacMans.size()-1);
+			if (rand.nextDouble()<crossoverProbability) {
+				nFittestPacMans.set(i, crossoverOnStrategiesLevel(nFittestPacMans.get(i), nFittestPacMans.get(randomIdx)));
+			}
+		}
+		return nFittestPacMans;
+    }
+    
+    public static ArrayList<MyPacMan> nextGenerationWithProbabilitiesCrossover(ArrayList<MyPacMan> nFittestPacMans, double crossoverProbability)
+    {
+		Random rand = new Random();
+		
+		ArrayList<MyPacMan> result = new ArrayList<>();
+		
+		for (int i = 0; i < nFittestPacMans.size(); i++) {
+			ArrayList<ProbabilityByState> probabilities = nFittestPacMans.get(i).getProbabilities();
+			ArrayList<ProbabilityByState> tmp = nFittestPacMans.get(i).getProbabilities();
+			for (int j = 0; j < probabilities.size(); j++) {
+				int randomIdx = rand.nextInt(probabilities.size()-1);
+				if (rand.nextDouble()<crossoverProbability) {
+					probabilities.set(j, crossoverOnProbabilitiesLevel(probabilities.get(j),tmp.get(randomIdx)));
+				}
+			}
+			MyPacMan pacMan = new MyPacMan();
+			pacMan.setProbabilities(probabilities);
+			result.add(pacMan);
+		}
+		
+		return result;
+    }
+    
+    public static MyPacMan crossoverOnStrategiesLevel(MyPacMan pacMan1, MyPacMan pacMan2)
+    {
+    	Random rand = new Random();
+    	int cutUpper = rand.nextInt(pacMan1.getProbabilities().size()-1);
+    	int cutLower = rand.nextInt(pacMan1.getProbabilities().size()-1-cutUpper);
+    	
+    	MyPacMan tmp = pacMan1;
+    	for (int i = cutLower; i < cutUpper; i++) {
+    		int randomIdx = rand.nextInt(pacMan1.getProbabilities().size()-1); 
+    		//pacMan1.getProbabilities().set(i, pacMan2.getProbabilities().get(randomIdx));
+    		//pacMan2.getProbabilities().set(randomIdx, tmp.getProbabilities().get(i));
+    		pacMan1.getProbabilities().set(i, pacMan2.getProbabilities().get(i));
+    		pacMan2.getProbabilities().set(i, tmp.getProbabilities().get(i));
+		}
+    	return pacMan1;
+    }
+    
+    public static ProbabilityByState crossoverOnProbabilitiesLevel(ProbabilityByState Probability1, ProbabilityByState Probability2)
+    {
+    	Random rand = new Random();
+    	int cutUpper = rand.nextInt(Probability1.getNumberOfProbabilities()-1);
+    	int cutLower = rand.nextInt(Probability1.getNumberOfProbabilities()-1-cutUpper);
+    	
+    	ProbabilityByState tmp = Probability1;
+    	for (int i = cutLower; i < cutUpper; i++) {
+    		//int randomIdx = rand.nextInt(Probability1.getNumberOfProbabilities()-1); 
+    		//Probability1.setProbability(i, Probability2.getProbability(randomIdx));
+    		//Probability2.setProbability(randomIdx, tmp.getProbability(i));
+    		Probability1.setProbability(i, Probability2.getProbability(i));
+    		Probability2.setProbability(i, tmp.getProbability(i));
+		}
+		return Probability1;
+    }
 }
 
