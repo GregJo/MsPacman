@@ -46,13 +46,13 @@ public MyPacMan()
 	   int numberStrategies = strategyList.size();
 	   probabilityGenerator = new ProbabilityGenerator(numberStrategies);
 	   probabilityGenerator.createNProbabilitiesPerPossibleState(strategyList,
-			   POWERPILLS_LEFT.class,
-			   KIND_OF_LEVEL_TILE.class,
-			   NUMBER_SEEN_GHOSTS.class,
-			   NUMBER_SEEN_EDIBLE_GHOSTS.class,
-			   GHOST_DISTANCE_TO_POWERPILL.class,
-			   POWER_PILL_ACTIVATED.class,
-			   LIVES_LEFT.class  
+			   POWERPILLS_LEFT.class
+			   //KIND_OF_LEVEL_TILE.class,
+			   //NUMBER_SEEN_GHOSTS.class
+			   //NUMBER_SEEN_EDIBLE_GHOSTS.class,
+			   //GHOST_DISTANCE_TO_POWERPILL.class,
+			   //POWER_PILL_ACTIVATED.class
+			  // LIVES_LEFT.class  
 	   );
 	   probabilityGenerator.resetStaticStateVars();
    }

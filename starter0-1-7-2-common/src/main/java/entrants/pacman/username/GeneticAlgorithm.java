@@ -63,7 +63,7 @@ public class GeneticAlgorithm {
     		for(int j=0; j < numberGamesPerPacMan; j++)
     		{
     			//System.out.println("Pacman #"+i+", game #"+j+" started");
-    			GeneticAlgorithm.notMain(false, current_pacMan);
+    			GeneticAlgorithm.notMain(true, current_pacMan);
     			
     			//System.out.println("fitness for this game: "+newFitness);
     			fitness += current_pacMan.fitness; 
@@ -212,21 +212,44 @@ public class GeneticAlgorithm {
 				
 				
 				if(fitnessState_first > fitnessState_second)
+				{
 					finalProbs.set(k, probs1.get(k));
+					ProbabilityByState p = simpleCrossOver(finalProbs.get(k), probs2.get(k));
+					p.normalizeProbabilities();
+					finalProbs.set(k, p);
+				}
 				else
+				{
 					finalProbs.set(k, probs2.get(k));
-			 		
+					ProbabilityByState p = simpleCrossOver(finalProbs.get(k), probs1.get(k));
+					p.normalizeProbabilities();
+					finalProbs.set(k, p);
+				}
+					
 			}
-			if (probs1.get(k).counter == 0 && probs2.get(k).counter != 0) {
+			if (probs1.get(k).counter == 0 && probs2.get(k).counter != 0) 
 				finalProbs.set(k, probs2.get(k));
-			}
-			if (probs1.get(k).counter != 0  && probs2.get(k).counter == 0) {
+			
+			if (probs1.get(k).counter != 0  && probs2.get(k).counter == 0)
 				finalProbs.set(k, probs1.get(k));
-			}
+		
 		}
 	MyPacMan current_pacMan = new MyPacMan();
 	current_pacMan.setProbabilities(finalProbs);
 		return current_pacMan;
+	}
+	
+	public static ProbabilityByState simpleCrossOver(ProbabilityByState prob1, ProbabilityByState prob2)
+	{
+		Random rand = new Random();
+		for(int i = 0; i < prob1.getNumberOfProbabilities(); i++)
+		{
+			if(rand.nextDouble() <= 0.5)
+			{
+				prob1.setProbability(i, prob2.getProbability(i));
+			}
+		}
+		return prob1;
 	}
 	
 	public static double adaptMutationStepSizeLinear(int fitnessGoal, double mutationStepSizeMax, double mutationStepSizeMin, int averageFitnessOfCurrentGeneration)
@@ -302,18 +325,22 @@ public class GeneticAlgorithm {
 		 return pacMan;
 	}
 	
-	public static ArrayList<MyPacMan> generateNextGeneration(ArrayList<MyPacMan> nFittestPacMans, double fitnessSum) {
+	public static ArrayList<MyPacMan> generateNextGeneration(ArrayList<MyPacMan> nFittestPacMans, double fitnessSum, int maxNumberChilds) {
 		Random rand = new Random();
 		ArrayList<MyPacMan> newGeneration = new ArrayList<MyPacMan>();
 		// PacMan roulette
 		for (int i = 0; i < nFittestPacMans.size(); i++) {
 			for (int j = 0; j < nFittestPacMans.size(); j++) {
-			 	if(rand.nextDouble() <= (double)nFittestPacMans.get(i).fitness/fitnessSum)
+			 	if(rand.nextDouble() <= nFittestPacMans.get(i).fitness/fitnessSum)
 			 	{
 			 		MyPacMan current_pacMan = childPacMan(nFittestPacMans, rand, i, j);
-			 	newGeneration.add(current_pacMan);
+			 		newGeneration.add(current_pacMan);
+			 		if(newGeneration.size() == maxNumberChilds)
+			 			break;
 			 	}
 			}
+			if(newGeneration.size() == maxNumberChilds)
+	 			break;
 		}
 		return newGeneration;
 	}
