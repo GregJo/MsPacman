@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Random;
@@ -42,11 +43,11 @@ public class Main {
     }
     
     public static void main(String[] args) {
-    	int numberGamesPerPacMan = 10;
-    	int numberOfDifferentPacMans = 1;
+    	int numberGamesPerPacMan = 20;
+    	int numberOfDifferentPacMans = 20;
     	double mutationRate = 0.05;
     	double mutationStepSizeUpperLimit = 0.05;
-    	final int runs = 10;
+    	final int runs = 20;
     	
     	double bestMutationRate = -1;
     	double bestFitnessGain = -1;
@@ -54,7 +55,7 @@ public class Main {
     	ArrayList<MyPacMan> bestPacMans = new ArrayList<>();
     	ArrayList<MyPacMan> pacMans = createNPacMans(numberOfDifferentPacMans);
     	
-    	
+    	/*
     	ArrayList<Integer> averageFitnessPerRun = new ArrayList<Integer>();
     	for(int i=0; i < runs; i++)
     	{
@@ -77,11 +78,11 @@ public class Main {
     	}
     	variance /= runs-1;
     	System.out.println("Variance: "+variance);
+    	*/
     	
     	
-    	
-    	while(false && mutationRate < 0.15)
-    	{
+    	//while(mutationRate < 0.15)
+    	//{
     		ArrayList<Integer> averageFitnessPerGeneration = new ArrayList<Integer>();
         	for (int i = 0; i < runs; i++) {
     			calculateFitness(numberGamesPerPacMan, pacMans);
@@ -97,8 +98,9 @@ public class Main {
     			if(i == runs-1)
     				break;
     			
-    			pacMans = generateNextGeneration(nFittestPacMans, fitnessSum);
-    			pacMans.addAll(0, nFittestPacMans);
+    			ArrayList<MyPacMan> tmp = nFittestPacMans;
+    			pacMans = nextGenerationWithProbabilitiesCrossover(nFittestPacMans,0.2);
+    			pacMans.addAll(0, tmp);
     			for (int j = 0; j < pacMans.size(); j++) {
     				MyPacMan pacMan = new MyPacMan();
     				pacMan.setProbabilities(mutate(pacMans.get(j), mutationRate, mutationStepSizeUpperLimit).getProbabilities());
@@ -127,14 +129,14 @@ public class Main {
         		bestFitness = averageFitnessPerGeneration.get(averageFitnessPerGeneration.size()-1);
         		bestPacMans = pacMans;
         	}
-        	break;
+        	//break;
         	//mutationRate += 0.01;
-    	}
+    	//}
     	
     	System.out.println("Best mutationRate: "+ bestMutationRate);
     	System.out.println("Best averageFitnessGain: "+ bestFitnessGain);
     	System.out.println("Best Fitness: "+ bestFitness);
-    	String listSavePath = "C:/Daten/pacmans.list";
+    	String listSavePath = "C:/Users/Grigori/Desktop/pacman.list";
     	savePacManList(bestPacMans, listSavePath);
         Executor executor = new Executor(true, true);
         EnumMap<GHOST, IndividualGhostController> controllers = new EnumMap<>(GHOST.class);
@@ -182,8 +184,8 @@ public class Main {
 		for (int j = 0; j < pacMans.get(0).getProbabilities().size(); j++) {
 			System.out.println("State Name: " + pacMans.get(0).getProbabilities().get(j).m_stateString);
 			System.out.print("Best PacMan probabilities (No."+j+"):[");
-		    for (int k = 0; k < pacMans.get(0).getProbabilities().get(j).getProbability().getNumberOfProbabilities(); k++) {
-		        System.out.print(pacMans.get(0).getProbabilities().get(j).getProbability().getProbability(k)+", ");
+		    for (int k = 0; k < pacMans.get(0).getProbabilities().get(j).getNumberOfProbabilities(); k++) {
+		        System.out.print(pacMans.get(0).getProbabilities().get(j).getProbability(k)+", ");
 			}
 		    System.out.print("]\n\n");
 		}
@@ -284,6 +286,7 @@ public class Main {
 			}
     	});
     	ArrayList<MyPacMan> list =  new ArrayList<>(Arrays.asList(Arrays.copyOfRange(pacMans, pacMans.length-n, pacMans.length)));
+    	Collections.reverse(list);
     	return list;
     }
     
@@ -293,7 +296,7 @@ public class Main {
     	Random rand = new Random();
     	for (int i = 0; i < probs.size(); i++) {
     		ProbabilityByState prob = probs.get(i);
-    		for(int j=0; j < prob.getProbability().getNumberOfProbabilities(); j++)
+    		for(int j=0; j < prob.getNumberOfProbabilities(); j++)
     		{
     			if(rand.nextDouble() <= mutationRate)
         		{
@@ -301,14 +304,84 @@ public class Main {
     				double stepSize = mutationStepSizeUpperLimit;
         			if(rand.nextDouble() <= 0.5)
         				stepSize = -stepSize;
-        			double newProbability = prob.getProbability().getProbability(j)+stepSize;
-        			prob.getProbability().setProbability(j, newProbability);
+        			double newProbability = prob.getProbability(j)+stepSize;
+        			prob.setProbability(j, newProbability);
         		}
     		}
-    		prob.getProbability().normalizeProbability();
+    		prob.normalizeProbabilities();
 		}
     	pacman.setProbabilities(probs);
     	return pacman;
+    }
+    
+    public static ArrayList<MyPacMan> nextGenerationWithStrategiesCrossover(ArrayList<MyPacMan> nFittestPacMans, double crossoverProbability)
+    {
+		Random rand = new Random();
+		
+		for (int i = 0; i < nFittestPacMans.size(); i++) {
+			int randomIdx = rand.nextInt(nFittestPacMans.size()-1);
+			if (rand.nextDouble()<crossoverProbability) {
+				nFittestPacMans.set(i, crossoverOnStrategiesLevel(nFittestPacMans.get(i), nFittestPacMans.get(randomIdx)));
+			}
+		}
+		return nFittestPacMans;
+    }
+    
+    public static ArrayList<MyPacMan> nextGenerationWithProbabilitiesCrossover(ArrayList<MyPacMan> nFittestPacMans, double crossoverProbability)
+    {
+		Random rand = new Random();
+		
+		ArrayList<MyPacMan> result = new ArrayList<>();
+		
+		for (int i = 0; i < nFittestPacMans.size(); i++) {
+			ArrayList<ProbabilityByState> probabilities = nFittestPacMans.get(i).getProbabilities();
+			ArrayList<ProbabilityByState> tmp = nFittestPacMans.get(i).getProbabilities();
+			for (int j = 0; j < probabilities.size(); j++) {
+				int randomIdx = rand.nextInt(probabilities.size()-1);
+				if (rand.nextDouble()<crossoverProbability) {
+					probabilities.set(j, crossoverOnProbabilitiesLevel(probabilities.get(j),tmp.get(randomIdx)));
+				}
+			}
+			MyPacMan pacMan = new MyPacMan();
+			pacMan.setProbabilities(probabilities);
+			result.add(pacMan);
+		}
+		
+		return result;
+    }
+    
+    public static MyPacMan crossoverOnStrategiesLevel(MyPacMan pacMan1, MyPacMan pacMan2)
+    {
+    	Random rand = new Random();
+    	int cutUpper = rand.nextInt(pacMan1.getProbabilities().size()-1);
+    	int cutLower = rand.nextInt(pacMan1.getProbabilities().size()-1-cutUpper);
+    	
+    	MyPacMan tmp = pacMan1;
+    	for (int i = cutLower; i < cutUpper; i++) {
+    		int randomIdx = rand.nextInt(pacMan1.getProbabilities().size()-1); 
+    		//pacMan1.getProbabilities().set(i, pacMan2.getProbabilities().get(randomIdx));
+    		//pacMan2.getProbabilities().set(randomIdx, tmp.getProbabilities().get(i));
+    		pacMan1.getProbabilities().set(i, pacMan2.getProbabilities().get(i));
+    		pacMan2.getProbabilities().set(i, tmp.getProbabilities().get(i));
+		}
+    	return pacMan1;
+    }
+    
+    public static ProbabilityByState crossoverOnProbabilitiesLevel(ProbabilityByState Probability1, ProbabilityByState Probability2)
+    {
+    	Random rand = new Random();
+    	int cutUpper = rand.nextInt(Probability1.getNumberOfProbabilities()-1);
+    	int cutLower = rand.nextInt(Probability1.getNumberOfProbabilities()-1-cutUpper);
+    	
+    	ProbabilityByState tmp = Probability1;
+    	for (int i = cutLower; i < cutUpper; i++) {
+    		//int randomIdx = rand.nextInt(Probability1.getNumberOfProbabilities()-1); 
+    		//Probability1.setProbability(i, Probability2.getProbability(randomIdx));
+    		//Probability2.setProbability(randomIdx, tmp.getProbability(i));
+    		Probability1.setProbability(i, Probability2.getProbability(i));
+    		Probability2.setProbability(i, tmp.getProbability(i));
+		}
+		return Probability1;
     }
 }
 
