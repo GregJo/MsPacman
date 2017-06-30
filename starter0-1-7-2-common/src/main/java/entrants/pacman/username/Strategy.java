@@ -20,12 +20,23 @@ public interface Strategy {
 		MOVE move = _getStrategyMove(game, current, memory);
 		updateMemoryBeforeReturn(game, current, memory);
 		memory.lastStrategyUsed = getStrategyName();
+		
+		if(move == null)
+		{
+			int a = 5;
+		}
+		
 		return move;
 		
 	};
 	default public void updateMemoryBeforeReturn(Game game, int current, Memory memory)
 	{
 		
+	}
+	
+	default public boolean requirementsMet(Game game, int current, Memory memory)
+	{
+		return true;	
 	}
 	
 	default public double getStrategyInitialProbability(){return initialProbability.RANDOM;};

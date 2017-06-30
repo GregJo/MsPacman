@@ -119,7 +119,7 @@ public class ProbabilityGenerator {
 		_createNProbabilitiesPerPossibleState("", strategyList, listOfStateEnums);
 	}
 	
-	public int geStrategyNumberToUse(Game game, int current, Memory memory, final ArrayList<PacManStrategy> strategyList){
+	public int geStrategyNumberToUse(Game game, int current, Memory memory, final ArrayList<Strategy> strategyList){
 		PROBABILITY probabilities = this.getCurrentProbability(game, current, memory);
 		
 		if(memory.stateChanged == false)

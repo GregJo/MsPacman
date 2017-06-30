@@ -92,7 +92,7 @@ public MyGhost()
     	int current = game.getPacmanCurrentNodeIndex();
     	memory.updateMemory(game, current);
     	
-    	int rouletteStrategyNumber = probabilityGenerator.geStrategyNumberToUse(game, current, memory);
+    	int rouletteStrategyNumber = probabilityGenerator.geStrategyNumberToUse(game, current, memory, strategyList);
     	 MOVE move = strategyList.get(rouletteStrategyNumber).getStrategyMove(game, current, memory);
     	 ticks = (game.getTotalTime() == 0) ? 1 :  game.getTotalTime();
     	 score = game.getScore();

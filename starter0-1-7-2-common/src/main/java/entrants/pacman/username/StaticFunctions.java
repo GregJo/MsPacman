@@ -7,7 +7,7 @@ import pacman.game.Game;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.MOVE;
 
-public class StaticFunctions{
+class StaticFunctions{
 	//static ArrayList<MOVE> moveArray = new ArrayList<MOVE>();
 	static int[] convertIntegerListToArray(ArrayList<Integer> list)
 	{
@@ -56,14 +56,17 @@ public class StaticFunctions{
 	  {
 		  int[] shortestPath = new int[0];
 	    
+		  	int[] path;
 	    	for(int objectIndex : indicesOfObject)
 	    	{
-	    		int[] path = game.getShortestPath(current, objectIndex);
+	    		path = game.getShortestPath(current, objectIndex);
 	    		if(path.length < shortestPath.length || shortestPath.length == 0)
 	    		{
-	    			shortestPath = path;
+	    			if(path.length > 0)
+	    				shortestPath = path;
 	    		}
 	    	}
+	    
 	    	return shortestPath;
 	  }
 	  
