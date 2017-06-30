@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class PROBABILITY implements Serializable{
-	PROBABILITY(ArrayList<PacManStrategy> strategyList) {
+	PROBABILITY(ArrayList<Strategy> strategyList) {
 		int numberStrategies = strategyList.size();
 		probabilites = new double[numberStrategies];
 		double[] temp = new double[numberStrategies];
@@ -14,7 +14,7 @@ public class PROBABILITY implements Serializable{
 		double sum = 0;
 		for (int i = 0; i < numberStrategies; i++) {
 			double initProbability = strategyList.get(i).getStrategyInitialProbability();
-			temp[i] = (initProbability == initialProbability.RANDOM) ? new Random().nextDouble() : initProbability;
+			temp[i] = (initProbability == Strategy.initialProbability.RANDOM) ? new Random().nextDouble() : initProbability;
 			sum += temp[i];
 		}
 

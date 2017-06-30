@@ -1,4 +1,4 @@
-package entrants.pacman.username;
+package entrants.ghosts.username;
 
 import pacman.controllers.PacmanController;
 import pacman.game.Constants.MOVE;
@@ -10,13 +10,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import entrants.pacman.username.Strategy;
+import entrants.pacman.username.Memory;
+import entrants.pacman.username.ProbabilityByState;
+import entrants.pacman.username.ProbabilityGenerator;
+
 
 /*
  * This is the class you need to modify for your entry. In particular, you need to
  * fill in the getMove() method. Any additional classes you write should either
  * be placed in this package or sub-packages (e.g., entrants.pacman.username).
  */
-public class MyPacMan extends PacmanController {
+public class MyGhost{
    private Memory memory = new Memory();
    private ProbabilityGenerator probabilityGenerator;
    private ArrayList<Strategy> strategyList;
@@ -25,35 +30,31 @@ public class MyPacMan extends PacmanController {
    public double score = 0;
 
    @SuppressWarnings("unchecked")
-public MyPacMan()
+public MyGhost()
    {
 	   strategyList = new ArrayList<>(
 			   Arrays.asList(
-					   new WaitStrategy(),
-					   new EatNearestPowerPillStrategy(),
-					   new EatGhostStrategy(),
-					   new EatNearestAvailablePillStrategy(),
-					   new EatFurthestAwayPowerPill(),
-					  new EatFurthestAwayPill(),
-					   new RunCircle(),
-					   new GetRidOfGhost(),
-					   new RandomPatrolInRadiusAroundCenter(),
-					   new RunTowardsNearestKnownGhost(),
-					   new RunFromNearestGhost()
+					   //new WaitStrategy()
+					   new HuntPacMan()
+					   //new RunAwayFromPacMan(),
+					   //new GoToNearestAvaiblePowerPill(),
+					   //new AvoidOtherGhost(),
+					   //new RunCircle(),
+					   //new RandomPatrolInRadiusAroundCenter(),
+					   //new RunTowardsNearestKnownGhost(),
 			   )
 		);
 	   
 	   int numberStrategies = strategyList.size();
 	   probabilityGenerator = new ProbabilityGenerator(numberStrategies);
 	   probabilityGenerator.createNProbabilitiesPerPossibleState(strategyList,
-			   POWERPILLS_LEFT.class,
-			   KIND_OF_LEVEL_TILE.class,
-			   NUMBER_SEEN_GHOSTS.class,
-			 NUMBER_SEEN_EDIBLE_GHOSTS.class,
-			   GHOST_DISTANCE_TO_POWERPILL.class,
-			   POWER_PILL_ACTIVATED.class
-			  // LIVES_LEFT.class  
-	   );
+	   																POWERPILLS_LEFT.class
+																	//KIND_OF_LEVEL_TILE.class,
+																	//NUMBER_SEEN_GHOSTS.class,
+																	//IS_PACMAN_VISIBLE.class,
+																	//GHOST_DISTANCE_TO_POWERPILL.class,
+																	//POWER_PILL_ACTIVATED.class
+	   																);
 	   probabilityGenerator.resetStaticStateVars();
    }
    

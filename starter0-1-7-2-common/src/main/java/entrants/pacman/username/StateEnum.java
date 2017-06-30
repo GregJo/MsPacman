@@ -1,6 +1,5 @@
 package entrants.pacman.username;
 
-import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 
@@ -12,13 +11,12 @@ import java.util.ArrayList;
 
 import pacman.game.Game;
 
-interface stateEnum {
+public interface StateEnum {
 	public String getCurrentStateString(Game game, int current, Memory memory);
 	public void resetStaticVars();
 }
-
 ////////////////////ENUMS DESCRIBING THE GLOBAL STATE ///////////////////////////////////
-enum POWERPILLS_LEFT implements stateEnum{
+enum POWERPILLS_LEFT implements StateEnum{
 	   noPowerPillLeft, powerPillsLeft;
 	   public String getCurrentStateString(Game game, int current, Memory memory)
 	   {
@@ -43,7 +41,7 @@ enum POWERPILLS_LEFT implements stateEnum{
 
 
 ////////////////////ENUMS DESCRIBING THE LOCAL ENVIROMENT ///////////////////////////////////
-enum KIND_OF_LEVEL_TILE implements stateEnum{
+enum KIND_OF_LEVEL_TILE implements StateEnum{
 	   deadEnd, hallWay,threeWayJunction,fourWayJunction;
 	   public String getCurrentStateString(Game game, int current, Memory memory){
 		   int moveCounter = 0;
@@ -69,7 +67,7 @@ enum KIND_OF_LEVEL_TILE implements stateEnum{
 	}
 }
 ////////////////////ENUMS DESCRIBING WHAT MS.PACMAN SEES ///////////////////////////////////
-enum NUMBER_SEEN_GHOSTS implements stateEnum{
+enum NUMBER_SEEN_GHOSTS implements StateEnum{
 	   seeingNoGhost, seeingOneGhost, seeingTwoGhost, seeingThreeGhost, seeingFourGhost;
 	 public static int ghostCounter = 0;
 	 public String getCurrentStateString(Game game, int current, Memory memory){
@@ -99,7 +97,7 @@ enum NUMBER_SEEN_GHOSTS implements stateEnum{
 		
 	}
 }
-enum NUMBER_SEEN_EDIBLE_GHOSTS implements stateEnum{
+enum NUMBER_SEEN_EDIBLE_GHOSTS implements StateEnum{
 	   seeingNoEdibleGhost, seeingOneEdibleGhost, seeingTwoEdibleGhosts, seeingThreeEdibleGhosts, seeingFourEdibleGhosts;
 	 public String getCurrentStateString(Game game, int current, Memory memory){
 		  int ghostCounter = 0;
@@ -134,7 +132,7 @@ enum NUMBER_SEEN_EDIBLE_GHOSTS implements stateEnum{
 	}
 }
 ////////////////////ENUMS DESCRIBING RELATIVE DISTANCES///////////////////////////////////
-enum GHOST_DISTANCE_TO_POWERPILL implements stateEnum{
+enum GHOST_DISTANCE_TO_POWERPILL implements StateEnum{
 	   ghostNearerToPowerPill, pacmanNearerToPowerPill;
 	static int[] m_shortestPathPacmanToNextPowerPill; //since we compute the path we can just as well save it in case the strategies need it.
 	static int[] m_shortestPathGhostToNextPowerPill; //since we compute the path we can just as well save it in case the strategies need it.
@@ -182,7 +180,7 @@ enum GHOST_DISTANCE_TO_POWERPILL implements stateEnum{
 }
 
 ////////////////////ENUMS DESCRIBING STATE OF MS.PACMAN ///////////////////////////////////
-enum POWER_PILL_ACTIVATED implements stateEnum{
+enum POWER_PILL_ACTIVATED implements StateEnum{
 	   powerPillActive, powerPillNotActive;
 	 static int powerPillTime = 0;
 	 public String getCurrentStateString(Game game, int current, Memory memory)
@@ -206,7 +204,7 @@ enum POWER_PILL_ACTIVATED implements stateEnum{
 		
 	}
 }
-enum LIVES_LEFT implements stateEnum{
+enum LIVES_LEFT implements StateEnum{
 	   oneLiveLeft, twoLivesLeft, threeLivesLeft;
 	
 	 public String getCurrentStateString(Game game, int current, Memory memory)
@@ -233,4 +231,5 @@ enum LIVES_LEFT implements stateEnum{
 		
 	}
 }
+
 

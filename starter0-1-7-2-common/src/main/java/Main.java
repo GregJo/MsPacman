@@ -122,7 +122,7 @@ public class Main {
     		lastGenerationFitnessSum = fitnessSum;
     		badGenCounter = 0;
     		
-    		GeneticAlgorithm.savePacManList(lastGeneration, listSavePath+"fitness_"+averageFitnessOfGeneration+"counter_"+saveCounter);
+    		//GeneticAlgorithm.savePacManList(lastGeneration, listSavePath+"fitness_"+averageFitnessOfGeneration+"counter_"+saveCounter);
     		System.out.println("Average Fitness:" + averageFitnessOfGeneration);
     		System.out.println("MuationRate:" + mutationRate);
     		System.out.println("New mutationStepUpperLimit:" + mutationStepSizeUpperLimit);
