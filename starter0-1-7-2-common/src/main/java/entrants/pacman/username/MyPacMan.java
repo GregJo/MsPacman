@@ -19,7 +19,7 @@ import java.util.Random;
 public class MyPacMan extends PacmanController {
    private Memory memory = new Memory();
    private ProbabilityGenerator probabilityGenerator;
-   private ArrayList<Strategy> strategyList;
+   private ArrayList<PacManStrategy> strategyList;
    public double fitness = 0;
    public double ticks = 0;
    public double score = 0;
@@ -34,7 +34,7 @@ public MyPacMan()
 					   new EatGhostStrategy(),
 					   new EatNearestAvailablePillStrategy(),
 					   new EatFurthestAwayPowerPill(),
-					   new EatFurthestAwayPill(),
+					  new EatFurthestAwayPill(),
 					   new RunCircle(),
 					   new GetRidOfGhost(),
 					   new RandomPatrolInRadiusAroundCenter(),
@@ -46,12 +46,12 @@ public MyPacMan()
 	   int numberStrategies = strategyList.size();
 	   probabilityGenerator = new ProbabilityGenerator(numberStrategies);
 	   probabilityGenerator.createNProbabilitiesPerPossibleState(strategyList,
-			   POWERPILLS_LEFT.class
-			   //KIND_OF_LEVEL_TILE.class,
-			   //NUMBER_SEEN_GHOSTS.class
-			   //NUMBER_SEEN_EDIBLE_GHOSTS.class,
-			   //GHOST_DISTANCE_TO_POWERPILL.class,
-			   //POWER_PILL_ACTIVATED.class
+			   POWERPILLS_LEFT.class,
+			   KIND_OF_LEVEL_TILE.class,
+			   NUMBER_SEEN_GHOSTS.class,
+			 NUMBER_SEEN_EDIBLE_GHOSTS.class,
+			   GHOST_DISTANCE_TO_POWERPILL.class,
+			   POWER_PILL_ACTIVATED.class
 			  // LIVES_LEFT.class  
 	   );
 	   probabilityGenerator.resetStaticStateVars();

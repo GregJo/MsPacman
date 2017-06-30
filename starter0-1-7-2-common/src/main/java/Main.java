@@ -35,16 +35,17 @@ public class Main {
     	
     	int numberGamesPerPacMan = 20;
     	int numberOfDifferentPacMans = 10;
-    	double mutationRate = 0.01;
-    	double mutationStepSizeUpperLimit = 0.30; //nicht anfassen
+    	double mutationRate = 0.5;
+    	double mutationStepSizeUpperLimit = 0.05; //nicht anfassen
     	final int runs = 10;
-    	String listSavePath = "C:/Daten/pacman/pacmans_powerPillLeft";
+    	String listSavePath = "C:/Daten/pacman/alle/";
     	
     	double averageFitnessLastGeneration = 0;
     	double lastGenerationFitnessSum = 0;
     	ArrayList<MyPacMan> currentGeneration;
     	ArrayList<MyPacMan> lastGeneration = new ArrayList<>();
     	int badGenCounter = 0;
+    	int saveCounter = 0;
     	
     	currentGeneration = GeneticAlgorithm.createNewGeneration(numberOfDifferentPacMans);	
        	for (int i = 0; true || i < runs ; i++) 
@@ -58,24 +59,55 @@ public class Main {
     		//if last generation fitness was better, drop this generation
     		if(averageFitnessOfGeneration < averageFitnessLastGeneration && lastGeneration.size() > 0)
     		{
+    			saveCounter++;
     			badGenCounter++;
     			System.out.println("badGenCounter: "+badGenCounter);
+    			
     			
     			ArrayList<MyPacMan> overAveragePacMans = new ArrayList<>();
     			for(MyPacMan p : currentGeneration)
     			{
-    				if(p.fitness >= averageFitnessLastGeneration)
+    				if(p.fitness > averageFitnessLastGeneration)
     					overAveragePacMans.add(p);
     			}
-    			lastGeneration.addAll(0, overAveragePacMans);
-    			currentGeneration = lastGeneration;
+    			
+    			//replace old pacmans that are worse than the new ones
+    			for(int j = 0; j < overAveragePacMans.size(); j++)
+    			{
+    				MyPacMan newPacMan = overAveragePacMans.get(j);
+    				
+    				int idx = -1;
+    				for(int k = 0; k < lastGeneration.size(); k++)
+        			{
+        				MyPacMan oldPacMan = lastGeneration.get(k);
+        				if(oldPacMan.fitness < newPacMan.fitness)
+        				{
+        					idx = k;
+        					break;
+        				}
+        			}
+    				if(idx > -1)
+    					lastGeneration.set(idx, newPacMan);
+    			}
+    			
+    			//recalculate average fitness of lastGeneration
+    	 		lastGenerationFitnessSum = GeneticAlgorithm.calculateFitnessSumOfGeneration(listSavePath, i, lastGeneration);
+           		averageFitnessLastGeneration = lastGenerationFitnessSum/lastGeneration.size();
+    			
+           	if(overAveragePacMans.size() > 0)	
+           		GeneticAlgorithm.savePacManList(lastGeneration, listSavePath+"fitness_"+averageFitnessLastGeneration+"counter_"+saveCounter);
+           		
+    			currentGeneration = new ArrayList<>(); 
+    			currentGeneration.addAll(lastGeneration);
     			
     			if(badGenCounter > 100)
     			{
-    				GeneticAlgorithm.savePacManList(currentGeneration, listSavePath);
+    				GeneticAlgorithm.savePacManList(currentGeneration, listSavePath+"fitness_"+averageFitnessLastGeneration+"counter_"+saveCounter);
     				currentGeneration = GeneticAlgorithm.resetPacMans(currentGeneration);
     				System.out.println("average end fitness: "+averageFitnessLastGeneration);
-    				break;
+    				mutationStepSizeUpperLimit += 0.05;
+    				System.out.println("new MutationStepSize: "+mutationStepSizeUpperLimit);
+    				badGenCounter = 0;
     			}
     			currentGeneration.addAll(GeneticAlgorithm.generateNextGeneration(currentGeneration, lastGenerationFitnessSum, numberOfDifferentPacMans/2));
     			currentGeneration = GeneticAlgorithm.mutate(currentGeneration, mutationRate, mutationStepSizeUpperLimit);
@@ -84,11 +116,13 @@ public class Main {
     			System.out.println("Generation dropped");
     			continue;
     		}
-    		lastGeneration = currentGeneration;
+    		lastGeneration = new ArrayList<>();
+    		lastGeneration.addAll(currentGeneration);
     		averageFitnessLastGeneration = averageFitnessOfGeneration;
     		lastGenerationFitnessSum = fitnessSum;
     		badGenCounter = 0;
     		
+    		GeneticAlgorithm.savePacManList(lastGeneration, listSavePath+"fitness_"+averageFitnessOfGeneration+"counter_"+saveCounter);
     		System.out.println("Average Fitness:" + averageFitnessOfGeneration);
     		System.out.println("MuationRate:" + mutationRate);
     		System.out.println("New mutationStepUpperLimit:" + mutationStepSizeUpperLimit);
@@ -107,8 +141,11 @@ public class Main {
         MyPacMan pacMan = new MyPacMan();
         ArrayList<MyPacMan> fittest = GeneticAlgorithm.nFittestPacMans(currentGeneration.toArray(new MyPacMan[currentGeneration.size()]),1);
         pacMan.setProbabilities(fittest.get(0).getProbabilities());
-        
-        //pacMan = GeneticAlgorithm.loadPacMan("C:/Daten/pacman/run 7/score_2370_ticks_951_run_6counter_0");
+//        
+//        ArrayList<MyPacMan> p = GeneticAlgorithm.loadPacManList("C:/Daten/pacman/pacmans_powerPillLeft_NumberSeenEdibleGhosts2/bestfitness_6.024258760107816_run_48counter_0");
+//        GeneticAlgorithm.calculateFitness(1000, p);
+//       p = GeneticAlgorithm.nFittestPacMans(p.toArray(new MyPacMan[p.size()]), 1);
+//        p = GeneticAlgorithm.resetPacMans(p);
         GeneticAlgorithm.notMain(false, pacMan);
    
     }
@@ -138,7 +175,7 @@ public class Main {
 			for (int j = 0; j < probabilities.size(); j++) {
 				int randomIdx = rand.nextInt(probabilities.size()-1);
 				if (rand.nextDouble()<crossoverProbability) {
-					probabilities.set(j, crossoverOnProbabilitiesLevel(probabilities.get(j),tmp.get(randomIdx)));
+				//	probabilities.set(j, crossoverOnProbabilitiesLevel(probabilities.get(j),tmp.get(randomIdx)));
 				}
 			}
 			MyPacMan pacMan = new MyPacMan();
@@ -169,34 +206,6 @@ public class Main {
     	return pacMan1;
     }
     
-    public static ProbabilityByState crossoverOnProbabilitiesLevel(ProbabilityByState Probability1, ProbabilityByState Probability2)
-    {
-    	Random rand = new Random();
-    	int cutLower = rand.nextInt(Probability1.getNumberOfProbabilities()-1);
-    	int cutUpper = rand.nextInt(Probability1.getNumberOfProbabilities()-1+cutLower);
-    	if (cutUpper > Probability1.getNumberOfProbabilities()-1) {
-    		cutUpper = Probability1.getNumberOfProbabilities()-1;
-		}
-    	
-    	int cutUpper;
-    	int cutLower;
-    	if(rand.nextDouble() <= 0.5)
-    	{
-    		cutUpper = cut;
-    		cutLower = 0;
-    	}
-    	else
-    	{
-    		cutUpper = Probability1.getNumberOfProbabilities()-1;
-    		cutLower = cut;
-    	}
-    	
-    	ProbabilityByState tmp = Probability1;
-    	for (int i = cutLower; i < cutUpper; i++) {
-    		Probability1.setProbability(i, Probability2.getProbability(i));
-    		Probability2.setProbability(i, tmp.getProbability(i));
-		}
-		return Probability1;
-    }
+    
 }
 

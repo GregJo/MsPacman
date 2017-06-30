@@ -21,8 +21,10 @@ public class Memory
 	private boolean m_levelChanged;
 	private int m_levelIndex;
 	public  String lastStrategyUsed;
+	public String lastStateString;
+	public boolean stateChanged = true;
 	
-	public Memory(){m_memoryInitialized = false; lastStrategyUsed = "";m_levelIndex = 0;}
+	public Memory(){m_memoryInitialized = false; lastStrategyUsed = "";m_levelIndex = 0;lastStateString="";}
 	private void initializeMemory(Game game, int current)
 	{
 		if(m_levelIndex != game.getCurrentLevel())

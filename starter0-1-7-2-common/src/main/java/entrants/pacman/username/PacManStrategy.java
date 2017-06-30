@@ -209,6 +209,14 @@ class EatNearestPowerPillStrategy implements PacManStrategy
 	/*@brief Goes to next powerpill.
 	 * !Attention Currently expects that GHOST_DISTANCE_TO_POWERPILL State enum is used*/
 	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
+		
+		
+		if(GHOST_DISTANCE_TO_POWERPILL.enumUsed == false && memory.getStillAvailablePowerPills().size() > 0)
+		{
+			 ArrayList<Integer> powerPills =  memory.getStillAvailablePowerPills();
+			return StaticFunctions.getMoveToNearestObject(game, current, StaticFunctions.convertIntegerListToArray(memory.getStillAvailablePowerPills()));
+			
+		}
 		if(GHOST_DISTANCE_TO_POWERPILL.enumUsed && memory.getStillAvailablePowerPills().size() > 0)
 		{
 			return game.getNextMoveTowardsTarget(current,GHOST_DISTANCE_TO_POWERPILL.m_shortestPathPacmanToNextPowerPill[0],DM.PATH);

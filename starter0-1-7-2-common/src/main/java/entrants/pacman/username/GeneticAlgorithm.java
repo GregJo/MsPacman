@@ -89,14 +89,14 @@ public class GeneticAlgorithm {
 		for (MyPacMan myPacMan : generation) 
 		{
 			fitnessSum += myPacMan.fitness;
-			if(myPacMan.fitness > 1000)
-			{
-				ArrayList<MyPacMan> goodPacMans = new ArrayList<>();
-				goodPacMans.add(myPacMan);
-				String saveName = listSavePath + "fitness_"+myPacMan.fitness+"_run_"+run+"counter_"+counter;
-				GeneticAlgorithm.savePacManList(goodPacMans, saveName);
-				counter++;
-			}		
+//			if(myPacMan.fitness > 3)
+//			{
+//				ArrayList<MyPacMan> goodPacMans = new ArrayList<>();
+//				goodPacMans.add(myPacMan);
+//				String saveName = listSavePath + "fitness_"+myPacMan.fitness+"_run_"+run+"counter_"+counter;
+//				GeneticAlgorithm.savePacManList(goodPacMans, saveName);
+//				counter++;
+//			}		
 		}
 		
 		return fitnessSum;
@@ -210,20 +210,28 @@ public class GeneticAlgorithm {
 				double fitnessState_first = influenceOfThisState_first * nFittestPacMans.get(i).fitness;
 				double fitnessState_second = influenceOfThisState_second * nFittestPacMans.get(j).fitness;
 				
-				
+				Random rand2 = new Random();
 				if(fitnessState_first > fitnessState_second)
 				{
 					finalProbs.set(k, probs1.get(k));
-					ProbabilityByState p = simpleCrossOver(finalProbs.get(k), probs2.get(k));
-					p.normalizeProbabilities();
-					finalProbs.set(k, p);
+					
+					if(rand2.nextDouble() < 0.1)
+					{
+						ProbabilityByState p = crossoverOnProbabilitiesLevel(finalProbs.get(k), probs2.get(k));
+						p.normalizeProbabilities();
+						finalProbs.set(k, p);
+					}
+					
 				}
 				else
 				{
-					finalProbs.set(k, probs2.get(k));
-					ProbabilityByState p = simpleCrossOver(finalProbs.get(k), probs1.get(k));
-					p.normalizeProbabilities();
-					finalProbs.set(k, p);
+					if(rand2.nextDouble() < 0.1)
+					{
+						finalProbs.set(k, probs2.get(k));
+						ProbabilityByState p = crossoverOnProbabilitiesLevel(finalProbs.get(k), probs1.get(k));
+						p.normalizeProbabilities();
+						finalProbs.set(k, p);
+					}
 				}
 					
 			}
@@ -344,4 +352,20 @@ public class GeneticAlgorithm {
 		}
 		return newGeneration;
 	}
+	public static ProbabilityByState crossoverOnProbabilitiesLevel(ProbabilityByState Probability1, ProbabilityByState Probability2)
+    {
+    	Random rand = new Random();
+    	int cutLower = rand.nextInt(Probability1.getNumberOfProbabilities()-1);
+    	int cutUpper = rand.nextInt(Probability1.getNumberOfProbabilities()-1+cutLower);
+    	if (cutUpper > Probability1.getNumberOfProbabilities()-1) {
+    		cutUpper = Probability1.getNumberOfProbabilities()-1;
+		}
+    	
+    	ProbabilityByState tmp = Probability1;
+    	for (int i = cutLower; i < cutUpper; i++) {
+    		Probability1.setProbability(i, Probability2.getProbability(i));
+    		//Probability2.setProbability(i, tmp.getProbability(i));
+		}
+		return Probability1;
+    }
 }

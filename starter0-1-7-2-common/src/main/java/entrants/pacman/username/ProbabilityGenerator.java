@@ -17,6 +17,7 @@ public class ProbabilityGenerator {
 	private ArrayList<ProbabilityByState> m_probability_by_state_list = new ArrayList<ProbabilityByState>();
 	private Class<? extends Enum<? extends stateEnum>>[] m_listOfUsedEnums;
 	private int stateCounterSum = -1;
+	private int lastStrategyNumber = -1;
 	
 	public void resetStaticStateVars()
 	{
@@ -62,6 +63,12 @@ public class ProbabilityGenerator {
 			Enum<? extends stateEnum> e = enumType.getEnumConstants()[0];
 			stateString += "_" + ((stateEnum) e).getCurrentStateString(game, current, memory);
 		}
+		
+		   memory.stateChanged = true;
+		   if(stateString.equals(memory.lastStateString))
+			   memory.stateChanged = false;
+		   memory.lastStateString = stateString;
+		
 		return stateString;
 	}
 	
@@ -114,12 +121,21 @@ public class ProbabilityGenerator {
 	
 	public int geStrategyNumberToUse(Game game, int current, Memory memory){
 		PROBABILITY probabilities = this.getCurrentProbability(game, current, memory);
-		for(int i = 0; i < m_numberOfStrategies; i++)
+		
+		if(memory.stateChanged == false)
+			return this.lastStrategyNumber;
+		while(true)
 		{
-			 if(new Random().nextDouble() <= probabilities.getProbability(i))
-				   return i;
+			for(int i = 0; i < m_numberOfStrategies; i++)
+			{
+				 if(new Random().nextDouble() <= probabilities.getProbability(i))
+				 {
+					 this.lastStrategyNumber = i;
+					 return i;
+				 }
+					   
+			}
 		}
-		return 0;
 	}
 	
 	
