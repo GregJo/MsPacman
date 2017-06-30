@@ -64,14 +64,17 @@ class StaticFunctions{
 	  {
 		  int[] shortestPath = new int[0];
 	    
+		  	int[] path;
 	    	for(int objectIndex : indicesOfObject)
 	    	{
-	    		int[] path = game.getShortestPath(current, objectIndex);
+	    		path = game.getShortestPath(current, objectIndex);
 	    		if(path.length < shortestPath.length || shortestPath.length == 0)
 	    		{
-	    			shortestPath = path;
+	    			if(path.length > 0)
+	    				shortestPath = path;
 	    		}
 	    	}
+	    
 	    	return shortestPath;
 	  }
 	  
@@ -166,12 +169,23 @@ interface PacManStrategy {
 		MOVE move = _getStrategyMove(game, current, memory);
 		updateMemoryBeforeReturn(game, current, memory);
 		memory.lastStrategyUsed = getStrategyName();
+		
+		if(move == null)
+		{
+			int a = 5;
+		}
+		
 		return move;
 		
 	};
 	default public void updateMemoryBeforeReturn(Game game, int current, Memory memory)
 	{
 		
+	}
+	
+	default public boolean requirementsMet(Game game, int current, Memory memory)
+	{
+		return true;	
 	}
 	
 	default public double getStrategyInitialProbability(){return initialProbability.RANDOM;};
@@ -223,6 +237,13 @@ class EatNearestPowerPillStrategy implements PacManStrategy
 		}
 		return null;
 	}
+	
+	@Override
+	public boolean requirementsMet(Game game, int current, Memory memory)
+	{
+		ArrayList<Integer> powerPills =  memory.getStillAvailablePowerPills();
+		return (powerPills.size() == 0) ? false : true;
+	}
 
 	@Override
 	public String getStrategyName() {
@@ -251,6 +272,20 @@ class EatGhostStrategy implements PacManStrategy
 	@Override
 	public String getStrategyName() {
 		return "EatGhost";
+	}
+	
+	@Override
+	public boolean requirementsMet(Game game, int current, Memory memory)
+	{
+		int ghostCounter = 0;
+	    for(GHOST ghost : GHOST.values())
+	    {
+	    	if(game.getGhostEdibleTime(ghost) > 0)
+			{
+				ghostCounter++;
+			}
+		}
+	    return (ghostCounter == 0) ? false : true;
 	}
 
 	@Override
@@ -317,6 +352,13 @@ class GetRidOfGhost implements PacManStrategy
 	}
 	
 	@Override
+	public boolean requirementsMet(Game game, int current, Memory memory)
+	{
+		MOVE move = _getStrategyMove(game, current, memory);
+		return (move == null) ? false : true;
+	}
+	
+	@Override
 	public String getStrategyName() {
 		// TODO Auto-generated method stub
 		return "GetRidOffGhost";
@@ -346,7 +388,8 @@ class RunFromNearestGhost implements PacManStrategy
 					if (possibleMovesList.contains(moveTowardsGhost.opposite()))
 						move = moveTowardsGhost.opposite();
 				}
-			} else if(game.isJunction(current)){
+			} 
+			if(game.isJunction(current) && move == null){
 				Random rand = new Random();
 				possibleMovesList.remove(game.getPacmanLastMoveMade().opposite());
 				move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
@@ -375,15 +418,11 @@ class RunTowardsNearestKnownGhost implements PacManStrategy
 		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
 		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
 		
-		move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
-		
-		if (move == null) {
-			if (NUMBER_SEEN_GHOSTS.ghostCounter != 0) 
-			{
-				move = StaticFunctions.getMoveToNearestObject(game, current, ghostPosList);
-			} else if(possibleMovesList.contains(game.getPacmanLastMoveMade()))
-				move = game.getPacmanLastMoveMade();
+		if (NUMBER_SEEN_GHOSTS.ghostCounter != 0) 
+		{
+			move = StaticFunctions.getMoveToNearestObject(game, current, ghostPosList);
 		}
+		
 		
 		return move;
 	}
@@ -394,6 +433,12 @@ class RunTowardsNearestKnownGhost implements PacManStrategy
 		return "RunTowardsNearestKnownGhost";
 	}
 
+	@Override
+	public boolean requirementsMet(Game game, int current, Memory memory)
+	{
+	    return (NUMBER_SEEN_GHOSTS.ghostCounter != 0) ? true : false;
+	}
+	
 	@Override
 	public double getStrategyInitialProbability() {
 		// TODO Auto-generated method stub

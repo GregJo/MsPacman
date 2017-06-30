@@ -145,6 +145,8 @@ public class GeneticAlgorithm {
 	    	Random rand = new Random();
 	    	for (int i = 0; i < probs.size(); i++) {
 	    		ProbabilityByState prob = probs.get(i);
+	    		if(prob.counter == 0)
+	    			continue;
 	    		for(int j=0; j < prob.getProbabilityObject(false).getNumberOfProbabilities(); j++)
 	    		{
 	    			if(rand.nextDouble() <= mutationRate)

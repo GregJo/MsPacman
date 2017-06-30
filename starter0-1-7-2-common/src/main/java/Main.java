@@ -141,9 +141,9 @@ public class Main {
         MyPacMan pacMan = new MyPacMan();
         ArrayList<MyPacMan> fittest = GeneticAlgorithm.nFittestPacMans(currentGeneration.toArray(new MyPacMan[currentGeneration.size()]),1);
         pacMan.setProbabilities(fittest.get(0).getProbabilities());
-//        
-//        ArrayList<MyPacMan> p = GeneticAlgorithm.loadPacManList("C:/Daten/pacman/pacmans_powerPillLeft_NumberSeenEdibleGhosts2/bestfitness_6.024258760107816_run_48counter_0");
-//        GeneticAlgorithm.calculateFitness(1000, p);
+        
+//        ArrayList<MyPacMan> p = GeneticAlgorithm.loadPacManList("C:/Daten/pacman/alle/fitness_2.5695531771752713counter_1010");
+//        GeneticAlgorithm.calculateFitness(100, p);
 //       p = GeneticAlgorithm.nFittestPacMans(p.toArray(new MyPacMan[p.size()]), 1);
 //        p = GeneticAlgorithm.resetPacMans(p);
         GeneticAlgorithm.notMain(false, pacMan);
