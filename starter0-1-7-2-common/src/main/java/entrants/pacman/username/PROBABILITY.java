@@ -23,7 +23,7 @@ public class PROBABILITY implements Serializable{
 		}
 	}
 
-	public double getProbability(int numberOfStrategy) {
+	public final double getProbability(int numberOfStrategy) {
 		return probabilites[numberOfStrategy];
 	}
 	public void setProbability(int numberOfStrategy, double newProbability) {
