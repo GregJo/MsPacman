@@ -23,13 +23,15 @@ public class MyPacMan extends PacmanController {
    public double fitness = 0;
    public double ticks = 0;
    public double score = 0;
+   public int ghostsEaten = 0;
+   public double dyingPenalty = 0;
 
    @SuppressWarnings("unchecked")
 public MyPacMan()
    {
 	   strategyList = new ArrayList<>(
 			   Arrays.asList(
-					   new WaitStrategy(),
+					  // new WaitStrategy(),
 					   new EatNearestPowerPillStrategy(),
 					   new EatGhostStrategy(),
 					   new EatNearestAvailablePillStrategy(),
@@ -47,7 +49,7 @@ public MyPacMan()
 	   probabilityGenerator = new ProbabilityGenerator(numberStrategies);
 	   probabilityGenerator.createNProbabilitiesPerPossibleState(strategyList,
 			   POWERPILLS_LEFT.class,
-			   KIND_OF_LEVEL_TILE.class,
+			//   KIND_OF_LEVEL_TILE.class,
 			   NUMBER_SEEN_GHOSTS.class,
 			 NUMBER_SEEN_EDIBLE_GHOSTS.class,
 			   GHOST_DISTANCE_TO_POWERPILL.class,
@@ -95,7 +97,14 @@ public MyPacMan()
     	 MOVE move = strategyList.get(rouletteStrategyNumber).getStrategyMove(game, current, memory);
     	 ticks = (game.getTotalTime() == 0) ? 1 :  game.getTotalTime();
     	 score = game.getScore();
-    	 fitness = score/ticks;
+    	 
+    	 ghostsEaten += 30*game.getNumGhostsEaten();
+    	 if(game.wasPacManEaten())
+    		 dyingPenalty += 100/ticks;
+    	 
+    	 fitness = score/ticks + ghostsEaten - dyingPenalty;
+    	 
+    	 
     	
     	return move;
     }
