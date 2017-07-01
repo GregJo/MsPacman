@@ -7,7 +7,7 @@ import pacman.game.Game;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 
-public class Memory 
+public class PacManMemory 
 {
 	//MEMBER VARIABLES
 	private ArrayList<Integer> m_stillAvailablePills = new ArrayList<Integer>(); //memory of which pills are still edible
@@ -17,14 +17,14 @@ public class Memory
 	private ArrayList<Integer> m_ghostPositionList = new ArrayList<Integer>(); 
 	
 	
-	private boolean m_memoryInitialized;
-	private boolean m_levelChanged;
-	private int m_levelIndex;
+	protected boolean m_memoryInitialized;
+	protected boolean m_levelChanged;
+	protected int m_levelIndex;
 	public  String lastStrategyUsed;
 	public String lastStateString;
 	public boolean stateChanged = true;
 	
-	public Memory(){m_memoryInitialized = false; lastStrategyUsed = "";m_levelIndex = 0;lastStateString="";}
+	public PacManMemory(){m_memoryInitialized = false; lastStrategyUsed = "";m_levelIndex = 0;lastStateString="";}
 	private void initializeMemory(Game game, int current)
 	{
 		if(m_levelIndex != game.getCurrentLevel())

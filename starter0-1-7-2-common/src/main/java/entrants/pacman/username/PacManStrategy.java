@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import entrants.ghosts.username.GhostMemory;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
@@ -17,7 +18,7 @@ class WaitStrategy implements Strategy
 
 	@Override
 	/*@brief simulates waiting by going back and forth*/
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) {
 		return game.getPacmanLastMoveMade().opposite(); //if no not possible move was found (= pacman is at fourway junction) just run back and forth
 	}
 
@@ -31,6 +32,12 @@ class WaitStrategy implements Strategy
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 class EatNearestPowerPillStrategy implements Strategy
 {
@@ -39,7 +46,7 @@ class EatNearestPowerPillStrategy implements Strategy
 	@Override
 	/*@brief Goes to next powerpill.
 	 * !Attention Currently expects that GHOST_DISTANCE_TO_POWERPILL State enum is used*/
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) {
 		
 		
 		if(GHOST_DISTANCE_TO_POWERPILL.enumUsed == false && memory.getStillAvailablePowerPills().size() > 0)
@@ -56,7 +63,7 @@ class EatNearestPowerPillStrategy implements Strategy
 	}
 	
 	@Override
-	public boolean requirementsMet(Game game, int current, Memory memory)
+	public boolean requirementsMet(Game game, int current, PacManMemory memory)
 	{
 		ArrayList<Integer> powerPills =  memory.getStillAvailablePowerPills();
 		return (powerPills.size() == 0) ? false : true;
@@ -66,6 +73,12 @@ class EatNearestPowerPillStrategy implements Strategy
 	public String getStrategyName() {
 		return "EatNearestPowerPill";
 	}
+
+	@Override
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 class EatGhostStrategy implements Strategy
 {
@@ -74,7 +87,7 @@ class EatGhostStrategy implements Strategy
 	@Override
 	/*@brief Goes to next edible ghost.
 	*/
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) {
 		ArrayList<Integer> ghostPosList = new ArrayList<Integer>();
 		 for(GHOST ghost : GHOST.values())
 		   {
@@ -92,7 +105,7 @@ class EatGhostStrategy implements Strategy
 	}
 	
 	@Override
-	public boolean requirementsMet(Game game, int current, Memory memory)
+	public boolean requirementsMet(Game game, int current, PacManMemory memory)
 	{
 		int ghostCounter = 0;
 	    for(GHOST ghost : GHOST.values())
@@ -110,6 +123,12 @@ class EatGhostStrategy implements Strategy
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 class EatNearestAvailablePillStrategy implements Strategy
 {
@@ -118,7 +137,7 @@ class EatNearestAvailablePillStrategy implements Strategy
 	@Override
 	/*@brief Goes to next edible ghost.
 	*/
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) 
 	{
 		return StaticFunctions.getMoveToNearestObject(game, current, memory.getStillAvailablePills());
 	}
@@ -128,13 +147,19 @@ class EatNearestAvailablePillStrategy implements Strategy
 		return "EatNearestAvailablePill";
 	}
 
+	@Override
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
 
 class GetRidOfGhost implements Strategy
 {
 
 	@Override
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) {
 		// TODO Auto-generated method stub
 		MOVE move = null;
 		
@@ -169,7 +194,7 @@ class GetRidOfGhost implements Strategy
 	}
 	
 	@Override
-	public boolean requirementsMet(Game game, int current, Memory memory)
+	public boolean requirementsMet(Game game, int current, PacManMemory memory)
 	{
 		MOVE move = _getStrategyMove(game, current, memory);
 		return (move == null) ? false : true;
@@ -180,13 +205,19 @@ class GetRidOfGhost implements Strategy
 		// TODO Auto-generated method stub
 		return "GetRidOffGhost";
 	}
+
+	@Override
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
 
 class RunFromNearestGhost implements Strategy
 {
 	@Override
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) 
 	{
 		MOVE move = null;
 		
@@ -221,12 +252,18 @@ class RunFromNearestGhost implements Strategy
 		// TODO Auto-generated method stub
 		return "RunFromNearestGhost";
 	}
+
+	@Override
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 
 class RunTowardsNearestKnownGhost implements Strategy
 {
 	@Override
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) {
 		// TODO Auto-generated method stub
 		MOVE move = null;
 		
@@ -251,7 +288,7 @@ class RunTowardsNearestKnownGhost implements Strategy
 	}
 
 	@Override
-	public boolean requirementsMet(Game game, int current, Memory memory)
+	public boolean requirementsMet(Game game, int current, PacManMemory memory)
 	{
 	    return (NUMBER_SEEN_GHOSTS.ghostCounter != 0) ? true : false;
 	}
@@ -261,6 +298,12 @@ class RunTowardsNearestKnownGhost implements Strategy
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 
 class RandomPatrolInRadiusAroundCenter implements Strategy
@@ -269,7 +312,7 @@ class RandomPatrolInRadiusAroundCenter implements Strategy
 	private final int RADIUS = 30;
 	private int radius = RADIUS;
 	@Override
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) {
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) {
 		// TODO Auto-generated method stub
 		if (center == Integer.MIN_VALUE) {
 			center = current;
@@ -320,6 +363,12 @@ class RandomPatrolInRadiusAroundCenter implements Strategy
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
 
@@ -330,7 +379,7 @@ class EatFurthestAwayPowerPill implements Strategy
 	@Override
 	/*@brief Goes to furthest edible powerPill.
 	*/
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) 
 	{
 		//check if pill still exists
 		if(pillPosLastTime != -1)
@@ -376,6 +425,12 @@ class EatFurthestAwayPowerPill implements Strategy
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 class EatFurthestAwayPill implements Strategy
 {
@@ -384,7 +439,7 @@ class EatFurthestAwayPill implements Strategy
 	@Override
 	/*@brief Goes to furthest edible pill.
 	*/
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) 
 	{
 		//check if pill still exists
 		if(pillPosLastTime != -1)
@@ -430,6 +485,12 @@ class EatFurthestAwayPill implements Strategy
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 class RunCircle implements Strategy
 {
@@ -438,7 +499,7 @@ class RunCircle implements Strategy
 	@Override
 	/*@brief Goes to furthest edible pill.
 	*/
-	public MOVE _getStrategyMove(Game game, int current, Memory memory) 
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) 
 	{
 
 		//pacman didnt change strategies and already chose to run a circle
@@ -490,5 +551,11 @@ class RunCircle implements Strategy
 	public double getStrategyInitialProbability() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

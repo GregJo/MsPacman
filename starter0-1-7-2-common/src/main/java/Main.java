@@ -95,14 +95,14 @@ public class Main {
            		averageFitnessLastGeneration = lastGenerationFitnessSum/lastGeneration.size();
     			
            	if(overAveragePacMans.size() > 0)	
-           		GeneticAlgorithm.savePacManList(lastGeneration, listSavePath+"fitness_"+averageFitnessLastGeneration+"counter_"+saveCounter);
+           		//GeneticAlgorithm.savePacManList(lastGeneration, listSavePath+"fitness_"+averageFitnessLastGeneration+"counter_"+saveCounter);
            		
     			currentGeneration = new ArrayList<>(); 
     			currentGeneration.addAll(lastGeneration);
     			
     			if(badGenCounter > 100)
     			{
-    				GeneticAlgorithm.savePacManList(currentGeneration, listSavePath+"fitness_"+averageFitnessLastGeneration+"counter_"+saveCounter);
+    				//GeneticAlgorithm.savePacManList(currentGeneration, listSavePath+"fitness_"+averageFitnessLastGeneration+"counter_"+saveCounter);
     				currentGeneration = GeneticAlgorithm.resetPacMans(currentGeneration);
     				System.out.println("average end fitness: "+averageFitnessLastGeneration);
     				mutationStepSizeUpperLimit += 0.05;

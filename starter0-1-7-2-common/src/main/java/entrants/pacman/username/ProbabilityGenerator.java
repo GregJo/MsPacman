@@ -55,7 +55,7 @@ public class ProbabilityGenerator {
 		return m_probability_by_state_list;
 	}
 
-	private String getCurrentStateString(Game game, int current, Memory memory)
+	private String getCurrentStateString(Game game, int current, PacManMemory memory)
 	{
 		String stateString = "";
 		for( Class<? extends Enum<? extends StateEnum>> enumType : m_listOfUsedEnums)
@@ -72,7 +72,7 @@ public class ProbabilityGenerator {
 		return stateString;
 	}
 	
-	private final PROBABILITY getCurrentProbability(Game game, int current, Memory memory){
+	private final PROBABILITY getCurrentProbability(Game game, int current, PacManMemory memory){
 		   String currentStateString = this.getCurrentStateString(game, current, memory);
 		   //System.out.println(currentStateString);
 		   for(ProbabilityByState prob_by_state : getProbabilityByStateList())
@@ -119,7 +119,7 @@ public class ProbabilityGenerator {
 		_createNProbabilitiesPerPossibleState("", strategyList, listOfStateEnums);
 	}
 	
-	public int geStrategyNumberToUse(Game game, int current, Memory memory, final ArrayList<Strategy> strategyList){
+	public int geStrategyNumberToUse(Game game, int current, PacManMemory memory, final ArrayList<Strategy> strategyList){
 		PROBABILITY probabilities = this.getCurrentProbability(game, current, memory);
 		
 		if(memory.stateChanged == false)

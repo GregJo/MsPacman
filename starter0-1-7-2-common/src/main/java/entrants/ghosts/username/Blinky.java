@@ -10,13 +10,15 @@ import entrants.pacman.username.*;
  */
 public class Blinky extends IndividualGhostController {
 
-
+	MyGhost ghostBase;
+	
     public Blinky() {
         super(Constants.GHOST.BLINKY);
+        ghostBase = new MyGhost(Constants.GHOST.BLINKY);
     }
 
     @Override
     public Constants.MOVE getMove(Game game, long timeDue) {
-        return null;
+        return ghostBase.getMove(game, timeDue);
     }
 }

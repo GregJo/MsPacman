@@ -6,12 +6,14 @@ import pacman.game.Constants;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Game;
+import pacman.game.internal.Ghost;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
 import entrants.pacman.username.Strategy;
-import entrants.pacman.username.Memory;
+import entrants.pacman.username.PacManMemory;
 import entrants.pacman.username.ProbabilityByState;
 import entrants.pacman.username.ProbabilityGenerator;
 
@@ -22,7 +24,8 @@ import entrants.pacman.username.ProbabilityGenerator;
  * be placed in this package or sub-packages (e.g., entrants.pacman.username).
  */
 public class MyGhost{
-   private Memory memory = new Memory();
+	private GHOST ghost;
+   private GhostMemory memory = new GhostMemory();
    private ProbabilityGenerator probabilityGenerator;
    private ArrayList<Strategy> strategyList;
    public double fitness = 0;
@@ -30,28 +33,27 @@ public class MyGhost{
    public double score = 0;
 
    @SuppressWarnings("unchecked")
-public MyGhost()
+public MyGhost(GHOST ghost)
    {
 	   strategyList = new ArrayList<>(
 			   Arrays.asList(
-					   //new WaitStrategy()
-					   new HuntPacMan()
+					   //new HuntPacMan(),
 					   //new RunAwayFromPacMan(),
-					   //new GoToNearestAvaiblePowerPill(),
+					   new GoToNearestPowerPill()
 					   //new AvoidOtherGhost(),
-					   //new RunCircle(),
-					   //new RandomPatrolInRadiusAroundCenter(),
-					   //new RunTowardsNearestKnownGhost(),
+					   //new RunCircle()
+					   //new TagTile()
 			   )
 		);
 	   
+	   this.ghost=ghost;
 	   int numberStrategies = strategyList.size();
 	   probabilityGenerator = new ProbabilityGenerator(numberStrategies);
 	   probabilityGenerator.createNProbabilitiesPerPossibleState(strategyList,
 	   																POWERPILLS_LEFT.class
 																	//KIND_OF_LEVEL_TILE.class,
 																	//NUMBER_SEEN_GHOSTS.class,
-																	//IS_PACMAN_VISIBLE.class,
+																	//PACMAN_LOST.class,
 																	//GHOST_DISTANCE_TO_POWERPILL.class,
 																	//POWER_PILL_ACTIVATED.class
 	   																);
@@ -89,15 +91,16 @@ public MyGhost()
    
     public MOVE getMove(Game game, long timeDue) {
     	 	
-    	int current = game.getPacmanCurrentNodeIndex();
+    	int current = game.getGhostCurrentNodeIndex(ghost);
     	memory.updateMemory(game, current);
     	
     	int rouletteStrategyNumber = probabilityGenerator.geStrategyNumberToUse(game, current, memory, strategyList);
-    	 MOVE move = strategyList.get(rouletteStrategyNumber).getStrategyMove(game, current, memory);
+    	 MOVE move = strategyList.get(rouletteStrategyNumber).getStrategyMove(game, ghost, current, memory);
     	 ticks = (game.getTotalTime() == 0) ? 1 :  game.getTotalTime();
     	 score = game.getScore();
     	 fitness = score/ticks;
     	
     	return move;
+    	 
     }
 }

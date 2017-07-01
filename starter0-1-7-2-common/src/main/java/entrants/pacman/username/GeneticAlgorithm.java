@@ -16,10 +16,14 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Random;
 
-import examples.StarterGhostComm.Blinky;
-import examples.StarterGhostComm.Inky;
-import examples.StarterGhostComm.Pinky;
-import examples.StarterGhostComm.Sue;
+//import examples.StarterGhostComm.Blinky;
+//import examples.StarterGhostComm.Inky;
+//import examples.StarterGhostComm.Pinky;
+//import examples.StarterGhostComm.Sue;
+import entrants.ghosts.username.Blinky;
+import entrants.ghosts.username.Inky;
+import entrants.ghosts.username.Pinky;
+import entrants.ghosts.username.Sue;
 import pacman.Executor;
 import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;
@@ -63,7 +67,7 @@ public class GeneticAlgorithm {
     		for(int j=0; j < numberGamesPerPacMan; j++)
     		{
     			//System.out.println("Pacman #"+i+", game #"+j+" started");
-    			GeneticAlgorithm.notMain(true, current_pacMan);
+    			GeneticAlgorithm.notMain(false, current_pacMan);
     			
     			//System.out.println("fitness for this game: "+newFitness);
     			fitness += current_pacMan.fitness; 

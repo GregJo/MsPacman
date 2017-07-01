@@ -7,9 +7,9 @@ import pacman.game.Game;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.MOVE;
 
-class StaticFunctions{
+public class StaticFunctions{
 	//static ArrayList<MOVE> moveArray = new ArrayList<MOVE>();
-	static int[] convertIntegerListToArray(ArrayList<Integer> list)
+	public static int[] convertIntegerListToArray(ArrayList<Integer> list)
 	{
 		int[] listAsArray = new int[list.size()];
 		int index = 0;
@@ -20,19 +20,19 @@ class StaticFunctions{
 		}
 		return listAsArray;
 	}
-	static MOVE getMoveToNearestObject(Game game, int current, ArrayList<Integer> indicesOfObjectList)
+	public static MOVE getMoveToNearestObject(Game game, int current, ArrayList<Integer> indicesOfObjectList)
 	  {
 		int[] indizesAsArray = convertIntegerListToArray(indicesOfObjectList);
 		return getMoveToNearestObject(game, current, indizesAsArray);
 	  }
 	
-	static MOVE getMoveToFurthestObject(Game game, int current, ArrayList<Integer> indicesOfObjectList)
+	public static MOVE getMoveToFurthestObject(Game game, int current, ArrayList<Integer> indicesOfObjectList)
 	  {
 		int[] indizesAsArray = convertIntegerListToArray(indicesOfObjectList);
 		return getMoveToFurthestObject(game, current, indizesAsArray);
 	  }
 	
-	  static MOVE getMoveToNearestObject(Game game, int current, int[] indicesOfObject)
+	public static MOVE getMoveToNearestObject(Game game, int current, int[] indicesOfObject)
 	  {
 		  int[] shortestPath = getShortestPathToNearestObject(game, current, indicesOfObject);
 	    	if(shortestPath.length > 0)
@@ -42,7 +42,7 @@ class StaticFunctions{
 	         return null;
 	   }
 	  
-	  static MOVE getMoveToFurthestObject(Game game, int current, int[] indicesOfObject)
+	  public static MOVE getMoveToFurthestObject(Game game, int current, int[] indicesOfObject)
 	  {
 		  int[] longestPath = getPathToFurthestObject(game, current, indicesOfObject);
 	    	if(longestPath.length > 0)
@@ -52,7 +52,7 @@ class StaticFunctions{
 	         return null;
 	   }
 	  
-	  static int[] getShortestPathToNearestObject(Game game, int current, int[] indicesOfObject)
+	  public static int[] getShortestPathToNearestObject(Game game, int current, int[] indicesOfObject)
 	  {
 		  int[] shortestPath = new int[0];
 	    
@@ -70,7 +70,7 @@ class StaticFunctions{
 	    	return shortestPath;
 	  }
 	  
-	  static int[] getPathToFurthestObject(Game game, int current, int[] indicesOfObject)
+	  public static int[] getPathToFurthestObject(Game game, int current, int[] indicesOfObject)
 	  {
 		  int[] longestPath = new int[0];
 	    	for(int objectIndex : indicesOfObject)
@@ -83,24 +83,24 @@ class StaticFunctions{
 	    	}
 	    	return longestPath;
 	  }
-	  static MOVE CornerRoutine(Game game, int current, ArrayList<MOVE> possibleMovesList)
+	  public static MOVE CornerRoutine(Game game, int current, ArrayList<MOVE> possibleMovesList)
 	  {
 		  return CornerRoutine(game, current, possibleMovesList, game.getPacmanLastMoveMade());
 	  }
-	  static MOVE CornerRoutine(Game game, int current, MOVE[] possibleMovesArray)
+	  public static MOVE CornerRoutine(Game game, int current, MOVE[] possibleMovesArray)
 	   {
 		  ArrayList<MOVE> possibleMovesList = new ArrayList<MOVE>();
 		  possibleMovesList.addAll(Arrays.asList(possibleMovesArray)); 
 		  return  CornerRoutine(game, current, possibleMovesList, game.getPacmanLastMoveMade());
 	   }
-	  static MOVE CornerRoutine(Game game, int current, MOVE[] possibleMovesArray, MOVE lastMove)
+	  public static MOVE CornerRoutine(Game game, int current, MOVE[] possibleMovesArray, MOVE lastMove)
 	   {
 		  ArrayList<MOVE> possibleMovesList = new ArrayList<MOVE>();
 		  possibleMovesList.addAll(Arrays.asList(possibleMovesArray)); 
 		  return  CornerRoutine(game, current, possibleMovesList, lastMove);
 	   }
 	 
-	  static MOVE CornerRoutine(Game game, int current, ArrayList<MOVE> possibleMovesList, MOVE lastMove)
+	  public static MOVE CornerRoutine(Game game, int current, ArrayList<MOVE> possibleMovesList, MOVE lastMove)
 	   {
 		 if(game.isJunction(current))
 			  return null;
@@ -116,7 +116,7 @@ class StaticFunctions{
 	   }
 	   return null;
 	   }
-	  static boolean isMovePossibleAtNode(Game game, int nodeIndex, MOVE move)
+	  public static boolean isMovePossibleAtNode(Game game, int nodeIndex, MOVE move)
 	  {
 		  for( MOVE m : game.getPossibleMoves(nodeIndex))
 		  {
@@ -125,7 +125,7 @@ class StaticFunctions{
 		  }
 		  return false;
 	  }
-	  static MOVE getMoveFromPacmanPointOfView(Game game, MOVE relativeMove)
+	  public static MOVE getMoveFromPacmanPointOfView(Game game, MOVE relativeMove)
 	  {
 		 MOVE lastMove =  game.getPacmanLastMoveMade();
 		 if(relativeMove == MOVE.UP)
@@ -153,4 +153,30 @@ class StaticFunctions{
 		  return null;
 	  }
 	  
+	  public static MOVE getMoveFromPacmanPointOfView(Game game, MOVE relativeMove, MOVE lastMove)
+	  {
+		 if(relativeMove == MOVE.UP)
+			 return lastMove;
+		 if(relativeMove == MOVE.DOWN)
+			 return lastMove.opposite();
+		 if(lastMove == MOVE.UP)
+			 return relativeMove;
+		 if(lastMove == MOVE.DOWN)
+			 return relativeMove.opposite();
+		 if(lastMove == MOVE.LEFT)
+		 {
+			 if(relativeMove == MOVE.LEFT)
+				 return MOVE.DOWN;
+			 if(relativeMove == MOVE.RIGHT)
+				 return MOVE.UP;
+		 }
+		 if(lastMove == MOVE.RIGHT)
+		 {
+			 if(relativeMove == MOVE.LEFT)
+				 return MOVE.UP;
+			 if(relativeMove == MOVE.RIGHT)
+				 return MOVE.DOWN;
+		 }			 
+		  return null;
+	  }
 }

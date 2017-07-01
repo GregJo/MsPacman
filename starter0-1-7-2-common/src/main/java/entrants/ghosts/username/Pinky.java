@@ -10,12 +10,16 @@ import pacman.game.Game;
  */
 public class Pinky extends IndividualGhostController {
 
+	MyGhost ghostBase;
+	
     public Pinky() {
         super(Constants.GHOST.PINKY);
+        ghostBase = new MyGhost(Constants.GHOST.PINKY);
     }
 
     @Override
     public Constants.MOVE getMove(Game game, long timeDue) {
-        return null;
+        //return null;
+        return ghostBase.getMove(game, timeDue);
     }
 }
