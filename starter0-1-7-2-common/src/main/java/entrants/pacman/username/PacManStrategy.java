@@ -416,7 +416,7 @@ class EatFurthestAwayPowerPill implements Strategy
 	}
 	
 	@Override
-	public boolean requirementsMet(Game game, int current, Memory memory)
+	public boolean requirementsMet(Game game, int current, PacManMemory memory)
 	{
 		ArrayList<Integer> powerPills =  memory.getStillAvailablePowerPills();
 		return (powerPills.size() == 0) ? false : true;

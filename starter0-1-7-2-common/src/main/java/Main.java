@@ -33,6 +33,7 @@ public class Main {
     public static void main(String[] args) 
     {
     	//GeneticAlgorithm.train(); //we used this for training
+    	GeneticAlgorithm.notMain(false, new MyPacMan());
     } 
 }
 

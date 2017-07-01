@@ -17,7 +17,7 @@ import java.util.Random;
  * be placed in this package or sub-packages (e.g., entrants.pacman.username).
  */
 public class MyPacMan extends PacmanController {
-   private Memory memory = new Memory();
+   private PacManMemory memory = new PacManMemory();
    private ProbabilityGenerator probabilityGenerator;
    private ArrayList<Strategy> strategyList;
    public double fitness = 0;
