@@ -414,7 +414,14 @@ class EatFurthestAwayPowerPill implements Strategy
     	}    	
          return null;
 	}
-
+	
+	@Override
+	public boolean requirementsMet(Game game, int current, Memory memory)
+	{
+		ArrayList<Integer> powerPills =  memory.getStillAvailablePowerPills();
+		return (powerPills.size() == 0) ? false : true;
+	}
+	
 	@Override
 	public String getStrategyName() {
 		return "EatFurthestAwayPowerPill";
