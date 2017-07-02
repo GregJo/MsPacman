@@ -1,6 +1,6 @@
 
-import entrants.pacman.TeamXY.GeneticAlgorithm;
-import entrants.pacman.TeamXY.MyPacMan;
+import entrants.pacman.username.GeneticAlgorithm;
+import entrants.pacman.username.MyPacMan;
 
 /**
  * Created by pwillic on 06/05/2016.

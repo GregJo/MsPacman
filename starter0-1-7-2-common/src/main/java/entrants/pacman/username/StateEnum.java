@@ -1,4 +1,4 @@
-package entrants.pacman.TeamXY;
+package entrants.pacman.username;
 
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;

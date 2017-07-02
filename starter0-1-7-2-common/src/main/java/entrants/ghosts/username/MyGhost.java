@@ -1,4 +1,4 @@
-package entrants.ghosts.TeamXY;
+package entrants.ghosts.username;
 
 import pacman.game.Constants.MOVE;
 import pacman.game.Constants.GHOST;
@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import entrants.pacman.TeamXY.GeneticAlgorithm;
-import entrants.pacman.TeamXY.ProbabilityByState;
-import entrants.pacman.TeamXY.ProbabilityGenerator;
-import entrants.pacman.TeamXY.Strategy;
+import entrants.pacman.username.GeneticAlgorithm;
+import entrants.pacman.username.ProbabilityByState;
+import entrants.pacman.username.ProbabilityGenerator;
+import entrants.pacman.username.Strategy;
 
 
 /*
@@ -57,7 +57,7 @@ public MyGhost(GHOST ghost)
 	   
 	   //load strategy probabilities of differently trained ghosts that will be used on death
 	   differentGhost = new ArrayList<>();
-	   differentGhost.add(GeneticAlgorithm.loadPacManProbabilities(System.getProperty("user.dir")+"/src/main/java/entrants/ghosts/username/trainedGhosts"));
+	   differentGhost.add(GeneticAlgorithm.loadPacManProbabilities(System.getProperty("user.dir")+"/src/main/java/entrants/ghosts/TeamXY/trainedGhosts"));
 	   this.setProbabilities(differentGhost.get(new Random().nextInt(differentGhost.size())));
 	   
    }

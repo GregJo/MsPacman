@@ -1,4 +1,4 @@
-package entrants.pacman.TeamXY;
+package entrants.pacman.username;
 
 import pacman.controllers.PacmanController;
 import pacman.game.Constants.MOVE;
@@ -59,9 +59,9 @@ public MyPacMan()
 	   
 	   //load strategy probabilities of differently trained PacMan that will be used on death
 	   differentPacMans = new ArrayList<>();
-	   differentPacMans.add(GeneticAlgorithm.loadPacManProbabilities(System.getProperty("user.dir")+"/src/main/java/entrants/pacman/username/PacifistPacMan"));
-	   differentPacMans.add(GeneticAlgorithm.loadPacManProbabilities(System.getProperty("user.dir")+"/src/main/java/entrants/pacman/username/MildlyAgressivePacMan"));
-	   differentPacMans.add(GeneticAlgorithm.loadPacManProbabilities(System.getProperty("user.dir")+"/src/main/java/entrants/pacman/username/StrangePacMan"));
+	   differentPacMans.add(GeneticAlgorithm.loadPacManProbabilities(System.getProperty("user.dir")+"/src/main/java/entrants/pacman/TeamXY/PacifistPacMan"));
+	   differentPacMans.add(GeneticAlgorithm.loadPacManProbabilities(System.getProperty("user.dir")+"/src/main/java/entrants/pacman/TeamXY/MildlyAgressivePacMan"));
+	   differentPacMans.add(GeneticAlgorithm.loadPacManProbabilities(System.getProperty("user.dir")+"/src/main/java/entrants/pacman/TeamXY/StrangePacMan"));
 	   this.setProbabilities(differentPacMans.get(0));
 	   
    }

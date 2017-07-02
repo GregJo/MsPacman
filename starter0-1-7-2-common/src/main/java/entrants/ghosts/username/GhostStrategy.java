@@ -1,13 +1,13 @@
-package entrants.ghosts.TeamXY;
+package entrants.ghosts.username;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import entrants.pacman.TeamXY.PacManMemory;
-import entrants.pacman.TeamXY.StaticFunctions;
-import entrants.pacman.TeamXY.Strategy;
+import entrants.pacman.username.PacManMemory;
+import entrants.pacman.username.StaticFunctions;
+import entrants.pacman.username.Strategy;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;

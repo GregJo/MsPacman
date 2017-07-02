@@ -1,4 +1,4 @@
-package entrants.pacman.TeamXY;
+package entrants.pacman.username;
 import pacman.game.Game;
 import pacman.game.GameView;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import entrants.ghosts.TeamXY.GhostMemory;
+import entrants.ghosts.username.GhostMemory;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;

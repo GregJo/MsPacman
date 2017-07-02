@@ -1,4 +1,4 @@
-package entrants.pacman.TeamXY;
+package entrants.pacman.username;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -16,11 +16,11 @@ import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Random;
 
-import entrants.ghosts.TeamXY.Blinky;
-import entrants.ghosts.TeamXY.Inky;
-import entrants.ghosts.TeamXY.MyGhost;
-import entrants.ghosts.TeamXY.Pinky;
-import entrants.ghosts.TeamXY.Sue;
+import entrants.ghosts.username.Blinky;
+import entrants.ghosts.username.Inky;
+import entrants.ghosts.username.MyGhost;
+import entrants.ghosts.username.Pinky;
+import entrants.ghosts.username.Sue;
 import pacman.Executor;
 import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;
