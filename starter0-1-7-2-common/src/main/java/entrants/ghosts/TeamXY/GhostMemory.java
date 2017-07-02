@@ -1,7 +1,8 @@
-package entrants.ghosts.username;
+package entrants.ghosts.TeamXY;
 
 import java.util.ArrayList;
-import entrants.pacman.username.PacManMemory;
+
+import entrants.pacman.TeamXY.PacManMemory;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 

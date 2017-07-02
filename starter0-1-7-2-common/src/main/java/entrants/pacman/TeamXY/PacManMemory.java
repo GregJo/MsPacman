@@ -1,4 +1,4 @@
-package entrants.pacman.username;
+package entrants.pacman.TeamXY;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package entrants.ghosts.username;
+package entrants.ghosts.TeamXY;
 
 import pacman.game.Constants.MOVE;
 import pacman.game.Constants.GHOST;
@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import entrants.pacman.username.Strategy;
-import entrants.pacman.username.GeneticAlgorithm;
-import entrants.pacman.username.ProbabilityByState;
-import entrants.pacman.username.ProbabilityGenerator;
+import entrants.pacman.TeamXY.GeneticAlgorithm;
+import entrants.pacman.TeamXY.ProbabilityByState;
+import entrants.pacman.TeamXY.ProbabilityGenerator;
+import entrants.pacman.TeamXY.Strategy;
 
 
 /*

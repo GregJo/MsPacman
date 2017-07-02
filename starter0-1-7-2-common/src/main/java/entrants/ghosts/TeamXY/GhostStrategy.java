@@ -1,18 +1,18 @@
-package entrants.ghosts.username;
+package entrants.ghosts.TeamXY;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import entrants.pacman.username.PacManMemory;
-import entrants.pacman.username.Strategy;
+import entrants.pacman.TeamXY.PacManMemory;
+import entrants.pacman.TeamXY.StaticFunctions;
+import entrants.pacman.TeamXY.Strategy;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 import pacman.game.internal.Ghost;
-import entrants.pacman.username.StaticFunctions;
 import pacman.game.GameView;
 
 class HuntPacMan implements Strategy {

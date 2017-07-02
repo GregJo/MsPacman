@@ -1,4 +1,4 @@
-package entrants.ghosts.username;
+package entrants.ghosts.TeamXY;
 
 import pacman.controllers.IndividualGhostController;
 import pacman.controllers.MASController;

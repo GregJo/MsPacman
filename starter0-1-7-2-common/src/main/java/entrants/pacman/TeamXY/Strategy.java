@@ -1,4 +1,4 @@
-package entrants.pacman.username;
+package entrants.pacman.TeamXY;
 import pacman.game.Game;
 import pacman.game.GameView;
 import pacman.game.internal.Ghost;
@@ -7,7 +7,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import entrants.ghosts.username.GhostMemory;
+import entrants.ghosts.TeamXY.GhostMemory;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;

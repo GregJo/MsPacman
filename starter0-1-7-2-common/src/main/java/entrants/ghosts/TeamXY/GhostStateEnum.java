@@ -1,4 +1,4 @@
-package entrants.ghosts.username;
+package entrants.ghosts.TeamXY;
 
 import static pacman.game.Constants.EDIBLE_TIME;
 import static pacman.game.Constants.EDIBLE_TIME_REDUCTION;
@@ -6,9 +6,9 @@ import static pacman.game.Constants.LEVEL_RESET_REDUCTION;
 
 import java.util.ArrayList;
 
-import entrants.pacman.username.PacManMemory;
-import entrants.pacman.username.StateEnum;
-import entrants.pacman.username.StaticFunctions;
+import entrants.pacman.TeamXY.PacManMemory;
+import entrants.pacman.TeamXY.StateEnum;
+import entrants.pacman.TeamXY.StaticFunctions;
 import pacman.game.Game;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
