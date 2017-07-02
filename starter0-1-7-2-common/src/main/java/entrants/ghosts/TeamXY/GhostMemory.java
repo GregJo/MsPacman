@@ -13,6 +13,10 @@ public class GhostMemory extends PacManMemory {
 	
 	public GhostMemory(){m_memoryInitialized = false; lastStrategyUsed = "";m_levelIndex = 0;lastStateString="";}
 	
+	/*@brief initializes the memory
+	 * @param game the curent Game
+	 * @param current the current position of the current ghost
+	 * */
 	private void initializeMemory(Game game, int current)
 	{
 		if(m_levelIndex != game.getCurrentLevel())
@@ -22,7 +26,10 @@ public class GhostMemory extends PacManMemory {
 		m_memoryInitialized = true;
 		initPacMan(game, current);
 	}
-	
+	/*@brief initializes the list of still available power pills
+	 * @param game the curent Game
+	 * @param current the current position of the current ghost
+	 * */
 	private void initializePowerPills(Game game, int current)
 	{
 		for (Integer integer : game.getPowerPillIndices()) {
@@ -30,6 +37,10 @@ public class GhostMemory extends PacManMemory {
 		}
 	}
 	
+	/*@brief updates the memory
+	 * @param game the current Game
+	 * @param current the current position of the current ghost
+	 * */
 	public void updateMemory(Game game, int current)
 	{
 		m_levelChanged = (game.getCurrentLevel() != m_levelIndex) ? true : false;
@@ -41,7 +52,10 @@ public class GhostMemory extends PacManMemory {
 		updatePacMan(game, current);
 		updatePowerPills(game, current);
 	}
-	
+	/*@brief updates the last known position of PacMan
+	 * @param game the current Game
+	 * @param current the current position of the current ghost
+	 * */
 	public void updatePacMan(Game game, int current)
 	{
 		if (game.wasPacManEaten()) {
@@ -53,7 +67,10 @@ public class GhostMemory extends PacManMemory {
 			m_pacManLastKnownMove = game.getPacmanLastMoveMade();
 		}
 	}
-	
+	/*@brief updates the list of still available power pills
+	 * @param game the current Game
+	 * @param current the current position of the current ghost
+	 * */
 	public void updatePowerPills(Game game, int current)
 	{
 		int powerPillToRemove = -1;

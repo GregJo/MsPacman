@@ -16,6 +16,8 @@ import pacman.game.Constants.MOVE;
 ////////////////////ENUMS DESCRIBING THE GLOBAL STATE ///////////////////////////////////
 enum POWERPILLS_LEFT implements StateEnum {
 	noPowerPillLeft, powerPillsLeft;
+	
+	/*@brief checks if there are still power pills left.*/
 	public String getCurrentStateString(Game game, int current, PacManMemory memory) {
 		ArrayList<Integer> powerPills = memory.getStillAvailablePowerPills();
 		String returnValue;
@@ -41,6 +43,8 @@ enum POWERPILLS_LEFT implements StateEnum {
 //////////////////// ///////////////////////////////////
 enum KIND_OF_LEVEL_TILE implements StateEnum {
 	deadEnd, hallWay, threeWayJunction, fourWayJunction;
+	
+	/*@brief checks on which level tile this ghost currently stands*/
 	public String getCurrentStateString(Game game, int current, PacManMemory memory) {
 		int moveCounter = 0;
 		for (MOVE move : game.getPossibleMoves(current)) {
@@ -70,6 +74,7 @@ enum POWER_PILL_ACTIVATED implements StateEnum {
 	powerPillActive, powerPillNotActive;
 	static int powerPillTime = 0;
 
+	/*@brief checks if PacMan can currently eat ghosts.*/
 	public String getCurrentStateString(Game game, int current, PacManMemory memory) {
 		if (game.wasPacManEaten())
 			powerPillTime = 0;
@@ -98,6 +103,7 @@ enum NUMBER_SEEN_GHOSTS implements StateEnum {
 	seeingNoGhost, seeingOneGhost, seeingTwoGhost, seeingThreeGhost, seeingFourGhost;
 	public static int ghostCounter = 0;
 
+	/*@brief checks the number of ghosts this ghost sees right now.*/
 	public String getCurrentStateString(Game game, int current, PacManMemory memory) {
 		ghostCounter = 0;
 		for (GHOST ghost : GHOST.values()) {
@@ -126,34 +132,6 @@ enum NUMBER_SEEN_GHOSTS implements StateEnum {
 
 }
 
-//////////////////// ENUMS DESCRIBING STATE OF MS.PACMAN
-///////////////////////////////////////////////////////
-enum PACMAN_VISIBILITY implements StateEnum {
-	powerPillActive, powerPillNotActive;
-	static int powerPillTime = 0;
-
-	public String getCurrentStateString(Game game, int current, PacManMemory memory) {
-		if (game.wasPacManEaten())
-			powerPillTime = 0;
-		if (powerPillTime > 0)
-			powerPillTime--;
-
-		if (game.wasPowerPillEaten()) {
-			int level = game.getCurrentLevel();
-			powerPillTime = (int) (EDIBLE_TIME * (Math.pow(EDIBLE_TIME_REDUCTION, level % LEVEL_RESET_REDUCTION)));
-		}
-		return (powerPillTime > 0) ? POWER_PILL_ACTIVATED.powerPillActive.name()
-				: POWER_PILL_ACTIVATED.powerPillNotActive.name();
-
-	}
-
-	@Override
-	public void resetStaticVars() {
-		powerPillTime = 0;
-
-	}
-}
-
 //////////////////// ENUMS DESCRIBING RELATIVE
 //////////////////// DISTANCES///////////////////////////////////
 enum GHOST_DISTANCE_TO_POWERPILL implements StateEnum {
@@ -171,7 +149,9 @@ enum GHOST_DISTANCE_TO_POWERPILL implements StateEnum {
 	// strategies need
 	// it.
 	static boolean enumUsed = false;
-
+	
+	/*@brief checks If pacman is nearer to the next power pill than any currently visible ghost. 
+	 * If no ghosts are currently visible pacmanNearerToPowerPill will be set*/
 	public String getCurrentStateString(Game game, int current, GhostMemory memory) {
 		// find visible ghosts into list
 		ArrayList<Integer> positionGhosts = new ArrayList<Integer>();

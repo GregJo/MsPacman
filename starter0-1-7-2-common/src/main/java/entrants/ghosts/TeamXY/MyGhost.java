@@ -33,6 +33,7 @@ public class MyGhost{
    @SuppressWarnings("unchecked")
 public MyGhost(GHOST ghost)
    {
+	   //Strategies Ghosts should use
 	   strategyList = new ArrayList<>(
 			   Arrays.asList(
 					   new HuntPacMan(),
@@ -46,48 +47,69 @@ public MyGhost(GHOST ghost)
 	   this.ghost=ghost;
 	   int numberStrategies = strategyList.size();
 	   probabilityGenerator = new ProbabilityGenerator(numberStrategies);
+	   
+	 //Create all possible states (permutation of all possible enum values)
 	   probabilityGenerator.createNProbabilitiesPerPossibleState(strategyList,
 	   																POWERPILLS_LEFT.class,
 																	GHOST_DISTANCE_TO_POWERPILL.class
 	   																);
-	   probabilityGenerator.resetStaticStateVars();
+	   probabilityGenerator.resetStaticStateVars(); //reset static variables
 	   
-	   //load strategy probabilities of differently trained PacMan that will be used on death
+	   //load strategy probabilities of differently trained ghosts that will be used on death
 	   differentGhost = new ArrayList<>();
 	   differentGhost.add(GeneticAlgorithm.loadPacManProbabilities(System.getProperty("user.dir")+"/src/main/java/entrants/ghosts/username/trainedGhosts"));
 	   this.setProbabilities(differentGhost.get(new Random().nextInt(differentGhost.size())));
 	   
    }
    
-   /*@brief Sets the probabiblities that should be used for this pacman
-    * @param probability_by_state_list the list of probabilities to set
+   /*@brief Sets the probabilities for all states that should be used for this ghost
+    * @param probability_by_state_list the list of ProbabilityByState objects to set
     * */
    public void setProbabilities(ArrayList<ProbabilityByState> probability_by_state_list)
    {
 	   probabilityGenerator.setProbabilityByStateList(probability_by_state_list);
 	   probabilityGenerator.resetProbByStateCounters();
    }
+   
+   /*@brief Gets all current strategy probabilities of this ghost for all states
+    * @param probability_by_state_list the list of probabilities to set
+    * @returns All probabilities of all possible states
+    * */
    public ArrayList<ProbabilityByState> getProbabilities()
    {
 	   return probabilityGenerator.getProbabilityByStateList();
    }
    
+   /*@brief Sets the probability for a specific strategy and a specific state
+    * @param numberOfProbabilityByStateObject The index of the ProbabilityByState Object containing all strategy probabilities for the specific state
+    * @param numberOfStrategy The index of the strategy which probability should be set
+    * */
    public void setProbabilityForStrategy(int numberOfStrategy, int numberOfprobability, double newProbability)
    {
 	   probabilityGenerator.getProbabilityByStateList().get(numberOfStrategy).getProbabilityObject(false).setProbability(numberOfprobability, newProbability);
    }
    
+   /*@brief Gets the probability for a specific strategy and a specific state
+    * @param numberOfProbabilityByStateObject The index of the ProbabilityByState Object containing all strategy probabilities for the specific state
+    * @param numberOfStrategy The index of the strategy which probability should be returned
+    * @returns The probability of the strategy numberOfStrategy in the state with index numberOfProbabilityByStateObject
+    * */
    public double getProbabilityForStrategy(int numberOfStrategy, int numberOfprobability)
    {
 	   return probabilityGenerator.getProbabilityByStateList().get(numberOfStrategy).getProbabilityObject(false).getProbability(numberOfprobability);
    }
    
+   /*@brief Gets the sum of all state occurrence counters. Used for training.
+    * @returns The sum of all state occurrence counters
+    * */
    public int getStateCounterSum()
 	{
 		return probabilityGenerator.getStateCounterSum();
 	}
  
-   
+   /*@brief Returns a move for this ghost depending on his current state
+    * @returns The Move to make at this time step
+    * */
     public MOVE getMove(Game game, long timeDue) {
     	 	
     	

@@ -15,18 +15,15 @@ import pacman.game.Game;
 import pacman.game.internal.Ghost;
 import pacman.game.GameView;
 
+/*Strategy for hunting PacMan by going to PacMans's last known position*/
 class HuntPacMan implements Strategy {
 
 	@Override
 	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
 		// TODO Auto-generated method stub
 		MOVE move = null;
-		// Random rand = new Random();
-
+		
 		if (game.getGhostLairTime(ghost) == 0) {
-			// ArrayList<MOVE> possibleMovesList = new ArrayList<>();
-			// possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
-
 			if (game.getPacmanCurrentNodeIndex() > -1 && game.isJunction(current)) {
 				move = StaticFunctions.getMoveToNearestObject(game, game.getGhostCurrentNodeIndex(ghost),
 						new int[] { game.getPacmanCurrentNodeIndex() });
@@ -54,6 +51,7 @@ class HuntPacMan implements Strategy {
 
 }
 
+/*Strategy for avoiding other ghosts to spread out into more directions instead of having multiple ghosts at the  same place.*/
 class AvoidOtherGhost implements Strategy {
 
 	@Override
@@ -80,11 +78,11 @@ class AvoidOtherGhost implements Strategy {
 				for (GHOST otherGhost : GHOST.values()) {
 					if (otherGhost == ghost)
 						continue;
-					if (game.getGhostCurrentNodeIndex(otherGhost) > -1) {
+					if (game.getGhostCurrentNodeIndex(otherGhost) > -1) {//seeing other ghost
 						otherGhostPosition = game.getGhostCurrentNodeIndex(otherGhost);
 
 						if (possibleMovesList.contains(game.getGhostLastMoveMade(ghost)))
-							possibleMovesList.remove(possibleMovesList.indexOf(game.getGhostLastMoveMade(ghost)));
+							possibleMovesList.remove(possibleMovesList.indexOf(game.getGhostLastMoveMade(ghost)));//change direction as fast as possible
 						move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
 						break;
 					}
@@ -102,7 +100,7 @@ class AvoidOtherGhost implements Strategy {
 	}
 
 }
-
+/*Strategy for running away from PacMan*/
 class RunAwayFromPacMan implements Strategy {
 	
 	GHOST _ghost = null;
@@ -151,7 +149,7 @@ class RunAwayFromPacMan implements Strategy {
 		return "RunAwayFromPacMan";
 	}
 	
-	
+	/*Ghosts should only run away if they are edible.*/
 	public boolean requirementsMet(Game game, int current, GhostMemory memory)
 	{
 		if(this._ghost != null)
@@ -163,7 +161,7 @@ class RunAwayFromPacMan implements Strategy {
 		return false;
 	}
 }
-
+/*Strategy for running around objects*/
 class RunCircle implements Strategy {
 
 	private MOVE moveLastTime = null;
@@ -233,69 +231,7 @@ class RunCircle implements Strategy {
 
 }
 
-// Works partially for ghost.
-class TagTile implements Strategy {
-
-	@Override
-	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private int center = Integer.MIN_VALUE;
-	private final int RADIUS = 30;
-	private int radius = RADIUS;
-
-	@Override
-	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
-		// TODO Auto-generated method stub
-
-		MOVE move = null;
-		Random rand = new Random();
-
-		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
-		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
-		if (possibleMovesList.contains(game.getGhostLastMoveMade(ghost).opposite())) {
-			possibleMovesList.remove(game.getGhostLastMoveMade(ghost).opposite());
-		}
-
-		if (game.getGhostLairTime(ghost) == 0 && game.isJunction(current)) {
-			if (center == Integer.MIN_VALUE) {
-				center = current;
-			}
-			if (center == current) {
-				radius = RADIUS;
-			}
-			if (game.getEuclideanDistance(current, center) < radius) {
-				move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
-			
-			} else {
-				radius = 0;
-				if (StaticFunctions.getMoveToNearestObject(game, current, new int[] { center }) == game
-						.getGhostLastMoveMade(ghost)) {
-					move = StaticFunctions.getMoveToNearestObject(game, current, new int[] { center });
-				} else if (possibleMovesList.contains(game.getGhostLastMoveMade(ghost))) {
-					possibleMovesList.remove(game.getGhostLastMoveMade(ghost));
-				}
-				if (possibleMovesList.size() > 0)
-					move = possibleMovesList.get(0);
-
-			
-			}
-
-		}
-
-		return move;
-	}
-
-	@Override
-	public String getStrategyName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-}
-
+/*Strategy for going to nearest power pill*/
 class GoToNearestPowerPill implements Strategy
 {
 	@Override
