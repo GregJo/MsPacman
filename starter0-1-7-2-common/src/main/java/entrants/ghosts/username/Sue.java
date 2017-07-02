@@ -10,7 +10,7 @@ import pacman.game.Game;
  */
 public class Sue extends IndividualGhostController {
 
-	MyGhost ghostBase;
+	public MyGhost ghostBase;
 	
     public Sue() {
         super(Constants.GHOST.SUE);

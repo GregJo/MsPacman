@@ -31,6 +31,7 @@ public class MyGhost{
    public double fitness = 0;
    public double ticks = 0;
    public double score = 0;
+   public double numOfDeaths = 0;
 
    @SuppressWarnings("unchecked")
 public MyGhost(GHOST ghost)
@@ -93,9 +94,10 @@ public MyGhost(GHOST ghost)
     	if (game.getGhostLairTime(ghost) == 0) {
 	    	int rouletteStrategyNumber = probabilityGenerator.geStrategyNumberToUse(game, current, memory, strategyList);
 	    	 move = strategyList.get(rouletteStrategyNumber).getStrategyMove(game, ghost, current, memory);
-	    	 ticks = (game.getTotalTime() == 0) ? 1 :  game.getTotalTime();
-	    	 score = game.getScore();
-	    	 fitness = score/ticks;
+	    	 if (game.wasGhostEaten(ghost)) {
+	    		 numOfDeaths -= 1000;
+			}
+	    	 fitness -= game.getScore() + numOfDeaths;
     	}
     	
     	return move;

@@ -10,7 +10,7 @@ import pacman.game.Game;
  */
 public class Inky extends IndividualGhostController {
 
-	MyGhost ghostBase;
+	public MyGhost ghostBase;
 	
     public Inky() {
         super(Constants.GHOST.INKY);

@@ -10,7 +10,7 @@ import entrants.pacman.username.*;
  */
 public class Blinky extends IndividualGhostController {
 
-	MyGhost ghostBase;
+	public MyGhost ghostBase;
 	
     public Blinky() {
         super(Constants.GHOST.BLINKY);
