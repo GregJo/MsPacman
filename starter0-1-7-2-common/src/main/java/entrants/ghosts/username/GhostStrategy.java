@@ -23,20 +23,14 @@ class HuntPacMan implements Strategy {
 		MOVE move = null;
 		// Random rand = new Random();
 
-		GameView.addPoints(game, Color.CYAN, memory.getPacManLastKnownPosition());
-		GameView.addLines(game, Color.RED, game.getGhostCurrentNodeIndex(ghost), memory.getPacManLastKnownPosition());
-
 		if (game.getGhostLairTime(ghost) == 0) {
 			// ArrayList<MOVE> possibleMovesList = new ArrayList<>();
 			// possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
-
-			System.out.println("PacMan current pos (if avaible, else = -1): " + game.getPacmanCurrentNodeIndex());
 
 			if (game.getPacmanCurrentNodeIndex() > -1 && game.isJunction(current)) {
 				move = StaticFunctions.getMoveToNearestObject(game, game.getGhostCurrentNodeIndex(ghost),
 						new int[] { game.getPacmanCurrentNodeIndex() });
 			} else if (game.isJunction(current)) {
-				System.out.println("Current ghost target: " + memory.getPacManLastKnownPosition());
 				move = StaticFunctions.getMoveToNearestObject(game, game.getGhostCurrentNodeIndex(ghost),
 						new int[] { memory.getPacManLastKnownPosition() });
 			}
@@ -78,7 +72,6 @@ class AvoidOtherGhost implements Strategy {
 		if (possibleMovesList.contains(game.getGhostLastMoveMade(ghost).opposite())) {
 			possibleMovesList.remove(game.getGhostLastMoveMade(ghost).opposite());
 		}
-		System.out.println("possibleMovesList size: " + possibleMovesList.size());
 
 		int otherGhostPosition = -1;
 
@@ -93,15 +86,11 @@ class AvoidOtherGhost implements Strategy {
 						if (possibleMovesList.contains(game.getGhostLastMoveMade(ghost)))
 							possibleMovesList.remove(possibleMovesList.indexOf(game.getGhostLastMoveMade(ghost)));
 						move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
-						System.out.println("Chosen move: " + move.name());
 						break;
 					}
 				}
 			}
 		}
-
-		if (otherGhostPosition != -1)
-			GameView.addLines(game, Color.YELLOW, current, otherGhostPosition);
 
 		return move;
 	}
@@ -115,7 +104,8 @@ class AvoidOtherGhost implements Strategy {
 }
 
 class RunAwayFromPacMan implements Strategy {
-
+	
+	GHOST _ghost = null;
 	@Override
 	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) {
 		// TODO Auto-generated method stub
@@ -127,7 +117,7 @@ class RunAwayFromPacMan implements Strategy {
 		// TODO Auto-generated method stub
 		MOVE move = null;
 		Random rand = new Random();
-
+		_ghost = ghost;
 		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
 		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
 		if (possibleMovesList.contains(game.getGhostLastMoveMade(ghost).opposite())) {
@@ -152,19 +142,6 @@ class RunAwayFromPacMan implements Strategy {
 			}
 		}
 
-		if (move == MOVE.UP) {
-			GameView.addLines(game, Color.WHITE, current, current + 10);
-		}
-		if (move == MOVE.DOWN) {
-			GameView.addLines(game, Color.GREEN, current, current - 10);
-		}
-		if (move == MOVE.LEFT) {
-			GameView.addLines(game, Color.MAGENTA, current, current + 30);
-		}
-		if (move == MOVE.RIGHT) {
-			GameView.addLines(game, Color.RED, current, current - 30);
-		}
-
 		return move;
 	}
 
@@ -172,6 +149,18 @@ class RunAwayFromPacMan implements Strategy {
 	public String getStrategyName() {
 		// TODO Auto-generated method stub
 		return "RunAwayFromPacMan";
+	}
+	
+	
+	public boolean requirementsMet(Game game, int current, GhostMemory memory)
+	{
+		if(this._ghost != null)
+		{
+			if(game.isGhostEdible(this._ghost)){
+				return true;
+			}
+		}
+		return false;
 	}
 }
 
@@ -202,8 +191,6 @@ class RunCircle implements Strategy {
 				return game.getGhostLastMoveMade(ghost);
 			}
 
-			// System.out.println(moveLastTime);
-
 			// first select random direction
 			// then follow that direction until a wild junction appears
 			// At the junction decide if ghost wants to run in clockwise or
@@ -228,13 +215,13 @@ class RunCircle implements Strategy {
 			}
 			int clockWiseDirection = rand.nextInt(2);
 			moveLastTime = (clockWiseDirection == 0) ? MOVE.LEFT : MOVE.RIGHT;
-			GameView.addLines(game, Color.GREEN, current, game.getGhostInitialNodeIndex());
+			
 			// check if planned move is even possible
 			if (!StaticFunctions.isMovePossibleAtNode(game, simulatedCurrent, moveLastTime))
 				moveLastTime = moveLastTime.opposite();
 			return initialDirection;
 		}
-		GameView.addLines(game, Color.RED, current, game.getGhostInitialNodeIndex());
+	
 		return null;
 	}
 
@@ -281,7 +268,7 @@ class TagTile implements Strategy {
 			}
 			if (game.getEuclideanDistance(current, center) < radius) {
 				move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
-				GameView.addPoints(game, Color.ORANGE, center);
+			
 			} else {
 				radius = 0;
 				if (StaticFunctions.getMoveToNearestObject(game, current, new int[] { center }) == game
@@ -293,7 +280,7 @@ class TagTile implements Strategy {
 				if (possibleMovesList.size() > 0)
 					move = possibleMovesList.get(0);
 
-				GameView.addPoints(game, Color.GREEN, center);
+			
 			}
 
 		}
@@ -313,16 +300,14 @@ class GoToNearestPowerPill implements Strategy
 {
 	@Override
 	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
-		GameView.addPoints(game, Color.YELLOW, GHOST_DISTANCE_TO_POWERPILL.m_shortestPathPacmanToNextPowerPill[0]);
+		
 		if(GHOST_DISTANCE_TO_POWERPILL.enumUsed == false && memory.getStillAvailablePowerPills().size() > 0)
 		{
-			GameView.addPoints(game, Color.YELLOW, GHOST_DISTANCE_TO_POWERPILL.m_shortestPathPacmanToNextPowerPill[0]);
 			return StaticFunctions.getMoveToNearestObject(game, current, StaticFunctions.convertIntegerListToArray(memory.getSeenPowerPills()));
 			
 		}
 		if(GHOST_DISTANCE_TO_POWERPILL.enumUsed && memory.getStillAvailablePowerPills().size() > 0)
 		{
-			GameView.addPoints(game, Color.GREEN, GHOST_DISTANCE_TO_POWERPILL.m_shortestPathPacmanToNextPowerPill[0]);
 			return game.getNextMoveTowardsTarget(current,GHOST_DISTANCE_TO_POWERPILL.m_shortestPathPacmanToNextPowerPill[0],DM.PATH);
 		}
 		return null;

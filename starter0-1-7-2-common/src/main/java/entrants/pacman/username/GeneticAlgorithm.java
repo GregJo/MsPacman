@@ -161,6 +161,7 @@ public class GeneticAlgorithm {
     		double fitness1 = 0;
     		double fitness2 = 0;
     		double fitness3 = 0;
+    		
     		ArrayList<MyGhost> current_ghosts = new ArrayList<>();
     		current_ghosts.add(ghosts.get(i));
     		current_ghosts.add(ghosts.get(i+1));
@@ -170,19 +171,19 @@ public class GeneticAlgorithm {
     		{
     			GeneticAlgorithm.notMainGhost(true, current_ghosts); //play the game
     			
-        		fitness0 += current_ghosts.get(i).fitness; //add fitness from last played game
-        		fitness1 += current_ghosts.get(i+1).fitness;
-        		fitness2 += current_ghosts.get(i+2).fitness;
-        		fitness3 += current_ghosts.get(i+3).fitness;
+        		fitness0 += current_ghosts.get(0).fitness; //add fitness from last played game
+        		fitness1 += current_ghosts.get(1).fitness;
+        		fitness2 += current_ghosts.get(2).fitness;
+        		fitness3 += current_ghosts.get(3).fitness;
     			
     			if(j == numberGamesPerPacMan -1 ) //stop resetting PacMans if this was the last game
     				break;
     			
     			//reset PacMan and her internal values
-    			ArrayList<ProbabilityByState> probs0 = current_ghosts.get(i).getProbabilities();
-    			ArrayList<ProbabilityByState> probs1 = current_ghosts.get(i+1).getProbabilities();
-    			ArrayList<ProbabilityByState> probs2 = current_ghosts.get(i+2).getProbabilities();
-    			ArrayList<ProbabilityByState> probs3 = current_ghosts.get(i+3).getProbabilities();
+    			ArrayList<ProbabilityByState> probs0 = current_ghosts.get(0).getProbabilities();
+    			ArrayList<ProbabilityByState> probs1 = current_ghosts.get(1).getProbabilities();
+    			ArrayList<ProbabilityByState> probs2 = current_ghosts.get(2).getProbabilities();
+    			ArrayList<ProbabilityByState> probs3 = current_ghosts.get(3).getProbabilities();
     			MyGhost current_ghost0 = new MyGhost(GHOST.INKY);
     			MyGhost current_ghost1 = new MyGhost(GHOST.BLINKY);
     			MyGhost current_ghost2 = new MyGhost(GHOST.PINKY);
@@ -192,20 +193,22 @@ public class GeneticAlgorithm {
     			current_ghost2.setProbabilities(probs2);
     			current_ghost3.setProbabilities(probs3);
     			
-    			current_ghosts.set(i, current_ghost0);
-    			current_ghosts.set(i+1, current_ghost1);
-    			current_ghosts.set(i+2, current_ghost2);
-    			current_ghosts.set(i+3, current_ghost3);
+    			current_ghosts.set(0, current_ghost0);
+    			current_ghosts.set(1, current_ghost1);
+    			current_ghosts.set(2, current_ghost2);
+    			current_ghosts.set(3, current_ghost3);
     			
     		}
     		fitness0 /= (double)numberGamesPerPacMan; //calculate average fitness
     		fitness1 /= (double)numberGamesPerPacMan; //calculate average fitness
     		fitness2 /= (double)numberGamesPerPacMan; //calculate average fitness
     		fitness3 /= (double)numberGamesPerPacMan; //calculate average fitness
-    		current_ghosts.get(i).fitness = fitness0; //set average fitness before returning
-    		current_ghosts.get(i+1).fitness = fitness1; //set average fitness before returning
-    		current_ghosts.get(i+2).fitness = fitness2; //set average fitness before returning
-    		current_ghosts.get(i+3).fitness = fitness3; //set average fitness before returning
+    		
+    		MyGhost g0 = ghosts.get(i);
+    		current_ghosts.get(0).fitness = fitness0; //set average fitness before returning
+    		current_ghosts.get(1).fitness = fitness1; //set average fitness before returning
+    		current_ghosts.get(2).fitness = fitness2; //set average fitness before returning
+    		current_ghosts.get(3).fitness = fitness3; //set average fitness before returning
     	}
 	} 
 
@@ -689,6 +692,45 @@ public class GeneticAlgorithm {
 		return newMutationStepSize;
 	}
 	
+	
+	/*@brief Loads a list of saved PacMans
+	 *@input path FilePath to the saved PacMans
+	 *@returns The list of the loaded PacMans 
+	*/
+	public static ArrayList<MyGhost> loadGhostsList(String path)
+	{
+		ArrayList<ArrayList<ProbabilityByState>> pacManList = new ArrayList<>();
+		 try
+		 {
+			 InputStream file = new FileInputStream(path);
+		     InputStream buffer = new BufferedInputStream(file);
+		     ObjectInput input = new ObjectInputStream (buffer);
+		
+			 pacManList = ( ArrayList<ArrayList<ProbabilityByState>>)input.readObject(); 
+			 file.close();
+			 buffer.close();
+			 input.close();
+			 
+		  }
+		  catch(ClassNotFoundException e)
+		 {
+			  e.printStackTrace();
+		 }
+	     catch(IOException e)
+		 {
+	    	 e.printStackTrace();
+	     }
+		 ArrayList<MyGhost> loadedPacMans = new ArrayList<>();
+		 for(ArrayList<ProbabilityByState> p : pacManList)
+		 {
+			 MyGhost pacMan = new MyGhost(GHOST.BLINKY);
+			 pacMan.setProbabilities(p);
+			 loadedPacMans.add(pacMan);
+		 }
+		 return loadedPacMans;
+		 
+	}
+	
 	/*@brief Loads a list of saved PacMans
 	 *@input path FilePath to the saved PacMans
 	 *@returns The list of the loaded PacMans 
@@ -829,19 +871,23 @@ public class GeneticAlgorithm {
 		Random rand = new Random();
 		ArrayList<MyGhost> newGeneration = new ArrayList<MyGhost>();
 		// PacMan roulette
-		for (int i = 0; i < nFittestPacMans.size(); i++) {
-			for (int j = 0; j < nFittestPacMans.size(); j++) {
-			 	if(rand.nextDouble() <= nFittestPacMans.get(i).fitness/fitnessSum) //chance to create a child is the influence of the PacMan's fitness to the Sum of all fitnesses
-			 	{
-			 		MyGhost current_pacMan = childGhost(nFittestPacMans, rand, i, j);//create child
-			 		newGeneration.add(current_pacMan);
-			 		if(newGeneration.size() == maxNumberChilds)
-			 			break;
-			 	}
+		while(newGeneration.size() < maxNumberChilds)
+		{
+			for (int i = 0; i < nFittestPacMans.size(); i++) {
+				for (int j = 0; j < nFittestPacMans.size(); j++) {
+				 	if(rand.nextDouble() <= nFittestPacMans.get(i).fitness/fitnessSum) //chance to create a child is the influence of the PacMan's fitness to the Sum of all fitnesses
+				 	{
+				 		MyGhost current_pacMan = childGhost(nFittestPacMans, rand, i, j);//create child
+				 		newGeneration.add(current_pacMan);
+				 		if(newGeneration.size() == maxNumberChilds)
+				 			break;
+				 	}
+				}
+				if(newGeneration.size() == maxNumberChilds)
+		 			break;
 			}
-			if(newGeneration.size() == maxNumberChilds)
-	 			break;
 		}
+		
 		return newGeneration;
 	}
 	
@@ -1006,7 +1052,7 @@ public class GeneticAlgorithm {
     	currentGeneration = GeneticAlgorithm.createNewGhostGeneration(numberOfDifferentGhosts);	
     	
     	//currently runs until mutationRate and mutationStepSize is 0
-       	for (int i = 0; true || i < runs ; i++) 
+       	for (int i = 0; false && i < runs ; i++) 
        	{
        		//Let the population play to determine their fitness
        		GeneticAlgorithm.calculateGhostFitness(numberGamesPerGhost, currentGeneration);
@@ -1116,6 +1162,15 @@ public class GeneticAlgorithm {
     		currentGeneration.addAll(0, lastGeneration); //at this point the last generation is the one we had just now
     		currentGeneration = GeneticAlgorithm.mutateGhost(currentGeneration, mutationRate, mutationStepSizeUpperLimit);
     		currentGeneration = GeneticAlgorithm.resetGhosts(currentGeneration);
+       	}
+       	
+       	
+       	ArrayList<MyGhost> ghosts = GeneticAlgorithm.loadGhostsList("C:/Users/Grigori/Desktop/ghosts/fitness_-16724.0counter_11");
+       	System.out.println("ghosts: "+ghosts.size());
+       	
+       	for(MyGhost g : ghosts)
+       	{
+       		GeneticAlgorithm.notMainGhost(false, ghosts);
        	}
 	}
 	

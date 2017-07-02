@@ -27,12 +27,6 @@ public class GhostMemory extends PacManMemory {
 		for (Integer integer : game.getPowerPillIndices()) {
 			m_seenPowerPills.add(integer);
 		}
-		
-		System.out.println("No. of initial m_seenPowerPills: " + m_seenPowerPills.size());
-		System.out.println("\nNo. of initial m_seenPowerPills:");
-		for (int i = 0; i < m_seenPowerPills.size(); i++) {
-			System.out.println("PowerPill No." + i + ": " + m_seenPowerPills.get(i));
-		}
 	}
 	
 	public void updateMemory(Game game, int current)
@@ -71,10 +65,6 @@ public class GhostMemory extends PacManMemory {
 		
 		if (powerPillToRemove != -1) {
 			m_seenPowerPills.remove(m_seenPowerPills.indexOf(powerPillToRemove));
-			System.out.println("\nNo. of m_seenPowerPills:");
-			for (int i = 0; i < m_seenPowerPills.size(); i++) {
-				System.out.println("PowerPill No." + i + ": " + m_seenPowerPills.get(i));
-			}
 		}
 	}
 	

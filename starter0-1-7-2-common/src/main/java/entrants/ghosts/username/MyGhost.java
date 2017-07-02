@@ -6,8 +6,10 @@ import pacman.game.Game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import entrants.pacman.username.Strategy;
+import entrants.pacman.username.GeneticAlgorithm;
 import entrants.pacman.username.ProbabilityByState;
 import entrants.pacman.username.ProbabilityGenerator;
 
@@ -26,6 +28,7 @@ public class MyGhost{
    public double ticks = 0;
    public double score = 0;
    public double numOfDeaths = 0;
+   private ArrayList<ArrayList<ProbabilityByState>> differentGhost;
 
    @SuppressWarnings("unchecked")
 public MyGhost(GHOST ghost)
@@ -48,6 +51,12 @@ public MyGhost(GHOST ghost)
 																	GHOST_DISTANCE_TO_POWERPILL.class
 	   																);
 	   probabilityGenerator.resetStaticStateVars();
+	   
+	   //load strategy probabilities of differently trained PacMan that will be used on death
+	   differentGhost = new ArrayList<>();
+	   differentGhost.add(GeneticAlgorithm.loadPacManProbabilities(System.getProperty("user.dir")+"/src/main/java/entrants/ghosts/username/trainedGhosts"));
+	   this.setProbabilities(differentGhost.get(new Random().nextInt(differentGhost.size())));
+	   
    }
    
    /*@brief Sets the probabiblities that should be used for this pacman
@@ -81,6 +90,12 @@ public MyGhost(GHOST ghost)
    
     public MOVE getMove(Game game, long timeDue) {
     	 	
+    	
+    	if(game.wasGhostEaten(ghost))
+    	{
+    		 this.setProbabilities(differentGhost.get(new Random().nextInt(differentGhost.size())));
+    	}
+    	
     	int current = game.getGhostCurrentNodeIndex(ghost);
     	memory.updateMemory(game, current);
     	

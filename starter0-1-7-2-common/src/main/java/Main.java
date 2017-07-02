@@ -13,8 +13,8 @@ public class Main {
     {
     	//GeneticAlgorithm.train(); //we used this for training
 
-    	GeneticAlgorithm.trainGhosts(); //we used this for training
-    	//GeneticAlgorithm.notMain(false, new MyPacMan());
+    	//GeneticAlgorithm.trainGhosts(); //we used this for training
+    	GeneticAlgorithm.notMain(false, new MyPacMan());
     } 
 }
 
