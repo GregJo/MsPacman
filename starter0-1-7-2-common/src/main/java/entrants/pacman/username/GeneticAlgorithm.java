@@ -392,6 +392,38 @@ public class GeneticAlgorithm {
 		 
 	}
 	
+	/*@brief Loads a list of ProbabilityByState Objects
+	 *@input path FilePath to the saved list
+	 *@returns The list of ProbabilityByState Objects 
+	*/
+	public static ArrayList<ProbabilityByState> loadPacManProbabilities(String path)
+	{
+		ArrayList<ArrayList<ProbabilityByState>> pacManList = new ArrayList<>();
+		 try
+		 {
+			 InputStream file = new FileInputStream(path);
+		     InputStream buffer = new BufferedInputStream(file);
+		     ObjectInput input = new ObjectInputStream (buffer);
+		
+			 pacManList = ( ArrayList<ArrayList<ProbabilityByState>>)input.readObject(); 
+			 file.close();
+			 buffer.close();
+			 input.close();
+			 
+		  }
+		  catch(ClassNotFoundException e)
+		 {
+			  e.printStackTrace();
+		 }
+	     catch(IOException e)
+		 {
+	    	 e.printStackTrace();
+	     }
+		
+		 return pacManList.get(0);
+		 
+	}
+	
 	/*@brief Loads a single saved PacMan
 	 *@input path FilePath to the saved PacMan
 	 *@returns The loaded PacMan

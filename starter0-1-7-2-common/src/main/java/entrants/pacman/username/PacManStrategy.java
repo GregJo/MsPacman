@@ -12,6 +12,7 @@ import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 
+/*Strategy for staying at the same position*/
 class WaitStrategy implements Strategy
 {
 	public WaitStrategy(){}
@@ -28,9 +29,10 @@ class WaitStrategy implements Strategy
 	}
 
 	@Override
+	/*@brief returns the initial probability that will be used on initialization of PacMan*/
 	public double getStrategyInitialProbability() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 0;// 0 because this strategy greatly reduces PacMans fitness and we are not even sure it has any benefits
 	}
 
 	@Override
@@ -39,13 +41,14 @@ class WaitStrategy implements Strategy
 		return null;
 	}
 }
+/*Strategy to eat the nearest still available PowerPill.
+ *Positions of still available Power Pills are stored in the memory.*/
 class EatNearestPowerPillStrategy implements Strategy
 {
 	public EatNearestPowerPillStrategy(){}
 
 	@Override
-	/*@brief Goes to next powerpill.
-	 * !Attention Currently expects that GHOST_DISTANCE_TO_POWERPILL State enum is used*/
+	/*@brief Goes to next powerpill.*/
 	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) {
 		
 		
@@ -55,6 +58,7 @@ class EatNearestPowerPillStrategy implements Strategy
 			return StaticFunctions.getMoveToNearestObject(game, current, StaticFunctions.convertIntegerListToArray(memory.getStillAvailablePowerPills()));
 			
 		}
+		//if GHOST_DISTANCE_TO_POWERPILL enum is used, reuse the cached path
 		if(GHOST_DISTANCE_TO_POWERPILL.enumUsed && memory.getStillAvailablePowerPills().size() > 0)
 		{
 			return game.getNextMoveTowardsTarget(current,GHOST_DISTANCE_TO_POWERPILL.m_shortestPathPacmanToNextPowerPill[0],DM.PATH);
@@ -63,6 +67,9 @@ class EatNearestPowerPillStrategy implements Strategy
 	}
 	
 	@Override
+	/*@brief Checks whether there are any power pills left.
+	 * @returns true if there are power pills left, else false.
+	 * */
 	public boolean requirementsMet(Game game, int current, PacManMemory memory)
 	{
 		ArrayList<Integer> powerPills =  memory.getStillAvailablePowerPills();
@@ -80,6 +87,7 @@ class EatNearestPowerPillStrategy implements Strategy
 		return null;
 	}
 }
+/*Strategy to eat currently visible ghosts*/
 class EatGhostStrategy implements Strategy
 {
 	public EatGhostStrategy(){}
@@ -105,6 +113,9 @@ class EatGhostStrategy implements Strategy
 	}
 	
 	@Override
+	/*@brief Checks if there are visible and edible ghost
+	 * @returns true if there visible and edible ghosts, else false.
+	 * */
 	public boolean requirementsMet(Game game, int current, PacManMemory memory)
 	{
 		int ghostCounter = 0;
@@ -119,23 +130,20 @@ class EatGhostStrategy implements Strategy
 	}
 
 	@Override
-	public double getStrategyInitialProbability() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 }
+/*Strategy to eat nearest still available pill. 
+ * Positions of still available pills are stored in the memory.
+ * */
 class EatNearestAvailablePillStrategy implements Strategy
 {
 	public EatNearestAvailablePillStrategy(){}
 
 	@Override
-	/*@brief Goes to next edible ghost.
+	/*@brief Goes to nearest pill.
 	*/
 	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) 
 	{
@@ -155,6 +163,7 @@ class EatNearestAvailablePillStrategy implements Strategy
 
 }
 
+/*Strategy to run away from ghosts by changing directions at junctions as fast as possible.*/
 class GetRidOfGhost implements Strategy
 {
 
@@ -169,17 +178,17 @@ class GetRidOfGhost implements Strategy
 		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
 		
 		move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
-		if(move == null)
+		if(move == null) //not a corner
 		{
 			if(game.isJunction(current)){
 				Random rand = new Random();
-				possibleMovesList.remove(game.getPacmanLastMoveMade().opposite());
-				if (NUMBER_SEEN_GHOSTS.ghostCounter > 1)
+				possibleMovesList.remove(game.getPacmanLastMoveMade().opposite()); //don't run back
+				if (NUMBER_SEEN_GHOSTS.ghostCounter > 1) //if at least 2 ghosts, change direction as fast as possible
 					possibleMovesList.remove(game.getPacmanLastMoveMade());
 				move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
 			}else 
 			{
-				if (NUMBER_SEEN_GHOSTS.ghostCounter > 0) {
+				if (NUMBER_SEEN_GHOSTS.ghostCounter > 0) { //run in opposite direction of ghost if there is only one ghost
 					MOVE moveTowardsGhost = StaticFunctions.getMoveToNearestObject(game, current, ghostPosList);
 					if (moveTowardsGhost != null) {
 						if (possibleMovesList.contains(moveTowardsGhost.opposite()))
@@ -194,6 +203,9 @@ class GetRidOfGhost implements Strategy
 	}
 	
 	@Override
+	/*
+	 *@brief Checks if this strategy would return null. This can happen on T-Junctions.
+	 *@returns false if this strategy would return null, else true.*/
 	public boolean requirementsMet(Game game, int current, PacManMemory memory)
 	{
 		MOVE move = _getStrategyMove(game, current, memory);
@@ -214,6 +226,8 @@ class GetRidOfGhost implements Strategy
 	
 }
 
+/*Another strategy to run away from ghosts
+ * */
 class RunFromNearestGhost implements Strategy
 {
 	@Override
@@ -228,16 +242,16 @@ class RunFromNearestGhost implements Strategy
 		
 		move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
 		
-		if(move == null)
+		if(move == null)// not a corner
 		{
-			if (NUMBER_SEEN_GHOSTS.ghostCounter != 0) {
+			if (NUMBER_SEEN_GHOSTS.ghostCounter != 0) {//seeing at least one ghost
 				MOVE moveTowardsGhost = StaticFunctions.getMoveToNearestObject(game, current, ghostPosList);
 				if (moveTowardsGhost != null) {
-					if (possibleMovesList.contains(moveTowardsGhost.opposite()))
+					if (possibleMovesList.contains(moveTowardsGhost.opposite()))//run in opposite direction of ghost if possible
 						move = moveTowardsGhost.opposite();
 				}
 			} 
-			if(game.isJunction(current) && move == null){
+			if(game.isJunction(current) && move == null){ // if junction and still no move found (on T-Junctions for example)
 				Random rand = new Random();
 				possibleMovesList.remove(game.getPacmanLastMoveMade().opposite());
 				move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
@@ -260,6 +274,7 @@ class RunFromNearestGhost implements Strategy
 	}
 }
 
+/*Strategy to run towards a ghost. If no ghost is visible, run towards a ghost from memory.*/
 class RunTowardsNearestKnownGhost implements Strategy
 {
 	@Override
@@ -288,15 +303,21 @@ class RunTowardsNearestKnownGhost implements Strategy
 	}
 
 	@Override
+	/*@brief checks if there are currently any visible and edible ghosts.
+	 * This strategy won't be used if there are no visible and edible ghosts, because
+	 * after training it caused the PacMans to simply run into not edible ghosts.
+	 * @returns true if there are visible and edible ghosts, else false.*/
 	public boolean requirementsMet(Game game, int current, PacManMemory memory)
 	{
-	    return (NUMBER_SEEN_GHOSTS.ghostCounter != 0) ? true : false;
-	}
-	
-	@Override
-	public double getStrategyInitialProbability() {
-		// TODO Auto-generated method stub
-		return 0;
+		int ghostCounter = 0;
+	    for(GHOST ghost : GHOST.values())
+	    {
+	    	if(game.getGhostEdibleTime(ghost) > 0)
+			{
+				ghostCounter++;
+			}
+		}
+	    return (ghostCounter == 0) ? false : true;
 	}
 
 	@Override
@@ -305,7 +326,9 @@ class RunTowardsNearestKnownGhost implements Strategy
 		return null;
 	}
 }
-
+/*
+ * Strategy to patrol around a center point. After reaching a point too far from the center point, return to the center point and start anew.
+ * */
 class RandomPatrolInRadiusAroundCenter implements Strategy
 {
 	private int center = Integer.MIN_VALUE;
@@ -327,24 +350,20 @@ class RandomPatrolInRadiusAroundCenter implements Strategy
 		ArrayList<MOVE> possibleMovesList = new ArrayList<>();
 		possibleMovesList.addAll(Arrays.asList(game.getPossibleMoves(current)));
 		
-		//if(game.getShortestPathDistance(current, center) < radius)
-		if(game.getEuclideanDistance(current, center) < radius)
+		if(game.getEuclideanDistance(current, center) < radius) //still not too far from center point
 		{
 			move = StaticFunctions.CornerRoutine(game, current, possibleMovesList);
-			//System.out.println("Move: " + move.name());
 			if (move == null) {
 				if(game.isJunction(current)){
 					Random rand = new Random();
 					possibleMovesList.remove(game.getPacmanLastMoveMade().opposite());
 					move = possibleMovesList.get(rand.nextInt(possibleMovesList.size()));
-					//System.out.println("Move: " + move.name());
 				} else if(possibleMovesList.contains(game.getPacmanLastMoveMade())){
 					move = game.getPacmanLastMoveMade();
-					//System.out.println("Move: " + move.name());
 				}
 			}
 		} else
-		{
+		{ // too far from center point -> return to center
 			radius = 0;
 			move = game.getNextMoveTowardsTarget(current, center, DM.PATH);
 		}
@@ -372,6 +391,7 @@ class RandomPatrolInRadiusAroundCenter implements Strategy
 	
 }
 
+/*Strategy to got to furthest away power pill. This might be a good idea to run away while getting near another power pill.*/
 class EatFurthestAwayPowerPill implements Strategy
 {
 	public EatFurthestAwayPowerPill(){}
@@ -416,6 +436,9 @@ class EatFurthestAwayPowerPill implements Strategy
 	}
 	
 	@Override
+	/*@brief Checks if there are still power pills left.
+	 * This stratgey won't be used if no power pills are left.
+	 * @returns true if power pills are left, else false*/
 	public boolean requirementsMet(Game game, int current, PacManMemory memory)
 	{
 		ArrayList<Integer> powerPills =  memory.getStillAvailablePowerPills();
@@ -439,12 +462,14 @@ class EatFurthestAwayPowerPill implements Strategy
 		return null;
 	}
 }
+
+/*Strategy to got to furthest away pill. This might be a good idea to run away while getting near another pill.*/
 class EatFurthestAwayPill implements Strategy
 {
 	public EatFurthestAwayPill(){}
 
 	@Override
-	/*@brief Goes to furthest edible pill.
+	/*@brief Goes to farthest edible pill.
 	*/
 	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) 
 	{
@@ -490,7 +515,7 @@ class EatFurthestAwayPill implements Strategy
 	@Override
 	public double getStrategyInitialProbability() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 0; //usually not used, pacman should learn when to use this
 	}
 
 	@Override
@@ -499,12 +524,13 @@ class EatFurthestAwayPill implements Strategy
 		return null;
 	}
 }
+/*strategy to run around an object*/
 class RunCircle implements Strategy
 {
 	public RunCircle(){}
 
 	@Override
-	/*@brief Goes to furthest edible pill.
+	/*@brief Runs around an object.
 	*/
 	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) 
 	{

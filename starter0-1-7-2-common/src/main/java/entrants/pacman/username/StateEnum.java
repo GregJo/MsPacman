@@ -18,6 +18,7 @@ public interface StateEnum {
 ////////////////////ENUMS DESCRIBING THE GLOBAL STATE ///////////////////////////////////
 enum POWERPILLS_LEFT implements StateEnum{
 	   noPowerPillLeft, powerPillsLeft;
+	/*@brief checks if there are still power pills left.*/
 	   public String getCurrentStateString(Game game, int current, PacManMemory memory)
 	   {
 		   ArrayList<Integer> powerPills =  memory.getStillAvailablePowerPills();
@@ -43,6 +44,7 @@ enum POWERPILLS_LEFT implements StateEnum{
 ////////////////////ENUMS DESCRIBING THE LOCAL ENVIROMENT ///////////////////////////////////
 enum KIND_OF_LEVEL_TILE implements StateEnum{
 	   deadEnd, hallWay,threeWayJunction,fourWayJunction;
+	/*@brief checks on which level tile PacMan currently stands*/
 	   public String getCurrentStateString(Game game, int current, PacManMemory memory){
 		   int moveCounter = 0;
 		   for(MOVE move : game.getPossibleMoves(current))
@@ -70,6 +72,8 @@ enum KIND_OF_LEVEL_TILE implements StateEnum{
 enum NUMBER_SEEN_GHOSTS implements StateEnum{
 	   seeingNoGhost, seeingOneGhost, seeingTwoGhost, seeingThreeGhost, seeingFourGhost;
 	 public static int ghostCounter = 0;
+	 
+		/*@brief checks the number of ghosts PacMan sees right now.*/
 	 public String getCurrentStateString(Game game, int current, PacManMemory memory){
 		 ghostCounter = 0;
 		   for(GHOST ghost : GHOST.values())
@@ -99,7 +103,9 @@ enum NUMBER_SEEN_GHOSTS implements StateEnum{
 }
 enum NUMBER_SEEN_EDIBLE_GHOSTS implements StateEnum{
 	   seeingNoEdibleGhost, seeingOneEdibleGhost, seeingTwoEdibleGhosts, seeingThreeEdibleGhosts, seeingFourEdibleGhosts;
-	 public String getCurrentStateString(Game game, int current, PacManMemory memory){
+	
+	/*@brief checks the number of edible ghosts PacMan sees right now.*/
+	public String getCurrentStateString(Game game, int current, PacManMemory memory){
 		  int ghostCounter = 0;
 		   for(GHOST ghost : GHOST.values())
 		   {
@@ -139,6 +145,8 @@ enum GHOST_DISTANCE_TO_POWERPILL implements StateEnum{
 	static int[] m_shortestPathGhostToNextPowerPill; //since we compute the path we can just as well save it in case the strategies need it.
 	static boolean enumUsed = false;
 	
+	/*@brief checks If pacman is nearer to the next power pill than any currently visible ghost. 
+	 * If no ghosts are currently visible pacmanNearerToPowerPill will be set*/
 	 public String getCurrentStateString(Game game, int current, PacManMemory memory)
 	 {
 		 //find visible ghosts into list
@@ -173,6 +181,8 @@ enum GHOST_DISTANCE_TO_POWERPILL implements StateEnum{
 	 }
 
 	@Override
+	/*On PacMan creation static variables will be reset by calling this function to avoid errors when training.
+	 * Static variables are necessary here, because no instance of this is ever created.*/
 	public void resetStaticVars() {
 		 m_shortestPathPacmanToNextPowerPill = new int[0]; //since we compute the path we can just as well save it in case the strategies need it.
 		 m_shortestPathGhostToNextPowerPill = new int[0]; //since we compute the path we can just as well save it in case the strategies need it.
@@ -184,9 +194,10 @@ enum GHOST_DISTANCE_TO_POWERPILL implements StateEnum{
 enum POWER_PILL_ACTIVATED implements StateEnum{
 	   powerPillActive, powerPillNotActive;
 	 static int powerPillTime = 0;
+	 /*@brief checks if PacMan can currently eat ghosts.*/
 	 public String getCurrentStateString(Game game, int current, PacManMemory memory)
 	 {
-		 if(game.wasPacManEaten())
+		 if(game.wasPacManEaten()) //reset on death
 			 powerPillTime = 0;
 		 if(powerPillTime > 0)
 	    		powerPillTime--;
@@ -200,6 +211,8 @@ enum POWER_PILL_ACTIVATED implements StateEnum{
 	    	  
 	 }
 	@Override
+	/*On PacMan creation static variables will be reset by calling this function to avoid errors when training.
+	 * Static variables are necessary here, because no instance of this is ever created.*/
 	public void resetStaticVars() {
 		powerPillTime = 0;
 		
@@ -208,6 +221,7 @@ enum POWER_PILL_ACTIVATED implements StateEnum{
 enum LIVES_LEFT implements StateEnum{
 	   oneLiveLeft, twoLivesLeft, threeLivesLeft;
 	
+	/*@brief Checks number of lives left.*/
 	 public String getCurrentStateString(Game game, int current, PacManMemory memory)
 	 {
 		 int lives = game.getPacmanNumberOfLivesRemaining();
