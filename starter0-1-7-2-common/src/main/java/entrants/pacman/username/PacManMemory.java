@@ -1,11 +1,9 @@
 package entrants.pacman.username;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import pacman.game.Game;
 import pacman.game.Constants.GHOST;
-import pacman.game.Constants.MOVE;
 
 /* Memory of PacMan. Stores still available pills, last known ghosts positions etc.
  * 

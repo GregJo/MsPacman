@@ -190,17 +190,16 @@ public class StaticFunctions{
 		  return false;
 	  }
 	  
-	  /*@brief Returns a move in a direction out of the players (PacMan or Ghosts) point of view 
+	  /*@brief Returns a move in a direction out of PacMan point of view 
 	   * @param game The current Game
-	   * @param nodeIndex the position that should be checked
-	   * @param move the specific move that should be checked  
-	   * @returns true if move is possible at position nodeIndex, else false.*/
+	   * @param relativeMove the move to be made out of PacMans point of view
+	   * @returns the move that is relativeMove out of PacMans point of view.*/
 	  public static MOVE getMoveFromPacmanPointOfView(Game game, MOVE relativeMove)
 	  {
 		 MOVE lastMove =  game.getPacmanLastMoveMade();
-		 if(relativeMove == MOVE.UP)
+		 if(relativeMove == MOVE.UP) 
 			 return lastMove;
-		 if(relativeMove == MOVE.DOWN)
+		 if(relativeMove == MOVE.DOWN) 
 			 return lastMove.opposite();
 		 if(lastMove == MOVE.UP)
 			 return relativeMove;
@@ -223,6 +222,11 @@ public class StaticFunctions{
 		  return null;
 	  }
 	  
+	  /*@brief Returns a move in a direction out of the current players (PacMan or Ghosts) point of view 
+	   * @param game The current Game
+	   * @param relativeMove the move to be made out of the current players (PacMan or Ghosts) point of view
+	   * @param lastMove the last move made by the player
+	   * @returns the move that is relativeMove out of the current players (PacMan or Ghosts) point of view.*/
 	  public static MOVE getMoveFromPacmanPointOfView(Game game, MOVE relativeMove, MOVE lastMove)
 	  {
 		 if(relativeMove == MOVE.UP)
