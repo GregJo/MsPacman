@@ -120,6 +120,7 @@ public class ProbabilityGenerator {
 	}
 	
 	public int geStrategyNumberToUse(Game game, int current, PacManMemory memory, final ArrayList<Strategy> strategyList){
+
 		PROBABILITY probabilities = this.getCurrentProbability(game, current, memory);
 		
 		if(memory.stateChanged == false)
