@@ -1,13 +1,12 @@
 package entrants.pacman.username;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
 import pacman.game.Game;
 
+/*Object to generate all probabilities for all possible states.*/
 public class ProbabilityGenerator {
 	public ProbabilityGenerator(int numberOfStrategies) {
 		m_numberOfStrategies = numberOfStrategies;
@@ -19,6 +18,8 @@ public class ProbabilityGenerator {
 	private int stateCounterSum = -1;
 	private int lastStrategyNumber = -1;
 	
+	/*@brief Resets static variables of all used state enums
+	* */
 	public void resetStaticStateVars()
 	{
 		for( Class<? extends Enum<? extends StateEnum>> enumType : m_listOfUsedEnums)
@@ -28,6 +29,8 @@ public class ProbabilityGenerator {
 		}
 	}
 	
+	/*@brief Resets all state occurrence counters in the ProbabilityByState objects
+	* */
 	public void resetProbByStateCounters()
 	{
 		for(int i=0; i <  m_probability_by_state_list.size(); i++)
@@ -36,6 +39,9 @@ public class ProbabilityGenerator {
 		}
 	}
 	
+	/*@brief Returns sum of all state occurrence counters in the ProbabilityByState objects
+	 *@returns The sum of all state occurrence counters in the ProbabilityByState objects
+	* */
 	public int getStateCounterSum()
 	{
 		stateCounterSum = 0;
@@ -47,14 +53,23 @@ public class ProbabilityGenerator {
 		
 	}
 	
+	/*@brief Exchanges the probabilities for all states with the given probabilities
+	 *@param probability_by_state_list a list of probabilities for all states
+	* */
 	public void setProbabilityByStateList(ArrayList<ProbabilityByState> probability_by_state_list){
 		m_probability_by_state_list = probability_by_state_list;
 	}
 	
+	/*@brief Gets all current strategy probabilities for all states
+	 * @returns All probabilities of all possible states
+	 * */
 	public final ArrayList<ProbabilityByState> getProbabilityByStateList(){
 		return m_probability_by_state_list;
 	}
 
+	/*@brief Computes the current state.
+	 * @returns A string identifying the current state.
+	 * */
 	private String getCurrentStateString(Game game, int current, PacManMemory memory)
 	{
 		String stateString = "";
@@ -64,6 +79,7 @@ public class ProbabilityGenerator {
 			stateString += "_" + ((StateEnum) e).getCurrentStateString(game, current, memory);
 		}
 		
+			//check if state changed. Strategies are locked until the state changes.
 		   memory.stateChanged = true;
 		   if(stateString.equals(memory.lastStateString))
 			   memory.stateChanged = false;
@@ -72,6 +88,12 @@ public class ProbabilityGenerator {
 		return stateString;
 	}
 	
+	/*@brief Gets the probabilities for the current state
+	 * @param game the current Game object
+	 * @param current the current position of PacMan
+	 * @param memory the memory of the current PacMan
+	 * @returns The probabilities of the current state
+	 * */
 	private final PROBABILITY getCurrentProbability(Game game, int current, PacManMemory memory){
 		   String currentStateString = this.getCurrentStateString(game, current, memory);
 		   //System.out.println(currentStateString);
@@ -83,7 +105,11 @@ public class ProbabilityGenerator {
 		   }
 		   return null;
 	   }
-	
+	/*@brief Creates n Probabilities for all possible states by permutating the given state enums. 
+	 * @param lastStateString empty string in the beginning. The function calls itself recursively with each possible state string.
+	 * @param strategyList list of all strategies to use
+	 * @param listOfStateEnums list of all enums to use
+	 * */
 	private void _createNProbabilitiesPerPossibleState(String lastStateString, ArrayList<Strategy> strategyList,
 			Class<? extends Enum<?>>... listOfStateEnums) {
 		Class<? extends Enum<?>> firstArgument;
@@ -114,11 +140,22 @@ public class ProbabilityGenerator {
 		}
 	}
 
+	/*@brief Creates n Probabilities for all possible states by permutating the given state enums. 
+	 * @param lastStateString empty string in the beginning. The function calls itself recursively with each possible state string.
+	 * @param strategyList list of all strategies to use
+	 * */
 	public void createNProbabilitiesPerPossibleState(ArrayList<Strategy> strategyList, Class<? extends Enum<? extends StateEnum>>... listOfStateEnums) {
 		m_listOfUsedEnums = listOfStateEnums;
 		_createNProbabilitiesPerPossibleState("", strategyList, listOfStateEnums);
 	}
 	
+	/*@brief Returns the index of the strategy that should be used in the current state. 
+	 *@param game the current Game object
+	 *@param current the current position of PacMan
+	 *@param memory the memory of the current PacMan
+	 *@param strategyList list of all strategies
+	 *@returns the idnex of the strategy tha should be used in the current state.
+	 * */
 	public int geStrategyNumberToUse(Game game, int current, PacManMemory memory, final ArrayList<Strategy> strategyList){
 
 		PROBABILITY probabilities = this.getCurrentProbability(game, current, memory);

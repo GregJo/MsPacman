@@ -1,11 +1,7 @@
 package entrants.ghosts.username;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import entrants.pacman.username.MyPacMan;
 import entrants.pacman.username.PacManMemory;
-import entrants.pacman.username.StaticFunctions;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 

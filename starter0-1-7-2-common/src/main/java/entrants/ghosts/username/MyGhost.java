@@ -1,19 +1,13 @@
 package entrants.ghosts.username;
 
-import pacman.controllers.PacmanController;
 import pacman.game.Constants.MOVE;
-import pacman.game.Constants;
-import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Game;
-import pacman.game.internal.Ghost;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 import entrants.pacman.username.Strategy;
-import entrants.pacman.username.PacManMemory;
 import entrants.pacman.username.ProbabilityByState;
 import entrants.pacman.username.ProbabilityGenerator;
 

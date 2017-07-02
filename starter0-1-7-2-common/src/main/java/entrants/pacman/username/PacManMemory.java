@@ -1,12 +1,13 @@
 package entrants.pacman.username;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import pacman.game.Game;
 import pacman.game.Constants.GHOST;
-import pacman.game.Constants.MOVE;
 
+/* Memory of PacMan. Stores still available pills, last known ghosts positions etc.
+ * 
+ * */
 public class PacManMemory 
 {
 	//MEMBER VARIABLES
@@ -24,6 +25,11 @@ public class PacManMemory
 	public boolean stateChanged = true;
 	
 	public PacManMemory(){m_memoryInitialized = false; lastStrategyUsed = "";m_levelIndex = 0;lastStateString="";}
+	
+	/*@brief initializes the memory
+	 * @param game the curent Game
+	 * @param current the current position of PacMan
+	 * */
 	private void initializeMemory(Game game, int current)
 	{
 		if(m_levelIndex != game.getCurrentLevel())
@@ -36,16 +42,24 @@ public class PacManMemory
 		initLastSeenGhosts(game, current);
 	}
 	
+	/*@brief updates the memory
+	 * @param game the current Game
+	 * @param current the current position of PacMan
+	 * */
 	public void updateMemory(Game game, int current)
 	{
 		m_levelChanged = (game.getCurrentLevel() != m_levelIndex) ? true : false;
-		if(!m_memoryInitialized || m_levelChanged)
+		if(!m_memoryInitialized || m_levelChanged) //memory needs to be reinitialized if level changed
 			initializeMemory(game, current);
 		updateStillAvailablePowerPills(game, current);
 		updateStillAvailablePills(game, current);
 		updateLastSeenGhosts(game, current);
 	}
 	
+	/*@brief updates the list of still available power pills
+	 * @param game the current Game
+	 * @param current the current position of PacMan
+	 * */
 	private void updateStillAvailablePowerPills(Game game, int current)
 	{
 		if(game.wasPowerPillEaten())
@@ -53,25 +67,32 @@ public class PacManMemory
 			m_stillAvailablePowerPills.remove(new Integer(current));
 		}
 	}
+	
+	/*@brief updates the list of still available pills
+	 * @param game the current Game
+	 * @param current the current position of PacMan
+	 * */
 	private void updateStillAvailablePills(Game game, int current)
 	{
 		if(game.wasPillEaten())
 		{
-			if(m_levelChanged)
+			if(m_levelChanged) //don't update if new level just started
 				return;
 			
+			//get eaten pills
 			ArrayList<Integer> pillsToRemove = new ArrayList<Integer>();
 			for(int pill : m_stillAvailablePills)
 			{
 				Boolean stillAvail = game.isPillStillAvailable(game.getPillIndex(pill));
-				if(stillAvail == null)
+				if(stillAvail == null) //can't see pill position
 					continue;
-				if(stillAvail == false)
+				if(stillAvail == false) //can see pill position but no pill there anymore
 				{
 					pillsToRemove.add(pill);
 					
 				}
 			}
+			//remove found pills
 			for(int pillToRemove : pillsToRemove)
 			{
 				m_stillAvailablePills.remove(new Integer(pillToRemove));
@@ -80,10 +101,14 @@ public class PacManMemory
 		}
 	}
 	
+	/*@brief updates the list of last seen ghosts
+	 * @param game the current Game
+	 * @param current the current position of PacMan
+	 * */
 	private void updateLastSeenGhosts(Game game, int current)
 	{
 		for (GHOST ghost : GHOST.values()) {
-			if (game.getGhostCurrentNodeIndex(ghost)>-1 && !m_seenGhostsMemory.contains(ghost))
+			if (game.getGhostCurrentNodeIndex(ghost)>-1 && !m_seenGhostsMemory.contains(ghost)) //add ghost if PacMan sees new ghost
 			{
 				m_seenGhostsMemory.add(ghost);
 				if(game.wasGhostEaten(ghost))
