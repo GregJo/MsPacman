@@ -172,7 +172,7 @@ enum GHOST_DISTANCE_TO_POWERPILL implements StateEnum {
 	// it.
 	static boolean enumUsed = false;
 
-	public String getCurrentStateString(Game game, int current, PacManMemory memory) {
+	public String getCurrentStateString(Game game, int current, GhostMemory memory) {
 		// find visible ghosts into list
 		ArrayList<Integer> positionGhosts = new ArrayList<Integer>();
 		for (GHOST ghost : GHOST.values()) {
@@ -186,7 +186,7 @@ enum GHOST_DISTANCE_TO_POWERPILL implements StateEnum {
 		ArrayList<Integer> powerPills = memory.getStillAvailablePowerPills();
 
 		int[] shortestPathPacman = StaticFunctions.getShortestPathToNearestObject(game, current,
-				StaticFunctions.convertIntegerListToArray(memory.getStillAvailablePowerPills()));
+				StaticFunctions.convertIntegerListToArray(memory.getSeenPowerPills()));
 		int[] shortestPathGhost = StaticFunctions.getShortestPathToNearestObject(game, current,
 				StaticFunctions.convertIntegerListToArray(positionGhosts));
 
@@ -223,5 +223,11 @@ enum GHOST_DISTANCE_TO_POWERPILL implements StateEnum {
 		// strategies
 		// need it.
 		enumUsed = false;
+	}
+
+	@Override
+	public String getCurrentStateString(Game game, int current, PacManMemory memory) {
+		// TODO Auto-generated method stub
+		return getCurrentStateString(game, current, (GhostMemory) memory);
 	}
 }

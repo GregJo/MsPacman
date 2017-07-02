@@ -157,6 +157,7 @@ public class ProbabilityGenerator {
 	 *@returns the idnex of the strategy tha should be used in the current state.
 	 * */
 	public int geStrategyNumberToUse(Game game, int current, PacManMemory memory, final ArrayList<Strategy> strategyList){
+
 		PROBABILITY probabilities = this.getCurrentProbability(game, current, memory);
 		
 		if(memory.stateChanged == false)

@@ -312,30 +312,37 @@ class TagTile implements Strategy {
 class GoToNearestPowerPill implements Strategy
 {
 	@Override
-	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) {
+	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+		GameView.addPoints(game, Color.YELLOW, GHOST_DISTANCE_TO_POWERPILL.m_shortestPathPacmanToNextPowerPill[0]);
 		if(GHOST_DISTANCE_TO_POWERPILL.enumUsed == false && memory.getStillAvailablePowerPills().size() > 0)
 		{
-			 ArrayList<Integer> powerPills =  memory.getStillAvailablePowerPills();
-			return StaticFunctions.getMoveToNearestObject(game, current, StaticFunctions.convertIntegerListToArray(memory.getStillAvailablePowerPills()));
+			GameView.addPoints(game, Color.YELLOW, GHOST_DISTANCE_TO_POWERPILL.m_shortestPathPacmanToNextPowerPill[0]);
+			return StaticFunctions.getMoveToNearestObject(game, current, StaticFunctions.convertIntegerListToArray(memory.getSeenPowerPills()));
 			
 		}
 		if(GHOST_DISTANCE_TO_POWERPILL.enumUsed && memory.getStillAvailablePowerPills().size() > 0)
 		{
+			GameView.addPoints(game, Color.GREEN, GHOST_DISTANCE_TO_POWERPILL.m_shortestPathPacmanToNextPowerPill[0]);
 			return game.getNextMoveTowardsTarget(current,GHOST_DISTANCE_TO_POWERPILL.m_shortestPathPacmanToNextPowerPill[0],DM.PATH);
 		}
 		return null;
 	}
 
 	@Override
-	public MOVE _getStrategyMove(Game game, GHOST ghost, int current, GhostMemory memory) {
+	public String getStrategyName() {
 		// TODO Auto-generated method stub
-		return null;
+		return "GoToNearestPowerPill";
 	}
 
 	@Override
-	public String getStrategyName() {
+	public MOVE _getStrategyMove(Game game, int current, PacManMemory memory) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
+	public boolean requirementsMet(Game game, int current, GhostMemory memory)
+	{
+		ArrayList<Integer> powerPills =  memory.getSeenPowerPills();
+		return (powerPills.size() == 0) ? false : true;
+	}
 }

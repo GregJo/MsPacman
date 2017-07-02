@@ -15,7 +15,6 @@ public class PacManMemory
 	//MEMBER VARIABLES
 	private ArrayList<Integer> m_stillAvailablePills = new ArrayList<Integer>(); //memory of which pills are still edible
 	private ArrayList<Integer> m_stillAvailablePowerPills = new ArrayList<Integer>(); //memory of which powerpills are still edible
-	private ArrayList<Integer> m_seenPillMemory = new ArrayList<Integer>(); //memory of which pills were seen
 	private ArrayList<GHOST>   m_seenGhostsMemory = new ArrayList<GHOST>(); //memory of which ghosts were seen (last known position, updated on sight)
 	private ArrayList<Integer> m_ghostPositionList = new ArrayList<Integer>(); 
 	

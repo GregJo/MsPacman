@@ -37,12 +37,11 @@ public MyGhost(GHOST ghost)
    {
 	   strategyList = new ArrayList<>(
 			   Arrays.asList(
-					   //new HuntPacMan(),
-					   //new RunAwayFromPacMan(),
-					   new GoToNearestPowerPill()
-					   //new AvoidOtherGhost(),
-					   //new RunCircle()
-					   //new TagTile()
+					   new HuntPacMan(),
+					   new RunAwayFromPacMan(),
+					   new GoToNearestPowerPill(),
+					   new AvoidOtherGhost(),
+					   new RunCircle()
 			   )
 		);
 	   
@@ -50,12 +49,8 @@ public MyGhost(GHOST ghost)
 	   int numberStrategies = strategyList.size();
 	   probabilityGenerator = new ProbabilityGenerator(numberStrategies);
 	   probabilityGenerator.createNProbabilitiesPerPossibleState(strategyList,
-	   																POWERPILLS_LEFT.class
-																	//KIND_OF_LEVEL_TILE.class,
-																	//NUMBER_SEEN_GHOSTS.class,
-																	//PACMAN_LOST.class,
-																	//GHOST_DISTANCE_TO_POWERPILL.class,
-																	//POWER_PILL_ACTIVATED.class
+	   																POWERPILLS_LEFT.class,
+																	GHOST_DISTANCE_TO_POWERPILL.class
 	   																);
 	   probabilityGenerator.resetStaticStateVars();
    }
@@ -94,11 +89,14 @@ public MyGhost(GHOST ghost)
     	int current = game.getGhostCurrentNodeIndex(ghost);
     	memory.updateMemory(game, current);
     	
-    	int rouletteStrategyNumber = probabilityGenerator.geStrategyNumberToUse(game, current, memory, strategyList);
-    	 MOVE move = strategyList.get(rouletteStrategyNumber).getStrategyMove(game, ghost, current, memory);
-    	 ticks = (game.getTotalTime() == 0) ? 1 :  game.getTotalTime();
-    	 score = game.getScore();
-    	 fitness = score/ticks;
+    	MOVE move = null;
+    	if (game.getGhostLairTime(ghost) == 0) {
+	    	int rouletteStrategyNumber = probabilityGenerator.geStrategyNumberToUse(game, current, memory, strategyList);
+	    	 move = strategyList.get(rouletteStrategyNumber).getStrategyMove(game, ghost, current, memory);
+	    	 ticks = (game.getTotalTime() == 0) ? 1 :  game.getTotalTime();
+	    	 score = game.getScore();
+	    	 fitness = score/ticks;
+    	}
     	
     	return move;
     	 
